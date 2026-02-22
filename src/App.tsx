@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Cadastro from "./pages/Cadastro";
 import Associacao from "./pages/Associacao"; // ✅ ADICIONADO
 import Consulta from "./pages/Consulta";
+import { useEffect } from "react";
 
 type Usuario = {
   matricula: string;
@@ -15,6 +16,11 @@ type Pagina = "home" | "cadastro" | "associacao" | "consulta";
 
 export default function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
+  useEffect(() => {
+  if (usuario) {
+      atualizarContagem();
+    }
+  }, [usuario]);
   const [matricula, setMatricula] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
