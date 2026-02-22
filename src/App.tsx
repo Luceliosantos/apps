@@ -2,7 +2,7 @@ import { useState } from "react";
 import { supabase } from "./supabase";
 import Home from "./pages/Home";
 import Cadastro from "./pages/Cadastro";
-import Associacao from "./pages/Associacao"; // ✅ ADICIONADO
+import Associacao from "./pages/Associacao";
 import Consulta from "./pages/Consulta";
 import { useEffect } from "react";
 
@@ -16,11 +16,13 @@ type Pagina = "home" | "cadastro" | "associacao" | "consulta";
 
 export default function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
+
   useEffect(() => {
-  if (usuario) {
+    if (usuario) {
       atualizarContagem();
     }
   }, [usuario]);
+
   const [matricula, setMatricula] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
@@ -28,16 +30,17 @@ export default function App() {
   const [pagina, setPagina] = useState<Pagina>("home");
   const [chavesDisponiveis, setChavesDisponiveis] = useState<number>(0);
 
-async function atualizarContagem() {
-  const { count, error } = await supabase
-    .from("dbchaves_associacoes")
-    .select("*", { count: "exact", head: true })
-    .is("nota", null);
+  // ✅ CORREÇÃO AQUI
+  async function atualizarContagem() {
+    const { count, error } = await supabase
+      .from("db_chaves")
+      .select("*", { count: "exact", head: true })
+      .is("ns", null);
 
-  if (!error) {
-    setChavesDisponiveis(count ?? 0);
+    if (!error) {
+      setChavesDisponiveis(count ?? 0);
+    }
   }
-}
 
   async function handleLogin(e?: React.FormEvent) {
     if (e) e.preventDefault();
@@ -90,21 +93,23 @@ async function atualizarContagem() {
 
     if (pagina === "associacao") {
       return (
-       <Associacao
+        <Associacao
           usuario={usuario}
           atualizarContagem={atualizarContagem}
           setPagina={setPagina}
         />
       );
     }
+
     if (pagina === "consulta") {
-        return (
-          <Consulta
-            usuario={usuario}
-            setPagina={setPagina}
-          />
-        );
-      }
+      return (
+        <Consulta
+          usuario={usuario}
+          setPagina={setPagina}
+        />
+      );
+    }
+
     return (
       <Home
         usuario={usuario}
