@@ -65,9 +65,10 @@ useEffect(() => {
       return;
     }
 
-    setUsuario(data[0]);
-    setPagina("home");
-    await atualizarContagem();
+  const usuarioLogado = data[0];
+    setUsuario(usuarioLogado);
+    await atualizarContagem(); // primeiro atualiza
+    setPagina("home"); // depois vai para Home
     setLoading(false);
   }
 
