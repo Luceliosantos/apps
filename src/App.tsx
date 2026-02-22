@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 import Home from "./pages/Home";
 import Cadastro from "./pages/Cadastro";
 import Associacao from "./pages/Associacao";
 import Consulta from "./pages/Consulta";
-import { useEffect } from "react";
 
 type Usuario = {
   matricula: string;
@@ -16,13 +15,6 @@ type Pagina = "home" | "cadastro" | "associacao" | "consulta";
 
 export default function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
-
-useEffect(() => {
-  if (usuario && pagina === "home") {
-    atualizarContagem();
-  }
-}, [usuario, pagina]);
-
   const [matricula, setMatricula] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
@@ -30,7 +22,7 @@ useEffect(() => {
   const [pagina, setPagina] = useState<Pagina>("home");
   const [chavesDisponiveis, setChavesDisponiveis] = useState<number>(0);
 
-  // ✅ CORREÇÃO AQUI
+  // ✅ CONTADOR CORRETO
   async function atualizarContagem() {
     const { count, error } = await supabase
       .from("db_chaves")
@@ -41,6 +33,13 @@ useEffect(() => {
       setChavesDisponiveis(count ?? 0);
     }
   }
+
+  // ✅ Atualiza sempre que usuário logar
+  useEffect(() => {
+    if (usuario) {
+      atualizarContagem();
+    }
+  }, [usuario]);
 
   async function handleLogin(e?: React.FormEvent) {
     if (e) e.preventDefault();
@@ -65,10 +64,11 @@ useEffect(() => {
       return;
     }
 
-  const usuarioLogado = data[0];
+    const usuarioLogado = data[0];
+
     setUsuario(usuarioLogado);
-    await atualizarContagem(); // primeiro atualiza
-    setPagina("home"); // depois vai para Home
+    await atualizarContagem(); // garante valor antes de renderizar
+    setPagina("home");
     setLoading(false);
   }
 
