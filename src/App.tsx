@@ -17,11 +17,11 @@ type Pagina = "home" | "cadastro" | "associacao" | "consulta";
 export default function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
 
-  useEffect(() => {
-    if (usuario) {
-      atualizarContagem();
-    }
-  }, [usuario]);
+useEffect(() => {
+  if (usuario && pagina === "home") {
+    atualizarContagem();
+  }
+}, [usuario, pagina]);
 
   const [matricula, setMatricula] = useState("");
   const [senha, setSenha] = useState("");
