@@ -27,10 +27,13 @@ export default function Consulta({ usuario, setPagina }: Props) {
 
   const botaoHabilitado = tipoBusca !== "" && valorBusca !== "";
 
+  // ===============================
+  // CONSULTAR
+  // ===============================
   async function consultar() {
     setLoading(true);
 
-    let query = supabase.from("dbchaves_associacoes").select("*");
+    let query = supabase.from("db_chaves").select("*");
 
     if (tipoBusca === "dt_ass_db") {
       query = query.eq("dt_ass_db", valorBusca);
@@ -47,18 +50,26 @@ export default function Consulta({ usuario, setPagina }: Props) {
     setLoading(false);
   }
 
+  // ===============================
+  // CHAVES DISPONÍVEIS
+  // ===============================
   async function chavesDisponiveis() {
     const { data } = await supabase
-      .from("db_chaves_disponiveis")
-      .select("*");
+      .from("db_chaves")
+      .select("*")
+      .is("ns", null);
 
     if (data) setDados(data);
   }
 
+  // ===============================
+  // CHAVES EMPENHADAS
+  // ===============================
   async function chavesEmpenhadas() {
     const { data } = await supabase
-      .from("dbchaves_associacoes")
-      .select("*");
+      .from("db_chaves")
+      .select("*")
+      .not("ns", "is", null);
 
     if (data) setDados(data);
   }
@@ -152,11 +163,19 @@ export default function Consulta({ usuario, setPagina }: Props) {
             Chaves Empenhadas
           </button>
 
-          <button onClick={gerarPDF} disabled={dados.length === 0} style={styles.button}>
+          <button
+            onClick={gerarPDF}
+            disabled={dados.length === 0}
+            style={styles.button}
+          >
             PDF
           </button>
 
-          <button onClick={gerarExcel} disabled={dados.length === 0} style={styles.button}>
+          <button
+            onClick={gerarExcel}
+            disabled={dados.length === 0}
+            style={styles.button}
+          >
             Excel
           </button>
 
