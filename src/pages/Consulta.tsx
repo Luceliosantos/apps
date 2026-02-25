@@ -27,49 +27,30 @@ export default function Consulta({ usuario, setPagina }: Props) {
 
   const botaoHabilitado = tipoBusca !== "" && valorBusca !== "";
 
-  // ===============================
-  // CONSULTAR
-  // ===============================
-async function consultar() {
-  setLoading(true);
+  async function consultar() {
+    setLoading(true);
 
-  let query = supabase.from("db_chaves").select("*");
+    let query = supabase.from("db_chaves").select("*");
 
-  // Nota (ns) é número
-  if (tipoBusca === "ns") {
-    query = query.eq("ns", Number(valorBusca));
+    if (tipoBusca === "ns") {
+      query = query.eq("ns", Number(valorBusca));
+    } else if (tipoBusca === "numero") {
+      query = query.eq("numero", Number(valorBusca));
+    } else if (tipoBusca === "dt_ass_db") {
+      query = query.eq("dt_ass_db", valorBusca);
+    } else {
+      query = query.ilike(tipoBusca, `%${valorBusca}%`);
+    }
+
+    const { data, error } = await query;
+
+    if (!error && data) {
+      setDados(data);
+    }
+
+    setLoading(false);
   }
 
-  // Chave (numero) é número
-  else if (tipoBusca === "numero") {
-    query = query.eq("numero", Number(valorBusca));
-  }
-
-  // Data
-  else if (tipoBusca === "dt_ass_db") {
-    query = query.eq("dt_ass_db", valorBusca);
-  }
-
-  // Campos texto
-  else {
-    query = query.ilike(tipoBusca, `%${valorBusca}%`);
-  }
-
-  const { data, error } = await query;
-
-  console.log("Filtro aplicado:", tipoBusca, valorBusca);
-  console.log("Resultado:", data);
-
-  if (!error && data) {
-    setDados(data);
-  }
-
-  setLoading(false);
-}
-
-  // ===============================
-  // CHAVES EMPENHADAS
-  // ===============================
   async function chavesEmpenhadas() {
     const { data } = await supabase
       .from("db_chaves")
@@ -79,18 +60,15 @@ async function consultar() {
     if (data) setDados(data);
   }
 
-// ===============================
-// CHAVES DISPONÍVEIS
-// ===============================
-async function chavesDisponiveis() {
-  const { data } = await supabase
-    .from("db_chaves")
-    .select("*")
-    .is("ns", null);
+  async function chavesDisponiveis() {
+    const { data } = await supabase
+      .from("db_chaves")
+      .select("*")
+      .is("ns", null);
 
-  if (data) setDados(data);
-}
-  
+    if (data) setDados(data);
+  }
+
   function gerarExcel() {
     const worksheet = XLSX.utils.json_to_sheet(dados);
     const workbook = XLSX.utils.book_new();
@@ -120,7 +98,6 @@ async function chavesDisponiveis() {
   return (
     <div style={styles.container}>
       <div style={styles.overlay}>
-        
         {/* HEADER */}
         <div style={styles.header}>
           <div>
@@ -137,25 +114,23 @@ async function chavesDisponiveis() {
         {/* TÍTULO */}
         <div style={styles.titleArea}>
           <h1 style={styles.title}>Consulta de Chaves</h1>
-          <p style={styles.subtitle}>
-            Pesquisa e geração de relatórios
-          </p>
+          <p style={styles.subtitle}>Pesquisa e geração de relatórios</p>
         </div>
 
         {/* PAINEL DE BUSCA */}
         <div style={styles.panel}>
           <select
-          value={tipoBusca}
-          onChange={(e) => setTipoBusca(e.target.value)}
-          style={styles.input}
-        >
-          <option value="">Selecione</option>
-          <option value="ns">Nota</option>
-          <option value="numero">Chave</option>
-          <option value="coordenada">Coordenada</option>
-          <option value="usu_ass">Projetista</option>
-          <option value="dt_ass_db">Data</option>
-        </select>
+            value={tipoBusca}
+            onChange={(e) => setTipoBusca(e.target.value)}
+            style={styles.input}
+          >
+            <option value="">Selecione</option>
+            <option value="ns">Nota</option>
+            <option value="numero">Chave</option>
+            <option value="coordenada">Coordenada</option>
+            <option value="usu_ass">Projetista</option>
+            <option value="dt_ass_db">Data</option>
+          </select>
 
           <input
             type={tipoBusca === "dt_ass_db" ? "date" : "text"}
@@ -185,7 +160,7 @@ async function chavesDisponiveis() {
             disabled={dados.length === 0}
             style={styles.button}
           >
-            PDF
+            GERAR PDF
           </button>
 
           <button
@@ -193,7 +168,7 @@ async function chavesDisponiveis() {
             disabled={dados.length === 0}
             style={styles.button}
           >
-            Excel
+            GERAR XLS
           </button>
 
           <button onClick={limpar} style={styles.button}>
@@ -230,7 +205,6 @@ async function chavesDisponiveis() {
         </div>
 
         {loading && <p style={{ color: "white" }}>Consultando...</p>}
-
       </div>
     </div>
   );
@@ -276,11 +250,12 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 
   panel: {
-    maxWidth: 900,
+    maxWidth: 1100,
     margin: "0 auto 40px auto",
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
     gap: 15,
+    alignItems: "center",
   },
 
   input: {
@@ -290,7 +265,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 
   button: {
-    padding: 12,
+    padding: "10px 12px", // 15% menor
+    height: "42px",
     borderRadius: 8,
     border: "1px solid rgba(255,255,255,0.3)",
     backgroundColor: "rgba(255,255,255,0.15)",
