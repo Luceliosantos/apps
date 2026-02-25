@@ -119,61 +119,65 @@ export default function Consulta({ usuario, setPagina }: Props) {
 
         {/* PAINEL DE BUSCA */}
         <div style={styles.panel}>
-          <select
-            value={tipoBusca}
-            onChange={(e) => setTipoBusca(e.target.value)}
-            style={styles.input}
-          >
-            <option value="">Selecione</option>
-            <option value="ns">Nota</option>
-            <option value="numero">Chave</option>
-            <option value="coordenada">Coordenada</option>
-            <option value="usu_ass">Projetista</option>
-            <option value="dt_ass_db">Data</option>
-          </select>
+          <div style={styles.grupoBusca}>
+            <select
+              value={tipoBusca}
+              onChange={(e) => setTipoBusca(e.target.value)}
+              style={styles.input}
+            >
+              <option value="">Selecione</option>
+              <option value="ns">Nota</option>
+              <option value="numero">Chave</option>
+              <option value="coordenada">Coordenada</option>
+              <option value="usu_ass">Projetista</option>
+              <option value="dt_ass_db">Data</option>
+            </select>
 
-          <input
-            type={tipoBusca === "dt_ass_db" ? "date" : "text"}
-            value={valorBusca}
-            onChange={(e) => setValorBusca(e.target.value)}
-            style={styles.input}
-          />
+            <input
+              type={tipoBusca === "dt_ass_db" ? "date" : "text"}
+              value={valorBusca}
+              onChange={(e) => setValorBusca(e.target.value)}
+              style={styles.input}
+            />
 
-          <button
-            disabled={!botaoHabilitado}
-            onClick={consultar}
-            style={styles.button}
-          >
-            Consultar
-          </button>
+            <button
+              disabled={!botaoHabilitado}
+              onClick={consultar}
+              style={styles.button}
+            >
+              Consultar
+            </button>
 
-          <button onClick={chavesDisponiveis} style={styles.button}>
-            Chaves Disponíveis
-          </button>
+            <button onClick={chavesDisponiveis} style={styles.button}>
+              Chaves disponíveis
+            </button>
 
-          <button onClick={chavesEmpenhadas} style={styles.button}>
-            Chaves Empenhadas
-          </button>
+            <button onClick={chavesEmpenhadas} style={styles.button}>
+              Chaves empenhadas
+            </button>
 
-          <button
-            onClick={gerarPDF}
-            disabled={dados.length === 0}
-            style={styles.button}
-          >
-            GERAR PDF
-          </button>
+            <button onClick={limpar} style={styles.button}>
+              Limpar
+            </button>
+          </div>
 
-          <button
-            onClick={gerarExcel}
-            disabled={dados.length === 0}
-            style={styles.button}
-          >
-            GERAR XLS
-          </button>
+          <div style={styles.grupoRelatorio}>
+            <button
+              onClick={gerarPDF}
+              disabled={dados.length === 0}
+              style={styles.button}
+            >
+              Gerar pdf
+            </button>
 
-          <button onClick={limpar} style={styles.button}>
-            Limpar
-          </button>
+            <button
+              onClick={gerarExcel}
+              disabled={dados.length === 0}
+              style={styles.button}
+            >
+              Gerar xls
+            </button>
+          </div>
         </div>
 
         {/* TABELA */}
@@ -189,7 +193,6 @@ export default function Consulta({ usuario, setPagina }: Props) {
                   ))}
               </tr>
             </thead>
-
             <tbody>
               {dados.map((linha, index) => (
                 <tr key={index}>
@@ -252,10 +255,21 @@ const styles: { [key: string]: React.CSSProperties } = {
   panel: {
     maxWidth: 1100,
     margin: "0 auto 40px auto",
+    display: "flex",
+    flexDirection: "column",
+    gap: 20,
+  },
+
+  grupoBusca: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
     gap: 15,
-    alignItems: "center",
+  },
+
+  grupoRelatorio: {
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: 15,
   },
 
   input: {
@@ -265,7 +279,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 
   button: {
-    padding: "10px 12px", // 15% menor
+    padding: "10px 12px",
     height: "42px",
     borderRadius: 8,
     border: "1px solid rgba(255,255,255,0.3)",
