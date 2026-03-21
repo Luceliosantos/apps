@@ -1,8 +1,12 @@
+import { Pagina } from "../App";
+
 type Props = {
   usuario: {
     nome: string;
   };
-  setPagina: (pagina: any) => void;
+
+  setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
+
   handleLogout: () => void;
 };
 
@@ -20,23 +24,20 @@ export default function Home({ usuario, setPagina, handleLogout }: Props) {
 
       <h3>Sistemas disponíveis</h3>
 
-      <button
-        onClick={() => setPagina("chaves")}
-        style={botao}
-      >
+      <br/>
+
+      <button onClick={() => setPagina("chaves")}>
+
         🔑 Controle de Chaves
+
       </button>
 
-      <br/><br/>
-
-      <button disabled style={botaoDisabled}>
-        📦 Outro sistema (em breve)
-      </button>
-
-      <br/><br/>
+      <br/><br/><br/>
 
       <button onClick={handleLogout}>
+
         sair
+
       </button>
 
     </div>
@@ -44,15 +45,3 @@ export default function Home({ usuario, setPagina, handleLogout }: Props) {
   );
 
 }
-
-const botao = {
-  padding: 15,
-  width: 250,
-  cursor: "pointer"
-};
-
-const botaoDisabled = {
-  padding: 15,
-  width: 250,
-  opacity: 0.5
-};
