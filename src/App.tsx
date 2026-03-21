@@ -12,7 +12,7 @@ type Usuario = {
   tipo: string;
 };
 
-type Pagina =
+export type Pagina =
   | "home"
   | "chaves"
   | "cadastro"
