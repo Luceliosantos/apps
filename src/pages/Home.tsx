@@ -1,5 +1,6 @@
 import React from "react";
-import { Pagina } from "../App";
+
+type Pagina = "home" | "cadastro" | "associacao" | "consulta";
 
 type Props = {
   usuario: {
@@ -21,6 +22,7 @@ export default function Home({
   return (
     <div style={styles.container}>
       <div style={styles.overlay}>
+        
         {/* HEADER SUPERIOR */}
         <div style={styles.header}>
           <div>
@@ -43,6 +45,7 @@ export default function Home({
 
         {/* BOTÕES */}
         <div style={styles.panel}>
+
           <button
             style={styles.button}
             onClick={() => setPagina("cadastro")}
@@ -50,7 +53,10 @@ export default function Home({
             Cadastrar
           </button>
 
-          <button onClick={() => setPagina("consulta")}>
+          <button
+            style={styles.button}
+            onClick={() => setPagina("consulta")}
+          >
             Consulta
           </button>
 
@@ -60,11 +66,18 @@ export default function Home({
           >
             Associar
           </button>
-          
-          
-          <button style={styles.button}>Relatório</button>
-          <button style={styles.button}>Usuários</button>
-          <button style={styles.button}>Créditos</button>
+
+          <button style={styles.button}>
+            Relatório
+          </button>
+
+          <button style={styles.button}>
+            Usuários
+          </button>
+
+          <button style={styles.button}>
+            Créditos
+          </button>
 
           <button
             style={{ ...styles.button, ...styles.logoutButton }}
@@ -72,17 +85,21 @@ export default function Home({
           >
             Sair
           </button>
+
         </div>
+
       </div>
     </div>
   );
 }
+
 
 // ================================
 // ESTILOS
 // ================================
 
 const styles: { [key: string]: React.CSSProperties } = {
+
   container: {
     minHeight: "100vh",
     width: "100%",
@@ -93,7 +110,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundRepeat: "no-repeat",
   },
 
-  // 60% de transparência
   overlay: {
     minHeight: "100vh",
     backgroundColor: "rgba(0,0,0,0.6)",
@@ -151,4 +167,5 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: "1px solid rgba(255,0,0,0.6)",
     backgroundColor: "rgba(192,57,43,0.45)",
   },
+
 };
