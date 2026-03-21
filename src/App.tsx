@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 import Home from "./pages/Home";
+import ChavesHome from "./pages/ChavesHome";
 import Cadastro from "./pages/Cadastro";
 import Associacao from "./pages/Associacao";
 import Consulta from "./pages/Consulta";
@@ -11,7 +12,12 @@ type Usuario = {
   tipo: string;
 };
 
-type Pagina = "home" | "cadastro" | "associacao" | "consulta";
+type Pagina =
+  | "home"
+  | "chaves"
+  | "cadastro"
+  | "associacao"
+  | "consulta";
 
 export default function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
@@ -80,6 +86,18 @@ export default function App() {
   }
 
   if (usuario) {
+
+  if (pagina === "chaves") {
+      return (
+        <ChavesHome
+          usuario={usuario}
+          chavesDisponiveis={chavesDisponiveis}
+          setPagina={setPagina}
+          handleLogout={handleLogout}
+        />
+      );
+    }
+
     if (pagina === "cadastro") {
       return (
         <Cadastro
