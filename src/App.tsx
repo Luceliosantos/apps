@@ -1,16 +1,12 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
+
 import Home from "./pages/Home";
 import ChavesHome from "./pages/ChavesHome";
+
 import Cadastro from "./pages/Cadastro";
 import Associacao from "./pages/Associacao";
 import Consulta from "./pages/Consulta";
-
-type Usuario = {
-  matricula: string;
-  nome: string;
-  tipo: string;
-};
 
 export type Pagina =
   | "home"
@@ -19,17 +15,29 @@ export type Pagina =
   | "associacao"
   | "consulta";
 
+type Usuario = {
+  matricula: string;
+  nome: string;
+  tipo: string;
+};
+
 export default function App() {
+
   const [usuario, setUsuario] = useState<Usuario | null>(null);
+
   const [matricula, setMatricula] = useState("");
   const [senha, setSenha] = useState("");
+
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
+
   const [pagina, setPagina] = useState<Pagina>("home");
+
   const [chavesDisponiveis, setChavesDisponiveis] = useState<number>(0);
 
-  // ✅ CONTADOR CORRETO
+
   async function atualizarContagem() {
+
     const { count, error } = await supabase
       .from("db_chaves")
       .select("*", { count: "exact", head: true })
@@ -38,16 +46,21 @@ export default function App() {
     if (!error) {
       setChavesDisponiveis(count ?? 0);
     }
+
   }
 
-  // ✅ Atualiza sempre que usuário logar
+
   useEffect(() => {
+
     if (usuario) {
       atualizarContagem();
     }
+
   }, [usuario]);
 
+
   async function handleLogin(e?: React.FormEvent) {
+
     if (e) e.preventDefault();
 
     setErro("");
@@ -59,47 +72,69 @@ export default function App() {
     });
 
     if (error) {
+
       setErro("Erro ao conectar com o servidor.");
       setLoading(false);
       return;
+
     }
 
     if (!data || data.length === 0) {
+
       setErro("Matrícula ou senha inválidos.");
       setLoading(false);
       return;
+
     }
 
     const usuarioLogado = data[0];
 
     setUsuario(usuarioLogado);
-    await atualizarContagem(); // garante valor antes de renderizar
+
+    await atualizarContagem();
+
     setPagina("home");
+
     setLoading(false);
+
   }
 
+
   function handleLogout() {
+
     setUsuario(null);
+
     setMatricula("");
     setSenha("");
+
     setPagina("home");
+
   }
+
+
 
   if (usuario) {
 
-  if (pagina === "chaves") {
+    if (pagina === "chaves") {
+
       return (
+
         <ChavesHome
           usuario={usuario}
           chavesDisponiveis={chavesDisponiveis}
           setPagina={setPagina}
           handleLogout={handleLogout}
         />
+
       );
+
     }
 
+
     if (pagina === "cadastro") {
+
       return (
+
         <Cadastro
           usuario={usuario}
           chavesDisponiveis={chavesDisponiveis}
@@ -107,42 +142,63 @@ export default function App() {
           setPagina={setPagina}
           handleLogout={handleLogout}
         />
+
       );
+
     }
 
+
     if (pagina === "associacao") {
+
       return (
+
         <Associacao
           usuario={usuario}
           atualizarContagem={atualizarContagem}
           setPagina={setPagina}
         />
+
       );
+
     }
 
+
     if (pagina === "consulta") {
+
       return (
+
         <Consulta
           usuario={usuario}
           setPagina={setPagina}
         />
+
       );
+
     }
 
+
+
     return (
+
       <Home
         usuario={usuario}
-        chavesDisponiveis={chavesDisponiveis}
         setPagina={setPagina}
         handleLogout={handleLogout}
       />
+
     );
+
   }
 
+
+
   return (
+
     <div style={styles.loginContainer}>
+
       <form style={styles.loginCard} onSubmit={handleLogin}>
-        <h2>Controle de Chaves</h2>
+
+        <h2>APLICATIVOS</h2>
 
         <input
           placeholder="Matrícula"
@@ -162,42 +218,81 @@ export default function App() {
         {erro && <p style={{ color: "#c0392b" }}>{erro}</p>}
 
         <button style={styles.loginButton} type="submit">
+
           {loading ? "Entrando..." : "Entrar"}
+
         </button>
+
       </form>
+
     </div>
+
   );
+
 }
 
+
+
 const styles: { [key: string]: React.CSSProperties } = {
+
   loginContainer: {
+
     height: "100vh",
+
     display: "flex",
+
     justifyContent: "center",
+
     alignItems: "center",
+
     background: "linear-gradient(to bottom, #1e3c72, #2a5298)",
+
   },
+
   loginCard: {
+
     background: "white",
+
     padding: 40,
+
     borderRadius: 12,
+
     width: 350,
+
     textAlign: "center",
+
   },
+
   input: {
+
     width: "100%",
+
     padding: 12,
+
     marginBottom: 15,
+
     borderRadius: 8,
+
     border: "1px solid #ccc",
+
   },
+
   loginButton: {
+
     width: "100%",
+
     padding: 14,
+
     backgroundColor: "#1e3c72",
+
     color: "white",
+
     border: "none",
+
     borderRadius: 8,
+
     cursor: "pointer",
+
   },
+
 };
