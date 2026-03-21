@@ -1,4 +1,5 @@
 import React from "react";
+import { Pagina } from "../App";
 
 type Props = {
   usuario: {
@@ -7,9 +8,7 @@ type Props = {
     tipo: string;
   };
   chavesDisponiveis: number;
-  setPagina: (
-    pagina: "home" | "cadastro" | "associacao" | "consulta"
-  ) => void;
+  setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
   handleLogout: () => void;
 };
 
