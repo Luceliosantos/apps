@@ -114,22 +114,6 @@ export default function App() {
 
   if (usuario) {
 
-    if (pagina === "chaves") {
-
-      return (
-
-        <ChavesHome
-          usuario={usuario}
-          chavesDisponiveis={chavesDisponiveis}
-          setPagina={setPagina}
-          handleLogout={handleLogout}
-        />
-
-      );
-
-    }
-
-
     if (pagina === "cadastro") {
 
       return (
