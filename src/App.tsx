@@ -8,9 +8,8 @@ import Cadastro from "./pages/Cadastro";
 import Associacao from "./pages/Associacao";
 import Consulta from "./pages/Consulta";
 
-export type Pagina =
+type Pagina =
   | "home"
-  | "chaves"
   | "cadastro"
   | "associacao"
   | "consulta";
