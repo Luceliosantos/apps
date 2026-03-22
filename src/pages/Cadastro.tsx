@@ -15,7 +15,8 @@ type Props = {
     tipo: string;
   };
   chavesDisponiveis: number; // 👈 ADICIONE ESTA LINHA
-  setPagina: (pagina: "home" | "cadastro") => void;
+  import { Pagina } from "../App";
+  setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
   handleLogout: () => void;
   atualizarContagem: () => Promise<void>;
 };
