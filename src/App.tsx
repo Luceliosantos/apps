@@ -119,7 +119,7 @@ export default function App() {
     }
 
     return (
-      <Home
+      <CadastroChaves
         usuario={usuario}
         chavesDisponiveis={chavesDisponiveis}
         setPagina={setPagina}
