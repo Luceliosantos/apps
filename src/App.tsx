@@ -16,7 +16,10 @@ export type Pagina =
   | "home"
   | "cadastro_chaves"
   | "geo"
-  | "proorc";
+  | "proorc"
+  | "cadastro"
+  | "associacao"
+  | "consulta";
 
 export default function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
@@ -27,7 +30,6 @@ export default function App() {
   const [pagina, setPagina] = useState<Pagina>("login");
   const [chavesDisponiveis, setChavesDisponiveis] = useState<number>(0);
 
-  // ✅ CONTADOR CORRETO
   async function atualizarContagem() {
     const { count, error } = await supabase
       .from("db_chaves")
@@ -39,7 +41,6 @@ export default function App() {
     }
   }
 
-  // ✅ Atualiza sempre que usuário logar
   useEffect(() => {
     if (usuario) {
       atualizarContagem();
@@ -72,7 +73,7 @@ export default function App() {
     const usuarioLogado = data[0];
 
     setUsuario(usuarioLogado);
-    await atualizarContagem(); // garante valor antes de renderizar
+    await atualizarContagem();
     setPagina("home");
     setLoading(false);
   }
@@ -81,10 +82,11 @@ export default function App() {
     setUsuario(null);
     setMatricula("");
     setSenha("");
-    setPagina("home");
+    setPagina("login");
   }
 
   if (usuario) {
+
     if (pagina === "cadastro") {
       return (
         <Cadastro
