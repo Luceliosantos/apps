@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
-import Home from "./pages/Home";
+import CadastroChaves from "./pages/CadastroChaves";
 import Cadastro from "./pages/Cadastro";
 import Associacao from "./pages/Associacao";
 import Consulta from "./pages/Consulta";
