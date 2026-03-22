@@ -24,7 +24,7 @@ export default function App() {
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
-  const [pagina, setPagina] = useState<Pagina>("home");
+  const [pagina, setPagina] = useState<Pagina>("login");
   const [chavesDisponiveis, setChavesDisponiveis] = useState<number>(0);
 
   // ✅ CONTADOR CORRETO
