@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../supabase";
+import { Pagina } from "../App";
 
 type Props = {
   usuario: {
@@ -8,7 +9,7 @@ type Props = {
     tipo: string;
   };
   atualizarContagem: () => Promise<void>;
-  setPagina: (pagina: "home" | "cadastro" | "associacao") => void;
+  setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
 };
 
 type Registro = {
