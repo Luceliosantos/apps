@@ -16,7 +16,6 @@ export default function CadastroChaves({
   usuario,
   chavesDisponiveis,
   setPagina,
-  handleLogout,
 }: Props) {
   return (
     <div style={styles.container}>
@@ -43,6 +42,7 @@ export default function CadastroChaves({
 
         {/* BOTÕES */}
         <div style={styles.panel}>
+          
           <button
             style={styles.button}
             onClick={() => setPagina("cadastro")}
@@ -50,12 +50,11 @@ export default function CadastroChaves({
             Cadastrar
           </button>
 
-          <button onClick={() => setPagina("consulta")}>
+          <button
+            style={styles.button}
+            onClick={() => setPagina("consulta")}
+          >
             Consulta
-          </button>
-
-          <button onClick={() => setPagina("home")}>
-            Voltar ao Menu
           </button>
 
           <button
@@ -65,27 +64,30 @@ export default function CadastroChaves({
             Associar
           </button>
 
-          <button style={styles.button}>Relatório</button>
-          <button style={styles.button}>Usuários</button>
-          <button style={styles.button}>Créditos</button>
-
           <button
-            style={{ ...styles.button, ...styles.logoutButton }}
-            onClick={handleLogout}
+            style={styles.button}
+            onClick={() => setPagina("menu")}
           >
-            Sair
+            Home
           </button>
+
+          <button style={styles.button}>
+            Relatório
+          </button>
+
         </div>
       </div>
     </div>
   );
 }
 
+
 // ================================
 // ESTILOS
 // ================================
 
 const styles: { [key: string]: React.CSSProperties } = {
+
   container: {
     minHeight: "100vh",
     width: "100%",
@@ -149,8 +151,4 @@ const styles: { [key: string]: React.CSSProperties } = {
     transition: "all 0.3s ease",
   },
 
-  logoutButton: {
-    border: "1px solid rgba(255,0,0,0.6)",
-    backgroundColor: "rgba(192,57,43,0.45)",
-  },
 };
