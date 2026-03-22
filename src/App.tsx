@@ -4,6 +4,7 @@ import CadastroChaves from "./pages/CadastroChaves";
 import Cadastro from "./pages/Cadastro";
 import Associacao from "./pages/Associacao";
 import Consulta from "./pages/Consulta";
+import HomeMenu from "./pages/HomeMenu";
 
 type Usuario = {
   matricula: string;
@@ -13,13 +14,13 @@ type Usuario = {
 
 export type Pagina =
   | "login"
+  | "menu"
   | "home"
-  | "cadastro_chaves"
-  | "geo"
-  | "proorc"
   | "cadastro"
   | "associacao"
-  | "consulta";
+  | "consulta"
+  | "geo"
+  | "proorc";
 
 export default function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
@@ -74,7 +75,7 @@ export default function App() {
 
     setUsuario(usuarioLogado);
     await atualizarContagem();
-    setPagina("home");
+    setPagina("menu");
     setLoading(false);
   }
 
@@ -87,6 +88,16 @@ export default function App() {
 
   if (usuario) {
 
+    if (pagina === "menu") {
+      return (
+        <HomeMenu
+          usuario={usuario}
+          setPagina={setPagina}
+          handleLogout={handleLogout}
+        />
+      );
+    }
+    
     if (pagina === "cadastro") {
       return (
         <Cadastro
