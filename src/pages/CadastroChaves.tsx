@@ -1,4 +1,5 @@
 import React from "react";
+import { Pagina } from "../App";
 
 type Props = {
   usuario: {
@@ -7,17 +8,11 @@ type Props = {
     tipo: string;
   };
   chavesDisponiveis: number;
-export type Pagina =
-  | "login"
-  | "home"
-  | "cadastro_chaves"
-  | "geo"
-  | "proorc";
-  ) => void;
+  setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
   handleLogout: () => void;
 };
 
-export default function Home({
+export default function CadastroChaves({
   usuario,
   chavesDisponiveis,
   setPagina,
@@ -58,17 +53,18 @@ export default function Home({
           <button onClick={() => setPagina("consulta")}>
             Consulta
           </button>
+
           <button onClick={() => setPagina("home")}>
-          Voltar ao Menu
+            Voltar ao Menu
           </button>
+
           <button
             style={styles.button}
             onClick={() => setPagina("associacao")}
           >
             Associar
           </button>
-          
-          
+
           <button style={styles.button}>Relatório</button>
           <button style={styles.button}>Usuários</button>
           <button style={styles.button}>Créditos</button>
@@ -100,7 +96,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundRepeat: "no-repeat",
   },
 
-  // 60% de transparência
   overlay: {
     minHeight: "100vh",
     backgroundColor: "rgba(0,0,0,0.6)",
