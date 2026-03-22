@@ -7,8 +7,12 @@ type Props = {
     tipo: string;
   };
   chavesDisponiveis: number;
-  setPagina: (
-    pagina: "home" | "cadastro" | "associacao" | "consulta"
+export type Pagina =
+  | "login"
+  | "home"
+  | "cadastro_chaves"
+  | "geo"
+  | "proorc";
   ) => void;
   handleLogout: () => void;
 };
@@ -54,7 +58,9 @@ export default function Home({
           <button onClick={() => setPagina("consulta")}>
             Consulta
           </button>
-
+          <button onClick={() => setPagina("home")}>
+          Voltar ao Menu
+          </button>
           <button
             style={styles.button}
             onClick={() => setPagina("associacao")}
