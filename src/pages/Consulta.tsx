@@ -3,6 +3,7 @@ import { supabase } from "../supabase";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { Pagina } from "../App";
 
 type Props = {
   usuario: {
@@ -10,9 +11,7 @@ type Props = {
     nome: string;
     tipo: string;
   };
-  setPagina: React.Dispatch<
-    React.SetStateAction<"home" | "cadastro" | "associacao" | "consulta">
-  >;
+  setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
 };
 
 type Registro = {
