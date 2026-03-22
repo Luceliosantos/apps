@@ -119,25 +119,48 @@ export default function App() {
         />
       );
     }
+if (pagina === "consulta") {
+  return (
+    <Consulta
+      usuario={usuario}
+      setPagina={setPagina}
+    />
+  );
+}
 
-    if (pagina === "consulta") {
-      return (
-        <Consulta
-          usuario={usuario}
-          setPagina={setPagina}
-        />
-      );
-    }
+if (pagina === "geo") {
+  return (
+    <div style={{ padding: 40 }}>
+      <h1>Acompanhamento GEO</h1>
 
-    return (
-      <CadastroChaves
-        usuario={usuario}
-        chavesDisponiveis={chavesDisponiveis}
-        setPagina={setPagina}
-        handleLogout={handleLogout}
-      />
-    );
-  }
+      <button onClick={() => setPagina("menu")}>
+        Voltar
+      </button>
+    </div>
+  );
+}
+
+if (pagina === "proorc") {
+  return (
+    <div style={{ padding: 40 }}>
+      <h1>Proorc 2.0</h1>
+
+      <button onClick={() => setPagina("menu")}>
+        Voltar
+      </button>
+    </div>
+  );
+}
+
+return (
+  <CadastroChaves
+    usuario={usuario}
+    chavesDisponiveis={chavesDisponiveis}
+    setPagina={setPagina}
+    handleLogout={handleLogout}
+  />
+);
+    
 
   return (
     <div style={styles.loginContainer}>
