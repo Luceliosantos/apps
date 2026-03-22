@@ -1,6 +1,7 @@
 import { useState } from "react";
 import * as XLSX from "xlsx";
 import { supabase } from "../supabase";
+import { Pagina } from "../App";
 
 type Registro = {
   numero: string;
@@ -14,8 +15,7 @@ type Props = {
     nome: string;
     tipo: string;
   };
-  chavesDisponiveis: number; // 👈 ADICIONE ESTA LINHA
-  import { Pagina } from "../App";
+  chavesDisponiveis: number;
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
   handleLogout: () => void;
   atualizarContagem: () => Promise<void>;
