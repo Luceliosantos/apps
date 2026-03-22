@@ -11,7 +11,12 @@ type Usuario = {
   tipo: string;
 };
 
-type Pagina = "home" | "cadastro" | "associacao" | "consulta";
+export type Pagina =
+  | "login"
+  | "home"
+  | "cadastro_chaves"
+  | "geo"
+  | "proorc";
 
 export default function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
