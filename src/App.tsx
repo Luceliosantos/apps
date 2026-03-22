@@ -86,6 +86,10 @@ export default function App() {
     setPagina("login");
   }
 
+  // ============================
+  // USUÁRIO LOGADO
+  // ============================
+
   if (usuario) {
 
     if (pagina === "menu") {
@@ -97,7 +101,7 @@ export default function App() {
         />
       );
     }
-    
+
     if (pagina === "cadastro") {
       return (
         <Cadastro
@@ -119,48 +123,54 @@ export default function App() {
         />
       );
     }
-if (pagina === "consulta") {
-  return (
-    <Consulta
-      usuario={usuario}
-      setPagina={setPagina}
-    />
-  );
-}
 
-if (pagina === "geo") {
-  return (
-    <div style={{ padding: 40 }}>
-      <h1>Acompanhamento GEO</h1>
+    if (pagina === "consulta") {
+      return (
+        <Consulta
+          usuario={usuario}
+          setPagina={setPagina}
+        />
+      );
+    }
 
-      <button onClick={() => setPagina("menu")}>
-        Voltar
-      </button>
-    </div>
-  );
-}
+    if (pagina === "geo") {
+      return (
+        <div style={{ padding: 40 }}>
+          <h1>Acompanhamento GEO</h1>
 
-if (pagina === "proorc") {
-  return (
-    <div style={{ padding: 40 }}>
-      <h1>Proorc 2.0</h1>
+          <button onClick={() => setPagina("menu")}>
+            Voltar
+          </button>
+        </div>
+      );
+    }
 
-      <button onClick={() => setPagina("menu")}>
-        Voltar
-      </button>
-    </div>
-  );
-}
+    if (pagina === "proorc") {
+      return (
+        <div style={{ padding: 40 }}>
+          <h1>Proorc 2.0</h1>
 
-return (
-  <CadastroChaves
-    usuario={usuario}
-    chavesDisponiveis={chavesDisponiveis}
-    setPagina={setPagina}
-    handleLogout={handleLogout}
-  />
-);
-    
+          <button onClick={() => setPagina("menu")}>
+            Voltar
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <CadastroChaves
+        usuario={usuario}
+        chavesDisponiveis={chavesDisponiveis}
+        setPagina={setPagina}
+        handleLogout={handleLogout}
+      />
+    );
+
+  }
+
+  // ============================
+  // LOGIN
+  // ============================
 
   return (
     <div style={styles.loginContainer}>
