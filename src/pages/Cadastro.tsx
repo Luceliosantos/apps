@@ -307,7 +307,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 overlay: {
   minHeight: "100vh",
-  background: "linear-gradient(180deg, rgba(10,31,68,0.55) 0%, rgba(26,58,114,0.65) 100%)",
+  background: "rgba(10,31,68,0.35)",
   padding: "40px 20px",
   color: "white",
   position: "relative",
