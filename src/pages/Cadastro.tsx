@@ -271,21 +271,25 @@ return (
 // ================================
 const styles: { [key: string]: React.CSSProperties } = {
   // ... todos os estilos anteriores mantidos ...
-container: {
-  minHeight: "100vh",
-  background: `
-    linear-gradient(
-      rgba(10,31,68,0.75),
-      rgba(10,31,68,0.85)
-    ),
-    url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')
-  `,
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-  backgroundAttachment: "fixed",
-  position: "relative",
-  overflow: "hidden",
-},
+  container: {
+    minHeight: "100vh",
+    background: `
+      linear-gradient(135deg, 
+        #0a1f44 0%, 
+        #1a3a72 25%, 
+        #2a4a92 50%, 
+        #1e3c72 75%, 
+        #0f2b5a 100%
+      ),
+      radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255, 255, 0, 0.1) 0%, transparent 50%)
+    `,
+    backgroundSize: "cover, 200px, 200px",
+    backgroundPosition: "center, 20px 80px, 80% 20%",
+    backgroundAttachment: "fixed",
+    position: "relative",
+    overflow: "hidden",
+  },
 
   electricParticles: {
     position: "absolute",
