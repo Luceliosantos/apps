@@ -40,7 +40,8 @@ export default function Associacao({
 
   const formValido =
     notaValida && folhaValida && posteValido && coordenadaValida;
-
+  const [destacarUltima, setDestacarUltima] = useState(false);
+  
   async function buscarLista(n: string) {
     const { data } = await supabase
       .from("db_chaves")
@@ -122,6 +123,7 @@ export default function Associacao({
     setMensagem("Chave associada com sucesso!");
     await atualizarContagem();
     await buscarLista(nota);
+    setDestacarUltima(true);
     setLoading(false);
   }
 
@@ -146,21 +148,23 @@ export default function Associacao({
             <h2>Associar Chave</h2>
 
             <input
-              style={styles.input}
-              placeholder="Nota (10 dígitos)"
-              value={nota}
-              onChange={(e) => {
-                const valor = e.target.value.replace(/\D/g, "");
-                setNota(valor);
-            
-                // NOVO: busca automática quando nota válida
-                if (/^[1-9][0-9]{9}$/.test(valor)) {
-                  buscarLista(valor);
-                } else {
-                  setLista([]);
-                }
-              }}
-            />
+                style={styles.input}
+                placeholder="Nota (10 dígitos)"
+                value={nota}
+                onChange={(e) => {
+                  const valor = e.target.value.replace(/\D/g, "");
+                  setNota(valor);
+              
+                  // ao digitar nota → NÃO destacar em verde
+                  setDestacarUltima(false);
+              
+                  if (/^[1-9][0-9]{9}$/.test(valor)) {
+                    buscarLista(valor);
+                  } else {
+                    setLista([]);
+                  }
+                }}
+              />
 
             <input
               style={styles.input}
@@ -230,7 +234,7 @@ export default function Associacao({
                     <tr
                       key={i}
                       style={
-                        i === 0
+                        destacarUltima && i === 0
                           ? styles.linhaUltima
                           : styles.linhaNormal
                       }
