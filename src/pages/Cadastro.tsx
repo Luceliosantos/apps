@@ -145,132 +145,128 @@ export default function Cadastro({
   }
 
   // ================================
-  // RENDER AJUSTADO
-  // ================================
-  return (
-    <div style={styles.container}>
-      <div style={styles.electricParticles}></div>
-      
-      <div style={styles.overlay}>
-        <div style={styles.topBar}>
-          {/* === TOPO: MATRICULA - NOME === */}
-          <div style={styles.headerUsuario}>
-            <div style={styles.linhaUsuario}>
-              {usuario.matricula} - {usuario.nome}
-            </div>
-          </div>
-          
-          <div style={styles.acoesUsuario}>
-            <button style={styles.btnPrimario} onClick={() => setPagina("home")}>
-              <span>🏠 Início</span>
-            </button>
-            <button style={styles.btnSecundario} onClick={handleLogout}>
-              <span>🚪 Sair</span>
-            </button>
+// RENDER AJUSTADO
+// ================================
+return (
+  <div style={styles.container}>
+    <div style={styles.electricParticles}></div>
+    
+    <div style={styles.overlay}>
+      <div style={styles.topBar}>
+        {/* === TOPO: MATRICULA - NOME === */}
+        <div style={styles.headerUsuario}>
+          <div style={styles.linhaUsuario}>
+            {usuario.matricula} - {usuario.nome}
           </div>
         </div>
+        
+        <div style={styles.acoesUsuario}>
+          <button style={styles.btnPrimario} onClick={() => setPagina("home")}>
+            <span>🏠 Home</span>
+          </button>
+        </div>
+      </div>
 
-        <div style={styles.mainContent}>
-          <div style={styles.cardPrincipal}>
-            <div style={styles.uploadArea}>
-              <input
-                type="file"
-                accept=".xls,.xlsx"
-                onChange={handleFile}
-                style={styles.inputFile}
-                id="file-upload"
-              />
-              <label htmlFor="file-upload" style={styles.labelUpload}>
-                <div style={styles.uploadIcon}>📁</div>
-                <div>
-                  <strong>Selecionar Arquivo Excel</strong>
-                  <p>Arraste ou clique para importar (.xls, .xlsx)</p>
-                </div>
-              </label>
-            </div>
-
-            {erroImportacao && (
-              <div style={styles.alertaErro}>
-                <span>⚠️ {erroImportacao}</span>
+      <div style={styles.mainContent}>
+        <div style={styles.cardPrincipal}>
+          <div style={styles.uploadArea}>
+            <input
+              type="file"
+              accept=".xls,.xlsx"
+              onChange={handleFile}
+              style={styles.inputFile}
+              id="file-upload"
+            />
+            <label htmlFor="file-upload" style={styles.labelUpload}>
+              <div style={styles.uploadIcon}>📁</div>
+              <div>
+                <strong>Selecionar Arquivo Excel</strong>
+                <p>Arraste ou clique para importar (.xls, .xlsx)</p>
               </div>
-            )}
-
-            {registros.length > 0 && (
-              <>
-                {/* === QUANTIDADE + BOTÃO DENTRO DA MESMA CAIXA === */}
-                <div style={styles.caixaQuantidade}>
-                  <div style={styles.statsContent}>
-                    <div style={styles.statItem}>
-                      <strong style={styles.statNumber}>{registros.length}</strong>
-                      <span>registros importados</span>
-                    </div>
-                    <div style={styles.validosInvalidos}>
-                      <span style={styles.validos}>
-                        {registros.filter(r => !r.erro).length} válidos
-                      </span>
-                      <span style={styles.invalidos}>
-                        {registros.filter(r => r.erro).length} com erro
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* BOTÃO DENTRO DA CAIXA */}
-                  <div style={styles.botaoContainer}>
-                    <button
-                      style={styles.btnCadastrar}
-                      onClick={handleCadastrar}
-                      disabled={loading || registros.filter(r => !r.erro).length === 0}
-                    >
-                      {loading ? (
-                        <>
-                          <span style={styles.spinner}></span>
-                          Cadastrando...
-                        </>
-                      ) : (
-                        <>
-                          ⚡ Cadastrar {registros.filter(r => !r.erro).length} Chaves
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                {/* === TABELA COM ESPECIFICAÇÕES === */}
-                <div style={styles.tabelaContainer}>
-                  <table style={styles.tabela}>
-                    <thead style={styles.thead}>
-                      <tr>
-                        <th style={styles.thNumero}>Número</th>
-                        <th style={styles.thData}>Data</th>
-                        <th style={styles.thStatus}>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {registros.map((r, index) => (
-                        <tr key={index} style={r.erro ? styles.linhaErro : styles.linhaOk}>
-                          <td style={styles.tdNumero}>{r.numero}</td>
-                          <td style={styles.tdData}>{r.data}</td>
-                          <td style={styles.tdStatus}>
-                            {r.erro ? (
-                              <span style={styles.statusErro}>❌ {r.erro}</span>
-                            ) : (
-                              <span style={styles.statusOk}>✅ OK</span>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </>
-            )}
+            </label>
           </div>
+
+          {erroImportacao && (
+            <div style={styles.alertaErro}>
+              <span>⚠️ {erroImportacao}</span>
+            </div>
+          )}
+
+          {registros.length > 0 && (
+            <>
+              {/* === QUANTIDADE + BOTÃO DENTRO DA MESMA CAIXA === */}
+              <div style={styles.caixaQuantidade}>
+                <div style={styles.statsContent}>
+                  <div style={styles.statItem}>
+                    <strong style={styles.statNumber}>{registros.length}</strong>
+                    <span>registros importados</span>
+                  </div>
+                  <div style={styles.validosInvalidos}>
+                    <span style={styles.validos}>
+                      {registros.filter(r => !r.erro).length} válidos
+                    </span>
+                    <span style={styles.invalidos}>
+                      {registros.filter(r => r.erro).length} com erro
+                    </span>
+                  </div>
+                </div>
+
+                {/* BOTÃO DENTRO DA CAIXA */}
+                <div style={styles.botaoContainer}>
+                  <button
+                    style={styles.btnCadastrar}
+                    onClick={handleCadastrar}
+                    disabled={loading || registros.filter(r => !r.erro).length === 0}
+                  >
+                    {loading ? (
+                      <>
+                        <span style={styles.spinner}></span>
+                        Cadastrando...
+                      </>
+                    ) : (
+                      <>
+                        ⚡ Cadastrar {registros.filter(r => !r.erro).length} Chaves
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* === TABELA COM ESPECIFICAÇÕES === */}
+              <div style={styles.tabelaContainer}>
+                <table style={styles.tabela}>
+                  <thead style={styles.thead}>
+                    <tr>
+                      <th style={styles.thNumero}>Número</th>
+                      <th style={styles.thData}>Data</th>
+                      <th style={styles.thStatus}>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {registros.map((r, index) => (
+                      <tr key={index} style={r.erro ? styles.linhaErro : styles.linhaOk}>
+                        <td style={styles.tdNumero}>{r.numero}</td>
+                        <td style={styles.tdData}>{r.data}</td>
+                        <td style={styles.tdStatus}>
+                          {r.erro ? (
+                            <span style={styles.statusErro}>❌ {r.erro}</span>
+                          ) : (
+                            <span style={styles.statusOk}>✅ OK</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 }
-
 // ================================
 // ESTILOS AJUSTADOS
 // ================================
