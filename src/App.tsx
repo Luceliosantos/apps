@@ -175,7 +175,7 @@ export default function App() {
   return (
     <div style={styles.loginContainer}>
       <form style={styles.loginCard} onSubmit={handleLogin}>
-        <h2>Controle de Chaves</h2>
+        <h2>Apps Integrados</h2>
 
         <input
           placeholder="Matrícula"
