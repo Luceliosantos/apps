@@ -136,7 +136,7 @@ export default function App() {
     if (pagina === "geo") {
       return (
         <div style={{ padding: 40 }}>
-          <h1>Acompanhamento GEO</h1>
+          <h1>Acompanhamento GEO em desenvolvimento aguarde...</h1>
 
           <button onClick={() => setPagina("menu")}>
             Voltar
@@ -148,7 +148,7 @@ export default function App() {
     if (pagina === "proorc") {
       return (
         <div style={{ padding: 40 }}>
-          <h1>Proorc 2.0</h1>
+          <h1>Proorc 2.0 em desenvolvimento aguarde...</h1>
 
           <button onClick={() => setPagina("menu")}>
             Voltar
