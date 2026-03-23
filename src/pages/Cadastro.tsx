@@ -269,22 +269,19 @@ export default function Cadastro({
 
 const styles: { [key: string]: React.CSSProperties } = {
 
-  container: {
-    minHeight: "100vh",
-    background: `
-      linear-gradient(
-        rgba(10,31,68,0.75),
-        rgba(10,31,68,0.85)
-      ),
-      url("https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg")
-    `,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-    backgroundAttachment: "fixed",
-    position: "relative",
-    overflow: "hidden",
-  },
+container: {
+  minHeight: "100vh",
+  backgroundImage: `
+    linear-gradient(rgba(10,31,68,0.55), rgba(10,31,68,0.75)),
+    url("https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg")
+  `,
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  backgroundRepeat: "no-repeat",
+  backgroundAttachment: "fixed",
+  position: "relative",
+  overflow: "hidden",
+},
 
   electricParticles: {
     position: "absolute",
@@ -307,7 +304,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 overlay: {
   minHeight: "100vh",
-  background: "rgba(10,31,68,0.35)",
+  background: "transparent",
   padding: "40px 20px",
   color: "white",
   position: "relative",
