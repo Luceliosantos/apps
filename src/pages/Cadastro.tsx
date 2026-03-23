@@ -25,7 +25,6 @@ type Props = {
 export default function Cadastro({
   usuario,
   setPagina,
-  handleLogout,
   atualizarContagem,
 }: Props) {
   const [registros, setRegistros] = useState<Registro[]>([]);
