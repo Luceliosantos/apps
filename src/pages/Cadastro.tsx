@@ -305,15 +305,14 @@ const styles: { [key: string]: React.CSSProperties } = {
     zIndex: 1,
   },
 
-  overlay: {
-    minHeight: "100vh",
-    background:
-      "linear-gradient(180deg, rgba(10,31,68,0.85) 0%, rgba(26,58,114,0.92) 100%)",
-    padding: "40px 20px",
-    color: "white",
-    position: "relative",
-    zIndex: 2,
-  },
+overlay: {
+  minHeight: "100vh",
+  background: "linear-gradient(180deg, rgba(10,31,68,0.55) 0%, rgba(26,58,114,0.65) 100%)",
+  padding: "40px 20px",
+  color: "white",
+  position: "relative",
+  zIndex: 2,
+},
 
   topBar: {
     maxWidth: "1200px",
