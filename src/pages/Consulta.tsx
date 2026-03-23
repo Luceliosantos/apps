@@ -97,17 +97,48 @@ export default function Consulta({ usuario, setPagina }: Props) {
   return (
     <div style={styles.container}>
       <div style={styles.overlay}>
+
         {/* HEADER */}
         <div style={styles.header}>
+
           <div>
             <strong>{usuario.nome}</strong> | {usuario.matricula}
           </div>
-          <button
-            style={{ ...styles.button, ...styles.logoutButton }}
-            onClick={() => setPagina("home")}
-          >
-            Home
-          </button>
+
+          <div style={styles.headerButtons}>
+
+            <button
+              onClick={gerarPDF}
+              disabled={dados.length === 0}
+              style={styles.button}
+            >
+              Gerar pdf
+            </button>
+
+            <button
+              onClick={gerarExcel}
+              disabled={dados.length === 0}
+              style={styles.button}
+            >
+              Gerar xls
+            </button>
+
+            <button
+              onClick={limpar}
+              style={styles.button}
+            >
+              Limpar
+            </button>
+
+            <button
+              style={{ ...styles.button, ...styles.logoutButton }}
+              onClick={() => setPagina("home")}
+            >
+              Home
+            </button>
+
+          </div>
+
         </div>
 
         {/* TÍTULO */}
@@ -118,7 +149,9 @@ export default function Consulta({ usuario, setPagina }: Props) {
 
         {/* PAINEL DE BUSCA */}
         <div style={styles.panel}>
+
           <div style={styles.grupoBusca}>
+
             <select
               value={tipoBusca}
               onChange={(e) => setTipoBusca(e.target.value)}
@@ -147,72 +180,79 @@ export default function Consulta({ usuario, setPagina }: Props) {
               Consultar
             </button>
 
-            <button onClick={chavesDisponiveis} style={styles.button}>
+            <button
+              onClick={chavesDisponiveis}
+              style={styles.button}
+            >
               Chaves disponíveis
             </button>
 
-            <button onClick={chavesEmpenhadas} style={styles.button}>
+            <button
+              onClick={chavesEmpenhadas}
+              style={styles.button}
+            >
               Chaves empenhadas
             </button>
 
-            <button onClick={limpar} style={styles.button}>
-              Limpar
-            </button>
           </div>
 
-          <div style={styles.grupoRelatorio}>
-            <button
-              onClick={gerarPDF}
-              disabled={dados.length === 0}
-              style={styles.button}
-            >
-              Gerar pdf
-            </button>
-
-            <button
-              onClick={gerarExcel}
-              disabled={dados.length === 0}
-              style={styles.button}
-            >
-              Gerar xls
-            </button>
-          </div>
         </div>
 
         {/* TABELA */}
         <div style={styles.tableContainer}>
+
           <table style={styles.table}>
+
             <thead>
               <tr>
                 {dados[0] &&
                   Object.keys(dados[0]).map((coluna) => (
+
                     <th key={coluna} style={styles.th}>
                       {coluna}
                     </th>
+
                   ))}
               </tr>
             </thead>
+
             <tbody>
+
               {dados.map((linha, index) => (
+
                 <tr key={index}>
+
                   {Object.values(linha).map((valor, i) => (
+
                     <td key={i} style={styles.td}>
                       {String(valor)}
                     </td>
+
                   ))}
+
                 </tr>
+
               ))}
+
             </tbody>
+
           </table>
+
         </div>
 
-        {loading && <p style={{ color: "white" }}>Consultando...</p>}
+        {loading && (
+          <p style={{ color: "white" }}>
+            Consultando...
+          </p>
+        )}
+
       </div>
     </div>
   );
 }
 
 const styles: { [key: string]: React.CSSProperties } = {
+
   container: {
     minHeight: "100vh",
     width: "100%",
@@ -224,15 +264,21 @@ const styles: { [key: string]: React.CSSProperties } = {
 
   overlay: {
     minHeight: "100vh",
-    backgroundColor: "rgba(0,0,0,0.65)",
+    backgroundColor: "rgba(0,0,0,0.55)",
     padding: 40,
   },
 
   header: {
     display: "flex",
     justifyContent: "space-between",
+    alignItems: "center",
     color: "white",
     marginBottom: 40,
+  },
+
+  headerButtons: {
+    display: "flex",
+    gap: 10,
   },
 
   titleArea: {
@@ -265,12 +311,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     gap: 15,
   },
 
-  grupoRelatorio: {
-    display: "flex",
-    justifyContent: "flex-end",
-    gap: 15,
-  },
-
   input: {
     padding: 10,
     borderRadius: 8,
@@ -278,17 +318,18 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 
   button: {
-    padding: "10px 12px",
+    padding: "10px 14px",
     height: "42px",
     borderRadius: 8,
-    border: "1px solid rgba(255,255,255,0.3)",
+    border: "1px solid rgba(255,255,255,0.35)",
     backgroundColor: "rgba(255,255,255,0.15)",
     color: "white",
     cursor: "pointer",
+    backdropFilter: "blur(4px)",
   },
 
   logoutButton: {
-    backgroundColor: "rgba(192,57,43,0.6)",
+    backgroundColor: "rgba(192,57,43,0.7)",
   },
 
   tableContainer: {
@@ -315,4 +356,5 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: "1px solid #ccc",
     padding: 6,
   },
+
 };
