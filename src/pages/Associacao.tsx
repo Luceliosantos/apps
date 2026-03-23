@@ -149,9 +149,17 @@ export default function Associacao({
               style={styles.input}
               placeholder="Nota (10 dígitos)"
               value={nota}
-              onChange={(e) =>
-                setNota(e.target.value.replace(/\D/g, ""))
-              }
+              onChange={(e) => {
+                const valor = e.target.value.replace(/\D/g, "");
+                setNota(valor);
+            
+                // NOVO: busca automática quando nota válida
+                if (/^[1-9][0-9]{9}$/.test(valor)) {
+                  buscarLista(valor);
+                } else {
+                  setLista([]);
+                }
+              }}
             />
 
             <input
