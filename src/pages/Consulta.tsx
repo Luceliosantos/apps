@@ -179,7 +179,6 @@ export default function Consulta({ usuario, setPagina }: Props) {
 
       <div style={styles.overlay}>
 
-        {/* HEADER */}
         <div style={styles.header}>
 
           <div>
@@ -239,7 +238,6 @@ export default function Consulta({ usuario, setPagina }: Props) {
 
         </div>
 
-        {/* TITULO */}
         <div style={styles.titleArea}>
 
           <h1 style={styles.title}>
@@ -252,7 +250,6 @@ export default function Consulta({ usuario, setPagina }: Props) {
 
         </div>
 
-        {/* BUSCA */}
         <div style={styles.panel}>
 
           <div style={styles.grupoBusca}>
@@ -338,7 +335,6 @@ export default function Consulta({ usuario, setPagina }: Props) {
 
         </div>
 
-        {/* TABELA */}
         <div style={styles.tableContainer}>
 
           <table style={styles.table}>
@@ -427,12 +423,14 @@ const styles: {
   container: {
 
     minHeight: "100vh",
+
     width: "100%",
 
     backgroundImage:
       "url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg/377c7a2b-edfd-dd1e-c8a6-91d79dc31a39?version=1.0&t=1726774318701')",
 
     backgroundSize: "cover",
+
     backgroundPosition: "center",
 
   },
@@ -466,6 +464,7 @@ const styles: {
   headerButtons: {
 
     display: "flex",
+
     gap: 10,
 
   },
@@ -524,7 +523,7 @@ const styles: {
 
   input: {
 
-    padding: 10,
+    padding: 8,
 
     borderRadius: 8,
 
@@ -535,37 +534,33 @@ const styles: {
 
   button: {
 
-    padding: 18,
+    padding: "6px 10px",
 
-    fontSize: 16,
+    height: "24px",
 
-    borderRadius: 10,
+    fontSize: 13,
+
+    borderRadius: 6,
 
     border:
-      "1px solid rgba(255,255,255,0.25)",
+      "1px solid rgba(255,255,255,0.35)",
 
     backgroundColor:
-      "rgba(255,255,255,0.12)",
+      "rgba(255,255,255,0.15)",
 
     color: "white",
 
     cursor: "pointer",
 
-    backdropFilter:
-      "blur(6px)",
-
     transition:
-      "all 0.3s ease",
+      "all 0.15s ease",
 
   },
 
   logoutButton: {
 
-    border:
-      "1px solid rgba(255,0,0,0.6)",
-
     backgroundColor:
-      "rgba(192,57,43,0.45)",
+      "rgba(192,57,43,0.7)",
 
   },
 
