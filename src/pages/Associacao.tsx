@@ -32,6 +32,7 @@ export default function Associacao({
   const [mensagem, setMensagem] = useState("");
   const [loading, setLoading] = useState(false);
   const [lista, setLista] = useState<Registro[]>([]);
+  const [destacarUltima, setDestacarUltima] = useState(false);
 
   const notaValida = /^[1-9][0-9]{9}$/.test(nota);
   const folhaValida = /^[0-9]+$/.test(folha);
@@ -40,8 +41,7 @@ export default function Associacao({
 
   const formValido =
     notaValida && folhaValida && posteValido && coordenadaValida;
-  const [destacarUltima, setDestacarUltima] = useState(false);
-  
+
   async function buscarLista(n: string) {
     const { data } = await supabase
       .from("db_chaves")
@@ -136,7 +136,7 @@ export default function Associacao({
           </strong>
 
           <button
-            style={styles.btnHome}
+            style={styles.button}
             onClick={() => setPagina("home")}
           >
             Início
@@ -148,23 +148,22 @@ export default function Associacao({
             <h2>Associar Chave</h2>
 
             <input
-                style={styles.input}
-                placeholder="Nota (10 dígitos)"
-                value={nota}
-                onChange={(e) => {
-                  const valor = e.target.value.replace(/\D/g, "");
-                  setNota(valor);
-              
-                  // ao digitar nota → NÃO destacar em verde
-                  setDestacarUltima(false);
-              
-                  if (/^[1-9][0-9]{9}$/.test(valor)) {
-                    buscarLista(valor);
-                  } else {
-                    setLista([]);
-                  }
-                }}
-              />
+              style={styles.input}
+              placeholder="Nota (10 dígitos)"
+              value={nota}
+              onChange={(e) => {
+                const valor = e.target.value.replace(/\D/g, "");
+                setNota(valor);
+
+                setDestacarUltima(false);
+
+                if (/^[1-9][0-9]{9}$/.test(valor)) {
+                  buscarLista(valor);
+                } else {
+                  setLista([]);
+                }
+              }}
+            />
 
             <input
               style={styles.input}
@@ -280,19 +279,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "space-between",
     alignItems: "center",
   },
-  btnHome: {
-    padding: "10px 18px",
-    borderRadius: 8,
-    border: "1px solid rgba(255,255,255,0.4)",
-    background: "rgba(255,255,255,0.15)",
-    color: "white",
-    cursor: "pointer",
-  },
+
   contentRow: {
     display: "flex",
     gap: 40,
     alignItems: "flex-start",
   },
+
   card: {
     width: 400,
     background: "rgba(255,255,255,0.08)",
@@ -300,6 +293,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: 20,
     padding: 30,
   },
+
   listaCard: {
     flex: 1,
     background: "rgba(255,255,255,0.08)",
@@ -307,6 +301,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: 20,
     backdropFilter: "blur(20px)",
   },
+
   input: {
     width: "100%",
     padding: 14,
@@ -314,15 +309,19 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: 10,
     border: "none",
   },
+
   button: {
-    width: "100%",
-    padding: 14,
+    padding: 18,
+    fontSize: 16,
     borderRadius: 10,
-    border: "none",
-    background: "linear-gradient(45deg,#00d4ff,#0099cc)",
-    fontWeight: 600,
+    border: "1px solid rgba(255,255,255,0.25)",
+    backgroundColor: "rgba(255,255,255,0.12)",
+    color: "white",
     cursor: "pointer",
+    backdropFilter: "blur(6px)",
+    transition: "all 0.3s ease",
   },
+
   table: {
     width: "100%",
     borderCollapse: "collapse",
@@ -330,25 +329,29 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: "white",
     color: "black",
   },
+
   th: {
-  border: "1px solid #ccc",
-  padding: "5px 8px",   // antes era 10
-  textAlign: "center",
-  backgroundColor: "#1e3c72",
-  color: "white",
-  fontSize: "13px",
+    border: "1px solid #ccc",
+    padding: "5px 8px",
+    textAlign: "center",
+    backgroundColor: "#1e3c72",
+    color: "white",
+    fontSize: "13px",
   },
-  
+
   td: {
     border: "1px solid #ccc",
-    padding: "5px 8px",   // antes era 10
+    padding: "5px 8px",
     textAlign: "center",
     fontSize: "13px",
   },
+
   linhaUltima: {
-    backgroundColor: "#a3d9a5",  // verde mais forte
+    backgroundColor: "#a3d9a5",
   },
+
   linhaNormal: {},
+
   msgErro: {
     marginTop: 15,
     padding: 12,
@@ -356,6 +359,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: 8,
     color: "#ff6b6b",
   },
+
   msgSucesso: {
     marginTop: 15,
     padding: 12,
