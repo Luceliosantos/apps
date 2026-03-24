@@ -134,12 +134,11 @@ export default function Usuarios({ setPagina }: Props) {
     const { error } =
       await supabase
         .from("db_usuarios_apps")
-        .insert({
-
-          nome:novoNome,
-          matricula:novaMatricula
-
-        });
+.insert({
+  nome:novoNome,
+  matricula:novaMatricula,
+  senha:novaMatricula
+});
 
     if(error){
 
