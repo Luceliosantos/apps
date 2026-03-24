@@ -28,6 +28,31 @@ export default function Consulta({ usuario, setPagina }: Props) {
   const botaoHabilitado =
     tipoBusca !== "" && valorBusca !== "";
 
+  const efeitoHover = {
+    backgroundColor:"rgba(255,255,255,0.25)"
+  };
+
+  const efeitoClick = {
+    transform:"translateY(2px)",
+    boxShadow:"none"
+  };
+
+  function aplicarHover(e:any){
+    Object.assign(e.currentTarget.style, efeitoHover);
+  }
+
+  function removerHover(e:any){
+    e.currentTarget.style.backgroundColor="rgba(255,255,255,0.15)";
+  }
+
+  function aplicarClick(e:any){
+    Object.assign(e.currentTarget.style, efeitoClick);
+  }
+
+  function removerClick(e:any){
+    e.currentTarget.style.transform="translateY(0px)";
+  }
+
   async function consultar() {
 
     setLoading(true);
@@ -173,6 +198,24 @@ export default function Consulta({ usuario, setPagina }: Props) {
 
   }
 
+  function propsBotao(){
+
+    return {
+
+      onMouseEnter:aplicarHover,
+
+      onMouseLeave:removerHover,
+
+      onMouseDown:aplicarClick,
+
+      onMouseUp:removerClick,
+
+      onMouseOut:removerClick
+
+    };
+
+  }
+
   return (
 
     <div style={styles.container}>
@@ -196,6 +239,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
           <div style={styles.headerButtons}>
 
             <button
+              {...propsBotao()}
               onClick={gerarPDF}
               disabled={
                 dados.length === 0
@@ -206,6 +250,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
             </button>
 
             <button
+              {...propsBotao()}
               onClick={gerarExcel}
               disabled={
                 dados.length === 0
@@ -216,6 +261,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
             </button>
 
             <button
+              {...propsBotao()}
               onClick={limpar}
               style={styles.button}
             >
@@ -223,6 +269,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
             </button>
 
             <button
+              {...propsBotao()}
               style={{
                 ...styles.button,
                 ...styles.logoutButton
@@ -306,6 +353,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
             />
 
             <button
+              {...propsBotao()}
               disabled={!botaoHabilitado}
               onClick={consultar}
               style={styles.button}
@@ -314,6 +362,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
             </button>
 
             <button
+              {...propsBotao()}
               onClick={
                 chavesDisponiveis
               }
@@ -323,6 +372,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
             </button>
 
             <button
+              {...propsBotao()}
               onClick={
                 chavesEmpenhadas
               }
@@ -416,198 +466,123 @@ export default function Consulta({ usuario, setPagina }: Props) {
 }
 
 const styles: {
-  [key: string]:
+  [key:string]:
     React.CSSProperties
 } = {
 
-  container: {
+  container:{
 
-    minHeight: "100vh",
-
-    width: "100%",
+    minHeight:"100vh",
 
     backgroundImage:
       "url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg/377c7a2b-edfd-dd1e-c8a6-91d79dc31a39?version=1.0&t=1726774318701')",
 
-    backgroundSize: "cover",
+    backgroundSize:"cover",
 
-    backgroundPosition: "center",
-
-  },
-
-  overlay: {
-
-    minHeight: "100vh",
-
-    backgroundColor:
-      "rgba(0,0,0,0.55)",
-
-    padding: 40,
+    backgroundPosition:"center"
 
   },
 
-  header: {
+  overlay:{
 
-    display: "flex",
+    minHeight:"100vh",
 
-    justifyContent:
-      "space-between",
+    backgroundColor:"rgba(0,0,0,0.55)",
 
-    alignItems: "center",
-
-    color: "white",
-
-    marginBottom: 40,
+    padding:40
 
   },
 
-  headerButtons: {
+  header:{
 
-    display: "flex",
+    display:"flex",
 
-    gap: 10,
+    justifyContent:"space-between",
 
-  },
+    color:"white",
 
-  titleArea: {
-
-    textAlign: "center",
-
-    color: "white",
-
-    marginBottom: 40,
+    marginBottom:40
 
   },
 
-  title: {
-
-    fontSize: 36,
-
-    margin: 0,
-
+  headerButtons:{
+    display:"flex",
+    gap:10
   },
 
-  subtitle: {
-
-    marginTop: 10,
-
-    opacity: 0.85,
-
+  titleArea:{
+    textAlign:"center",
+    color:"white",
+    marginBottom:40
   },
 
-  panel: {
-
-    maxWidth: 1100,
-
-    margin:
-      "0 auto 40px auto",
-
-    display: "flex",
-
-    flexDirection: "column",
-
-    gap: 20,
-
+  title:{
+    fontSize:36,
+    margin:0
   },
 
-  grupoBusca: {
-
-    display: "grid",
-
-    gridTemplateColumns:
-      "repeat(auto-fit,minmax(160px,1fr))",
-
-    gap: 15,
-
+  subtitle:{
+    marginTop:10,
+    opacity:0.85
   },
 
-  input: {
-
-    padding: 8,
-
-    borderRadius: 8,
-
-    border:
-      "1px solid #ccc",
-
+  panel:{
+    maxWidth:1100,
+    margin:"0 auto 40px auto",
+    display:"flex",
+    flexDirection:"column",
+    gap:20
   },
 
-  button: {
-
-    padding: "6px 10px",
-
-    height: "24px",
-
-    fontSize: 13,
-
-    borderRadius: 6,
-
-    border:
-      "1px solid rgba(255,255,255,0.35)",
-
-    backgroundColor:
-      "rgba(255,255,255,0.15)",
-
-    color: "white",
-
-    cursor: "pointer",
-
-    transition:
-      "all 0.15s ease",
-
+  grupoBusca:{
+    display:"grid",
+    gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",
+    gap:15
   },
 
-  logoutButton: {
-
-    backgroundColor:
-      "rgba(192,57,43,0.7)",
-
+  input:{
+    padding:8,
+    borderRadius:8,
+    border:"1px solid #ccc"
   },
 
-  tableContainer: {
-
-    maxWidth: "100%",
-
-    overflowX: "auto",
-
-    backgroundColor: "white",
-
-    borderRadius: 10,
-
-    padding: 20,
-
+  button:{
+    padding:"8px 12px",
+    height:"32px",
+    fontSize:14,
+    borderRadius:8,
+    border:"1px solid rgba(255,255,255,0.35)",
+    backgroundColor:"rgba(255,255,255,0.15)",
+    color:"white",
+    cursor:"pointer",
+    boxShadow:"0 2px 4px rgba(0,0,0,0.3)"
   },
 
-  table: {
-
-    width: "100%",
-
-    borderCollapse:
-      "collapse",
-
-    textAlign: "center",
-
+  logoutButton:{
+    backgroundColor:"rgba(192,57,43,0.7)"
   },
 
-  th: {
-
-    border:
-      "1px solid #ccc",
-
-    padding: 8,
-
-    backgroundColor:
-      "#f2f2f2",
-
+  tableContainer:{
+    backgroundColor:"white",
+    borderRadius:10,
+    padding:20
   },
 
-  td: {
-
-    border:
-      "1px solid #ccc",
-
-    padding: 6,
-
+  table:{
+    width:"100%",
+    borderCollapse:"collapse",
+    textAlign:"center"
   },
+
+  th:{
+    border:"1px solid #ccc",
+    padding:8,
+    backgroundColor:"#f2f2f2"
+  },
+
+  td:{
+    border:"1px solid #ccc",
+    padding:6
+  }
 
 };
