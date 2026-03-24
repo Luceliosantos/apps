@@ -46,7 +46,8 @@ export default function Usuarios({ setPagina }: Props) {
 
     const { data: tiposData } = await supabase
       .from("db_usuarios_apps_tipos_permissoes")
-      .select("sistema, tipo");
+      .select("sistema, tipo")
+      .order("tipo");
 
     const { data: permissoesData } = await supabase
       .from("db_usuarios_apps_permissoes")
@@ -55,6 +56,7 @@ export default function Usuarios({ setPagina }: Props) {
     setUsuarios(usuariosData || []);
     setTipos(tiposData || []);
 
+    // monta mapa de permissões existentes
     const mapa:any = {};
 
     permissoesData?.forEach(p => {
@@ -79,24 +81,23 @@ export default function Usuarios({ setPagina }: Props) {
     tipo:string
   ){
 
-    const copia = {...permissoes};
+    setPermissoes(prev => ({
 
-    if(!copia[id_usuario]){
+      ...prev,
 
-      copia[id_usuario] = {};
+      [id_usuario]:{
 
-    }
+        ...prev[id_usuario],
 
-    copia[id_usuario][sistema] = tipo;
+        [sistema]:tipo
 
-    setPermissoes(copia);
+      }
+
+    }));
 
   }
 
   async function salvarUsuario(id_usuario:string){
-
-    const permissoesUsuario =
-      permissoes[id_usuario];
 
     for(const sistema of sistemas){
 
@@ -109,7 +110,7 @@ export default function Usuarios({ setPagina }: Props) {
           sistema,
 
           tipo:
-            permissoesUsuario?.[sistema]
+            permissoes[id_usuario]?.[sistema]
             || "bloqueado"
 
         });
@@ -225,13 +226,8 @@ export default function Usuarios({ setPagina }: Props) {
 
               {sistemas.map(s => (
 
-                <th
-                  key={s}
-                  style={styles.th}
-                >
-
+                <th key={s} style={styles.th}>
                   {s}
-
                 </th>
 
               ))}
@@ -258,53 +254,47 @@ export default function Usuarios({ setPagina }: Props) {
                   {u.matricula}
                 </td>
 
-                {sistemas.map(sistema => (
+                {sistemas.map(sistema => {
 
-                  <td
-                    key={sistema}
-                    style={styles.td}
-                  >
+                  const opcoes =
+                    tipos.filter(
 
-                    <select
+                      t =>
 
-                      value={
-                        permissoes[u.id]?.[sistema]
-                        || "bloqueado"
-                      }
+                      t.sistema === sistema
 
-                      onChange={(e) =>
+                    );
 
-                        alterarPermissao(
+                  return (
 
-                          u.id,
+                    <td key={sistema} style={styles.td}>
 
-                          sistema,
+                      <select
 
-                          e.target.value
+                        value={
+                          permissoes[u.id]?.[sistema]
+                          || "bloqueado"
+                        }
 
-                        )
+                        onChange={(e) =>
 
-                      }
+                          alterarPermissao(
 
-                      style={styles.select}
+                            u.id,
 
-                    >
+                            sistema,
 
-                      <option value="bloqueado">
-                        bloqueado
-                      </option>
+                            e.target.value
 
-                      {tipos
+                          )
 
-                        .filter(
+                        }
 
-                          t =>
+                        style={styles.select}
 
-                          t.sistema === sistema
+                      >
 
-                        )
-
-                        .map(t => (
+                        {opcoes.map(t => (
 
                           <option
                             key={t.tipo}
@@ -317,11 +307,13 @@ export default function Usuarios({ setPagina }: Props) {
 
                         ))}
 
-                    </select>
+                      </select>
 
-                  </td>
+                    </td>
 
-                ))}
+                  );
+
+                })}
 
                 <td style={styles.td}>
 
@@ -360,125 +352,74 @@ export default function Usuarios({ setPagina }: Props) {
 const styles:{[key:string]:React.CSSProperties} = {
 
   container:{
-
     padding:40,
-
     display:"flex",
-
     justifyContent:"center"
-
   },
 
   card:{
-
     width:"100%",
-
     maxWidth:1100,
-
     background:"white",
-
     padding:30,
-
     borderRadius:12,
-
-    boxShadow:
-      "0 4px 20px rgba(0,0,0,0.15)"
-
+    boxShadow:"0 4px 20px rgba(0,0,0,0.15)"
   },
 
   topBar:{
-
     display:"flex",
-
-    justifyContent:
-      "space-between",
-
+    justifyContent:"space-between",
     marginBottom:20
-
   },
 
   novoUsuario:{
-
     marginBottom:30
-
   },
 
   row:{
-
     display:"flex",
-
     gap:10,
-
     marginTop:10
-
   },
 
   input:{
-
     padding:8,
-
     borderRadius:6,
-
     border:"1px solid #ccc",
-
     flex:1
-
   },
 
   table:{
-
     width:"100%",
-
     borderCollapse:"collapse",
-
     textAlign:"center"
-
   },
 
   th:{
-
     border:"1px solid #ccc",
-
     padding:10,
-
     background:"#1e3c72",
-
     color:"white"
-
   },
 
   td:{
-
     border:"1px solid #ccc",
-
     padding:8
-
   },
 
   select:{
-
     padding:5,
-
     borderRadius:5,
-
     border:"1px solid #ccc"
-
   },
 
   button:{
-
     padding:"8px 14px",
-
     borderRadius:8,
-
     border:"1px solid #1e3c72",
-
     background:"#1e3c72",
-
     color:"white",
-
     cursor:"pointer"
-
   }
 
 };
