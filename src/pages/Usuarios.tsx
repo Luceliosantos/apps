@@ -76,26 +76,26 @@ export default function Usuarios({ setPagina }: Props) {
   }
 
   function alterarPermissao(
-    id_usuario:string,
-    sistema:string,
-    tipo:string
-  ){
+  id_usuario:string,
+  sistema:string,
+  tipo:string
+){
 
-    setPermissoes(prev => ({
+  setPermissoes((prev:any) => ({
 
-      ...prev,
+    ...prev,
 
-      [String(id_usuario)]:{
+    [String(id_usuario)]:{
 
-        ...prev[String(id_usuario)],
+      ...prev?.[String(id_usuario)],
 
-        [sistema]:tipo
+      [sistema]:tipo
 
-      }
+    }
 
-    }));
+  }));
 
-  }
+}
 
   async function salvarUsuario(id_usuario:string){
 
