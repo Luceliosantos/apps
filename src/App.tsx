@@ -11,6 +11,7 @@ type Usuario = {
   id: string;
   matricula: string;
   nome: string;
+  tipo: string;
 };
 
 export type Pagina =
@@ -142,18 +143,29 @@ export default function App() {
 
 
 
-const usuarioLogado = {
-  ...data[0],
-  tipo: "user"
-};
+    const usuarioLogado: Usuario = {
 
-setUsuario(usuarioLogado);
+      id: data[0].id,
 
-if(usuarioLogado.id){
+      matricula: data[0].matricula,
 
- await carregarPermissoes(usuarioLogado.id);
+      nome: data[0].nome,
 
-}
+      tipo: "user"
+
+    };
+
+
+
+    setUsuario(usuarioLogado);
+
+
+
+    if(usuarioLogado.id){
+
+      await carregarPermissoes(usuarioLogado.id);
+
+    }
 
 
 
