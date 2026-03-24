@@ -56,18 +56,18 @@ export default function Usuarios({ setPagina }: Props) {
     setUsuarios(usuariosData || []);
     setTipos(tiposData || []);
 
-    // monta mapa de permissões existentes
+    // monta mapa correto das permissões existentes
     const mapa:any = {};
 
-    permissoesData?.forEach(p => {
+    (permissoesData || []).forEach(p => {
 
-      if (!mapa[p.id_usuario]) {
+      const id = String(p.id_usuario);
 
-        mapa[p.id_usuario] = {};
-
+      if (!mapa[id]) {
+        mapa[id] = {};
       }
 
-      mapa[p.id_usuario][p.sistema] = p.tipo;
+      mapa[id][p.sistema] = p.tipo;
 
     });
 
@@ -85,9 +85,9 @@ export default function Usuarios({ setPagina }: Props) {
 
       ...prev,
 
-      [id_usuario]:{
+      [String(id_usuario)]:{
 
-        ...prev[id_usuario],
+        ...prev[String(id_usuario)],
 
         [sistema]:tipo
 
@@ -110,7 +110,7 @@ export default function Usuarios({ setPagina }: Props) {
           sistema,
 
           tipo:
-            permissoes[id_usuario]?.[sistema]
+            permissoes[String(id_usuario)]?.[sistema]
             || "bloqueado"
 
         });
@@ -272,7 +272,7 @@ export default function Usuarios({ setPagina }: Props) {
                       <select
 
                         value={
-                          permissoes[u.id]?.[sistema]
+                          permissoes[String(u.id)]?.[sistema]
                           || "bloqueado"
                         }
 
