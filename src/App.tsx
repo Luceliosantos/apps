@@ -8,10 +8,9 @@ import HomeMenu from "./pages/HomeMenu";
 import Usuarios from "./pages/Usuarios";
 
 type Usuario = {
+  id: string;
   matricula: string;
   nome: string;
-  tipo: string;
-  id?: string;
 };
 
 export type Pagina =
@@ -143,21 +142,15 @@ export default function App() {
 
 
 
-    const usuarioLogado = data[0];
+const usuarioLogado = data[0];
 
+setUsuario(usuarioLogado);
 
+if(usuarioLogado.id){
 
-    setUsuario(usuarioLogado);
+ await carregarPermissoes(usuarioLogado.id);
 
-
-
-    // carrega permissões do usuário
-
-    if(usuarioLogado.id){
-
-      await carregarPermissoes(usuarioLogado.id);
-
-    }
+}
 
 
 
