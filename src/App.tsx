@@ -23,17 +23,24 @@ export type Pagina =
   | "consulta"
   | "geo"
   | "proorc"
-  | "usuarios";
+  | "usuarios"
+  | "alterarSenha";
 
 export default function App() {
 
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [matricula, setMatricula] = useState("");
   const [senha, setSenha] = useState("");
+  const [novaSenha, setNovaSenha] = useState("");
+  const [confirmaSenha, setConfirmaSenha] = useState("");
+
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
+
   const [pagina, setPagina] = useState<Pagina>("login");
+
   const [chavesDisponiveis, setChavesDisponiveis] = useState<number>(0);
+
   const [permissoes,setPermissoes] = useState<any[]>([]);
 
   async function atualizarContagem() {
@@ -49,11 +56,7 @@ export default function App() {
 
   useEffect(() => {
 
-    if (usuario) {
-
-      atualizarContagem();
-
-    }
+    if (usuario) atualizarContagem();
 
   }, [usuario]);
 
@@ -77,7 +80,7 @@ export default function App() {
 
     const { data, error } = await supabase
       .from("db_usuarios_apps")
-      .select("id, matricula, nome")
+      .select("id, matricula, nome, trocar_senha")
       .eq("matricula", matricula)
       .eq("senha", senha)
       .single();
@@ -105,27 +108,117 @@ export default function App() {
 
     await atualizarContagem();
 
-    setPagina("menu");
+    if (data.trocar_senha) {
+
+      setPagina("alterarSenha");
+
+    } else {
+
+      setPagina("menu");
+
+    }
 
     setLoading(false);
 
   }
 
-  function handleLogout() {
+  async function salvarNovaSenha(){
+
+    if(!novaSenha){
+
+      setErro("Informe a nova senha");
+      return;
+
+    }
+
+    if(novaSenha !== confirmaSenha){
+
+      setErro("As senhas não coincidem");
+      return;
+
+    }
+
+    await supabase
+      .from("db_usuarios_apps")
+      .update({
+
+        senha:novaSenha,
+        trocar_senha:false
+
+      })
+      .eq("id", usuario?.id);
+
+    setNovaSenha("");
+    setConfirmaSenha("");
+
+    setPagina("menu");
+
+  }
+
+  function handleLogout(){
 
     setUsuario(null);
     setPermissoes([]);
+
     setMatricula("");
     setSenha("");
+
     setPagina("login");
 
   }
 
-  if (usuario) {
+  if(usuario){
 
-    if (pagina === "menu") {
+    if(pagina === "alterarSenha"){
 
-      return (
+      return(
+
+        <div style={styles.loginContainer}>
+
+          <div style={styles.loginCard}>
+
+            <h2>Alterar senha</h2>
+
+            <input
+              type="password"
+              placeholder="Nova senha"
+              style={styles.input}
+              value={novaSenha}
+              onChange={(e)=>setNovaSenha(e.target.value)}
+            />
+
+            <input
+              type="password"
+              placeholder="Confirmar senha"
+              style={styles.input}
+              value={confirmaSenha}
+              onChange={(e)=>setConfirmaSenha(e.target.value)}
+            />
+
+            {erro && (
+              <p style={{color:"#c0392b"}}>
+                {erro}
+              </p>
+            )}
+
+            <button
+              style={styles.loginButton}
+              onClick={salvarNovaSenha}
+            >
+              Salvar senha
+            </button>
+
+          </div>
+
+        </div>
+
+      );
+
+    }
+
+    if(pagina === "menu"){
+
+      return(
 
         <HomeMenu
           usuario={usuario}
@@ -138,9 +231,9 @@ export default function App() {
 
     }
 
-    if (pagina === "usuarios") {
+    if(pagina === "usuarios"){
 
-      return (
+      return(
 
         <Usuarios
           setPagina={setPagina}
@@ -150,9 +243,9 @@ export default function App() {
 
     }
 
-    if (pagina === "cadastro") {
+    if(pagina === "cadastro"){
 
-      return (
+      return(
 
         <Cadastro
           usuario={usuario}
@@ -166,9 +259,9 @@ export default function App() {
 
     }
 
-    if (pagina === "associacao") {
+    if(pagina === "associacao"){
 
-      return (
+      return(
 
         <Associacao
           usuario={usuario}
@@ -180,9 +273,9 @@ export default function App() {
 
     }
 
-    if (pagina === "consulta") {
+    if(pagina === "consulta"){
 
-      return (
+      return(
 
         <Consulta
           usuario={usuario}
@@ -193,17 +286,19 @@ export default function App() {
 
     }
 
-    if (pagina === "geo") {
+    if(pagina === "geo"){
 
-      return (
+      return(
 
-        <div style={{ padding: 40 }}>
+        <div style={{padding:40}}>
 
-          <h1>Acompanhamento GEO em desenvolvimento aguarde...</h1>
+          <h1>
+            Acompanhamento GEO em desenvolvimento
+          </h1>
 
           <button
             style={styles.menuButton}
-            onClick={() => setPagina("menu")}
+            onClick={()=>setPagina("menu")}
           >
             Voltar
           </button>
@@ -214,17 +309,19 @@ export default function App() {
 
     }
 
-    if (pagina === "proorc") {
+    if(pagina === "proorc"){
 
-      return (
+      return(
 
-        <div style={{ padding: 40 }}>
+        <div style={{padding:40}}>
 
-          <h1>Proorc 2.0 em desenvolvimento aguarde...</h1>
+          <h1>
+            Proorc 2.0 em desenvolvimento
+          </h1>
 
           <button
             style={styles.menuButton}
-            onClick={() => setPagina("menu")}
+            onClick={()=>setPagina("menu")}
           >
             Voltar
           </button>
@@ -235,7 +332,7 @@ export default function App() {
 
     }
 
-    return (
+    return(
 
       <CadastroChaves
         usuario={usuario}
@@ -248,11 +345,14 @@ export default function App() {
 
   }
 
-  return (
+  return(
 
     <div style={styles.loginContainer}>
 
-      <form style={styles.loginCard} onSubmit={handleLogin}>
+      <form
+        style={styles.loginCard}
+        onSubmit={handleLogin}
+      >
 
         <h2>Apps Integrados</h2>
 
@@ -260,7 +360,7 @@ export default function App() {
           placeholder="Matrícula"
           style={styles.input}
           value={matricula}
-          onChange={(e) => setMatricula(e.target.value)}
+          onChange={(e)=>setMatricula(e.target.value)}
         />
 
         <input
@@ -268,16 +368,22 @@ export default function App() {
           placeholder="Senha"
           style={styles.input}
           value={senha}
-          onChange={(e) => setSenha(e.target.value)}
+          onChange={(e)=>setSenha(e.target.value)}
         />
 
-        {erro && <p style={{ color: "#c0392b" }}>{erro}</p>}
+        {erro && (
+          <p style={{color:"#c0392b"}}>
+            {erro}
+          </p>
+        )}
 
         <button
           style={styles.loginButton}
           type="submit"
         >
-          {loading ? "Entrando..." : "Entrar"}
+          {loading
+            ? "Entrando..."
+            : "Entrar"}
         </button>
 
       </form>
@@ -288,49 +394,83 @@ export default function App() {
 
 }
 
-const styles: { [key: string]: React.CSSProperties } = {
+const styles:{[key:string]:React.CSSProperties}={
 
-  loginContainer: {
-    height: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    background: "linear-gradient(to bottom, #1e3c72, #2a5298)",
+  loginContainer:{
+
+    height:"100vh",
+
+    display:"flex",
+
+    justifyContent:"center",
+
+    alignItems:"center",
+
+    background:
+      "linear-gradient(to bottom,#1e3c72,#2a5298)"
+
   },
 
-  loginCard: {
-    background: "white",
-    padding: 40,
-    borderRadius: 12,
-    width: 350,
-    textAlign: "center",
+  loginCard:{
+
+    background:"white",
+
+    padding:40,
+
+    borderRadius:12,
+
+    width:350,
+
+    textAlign:"center"
+
   },
 
-  input: {
-    width: "100%",
-    padding: 12,
-    marginBottom: 15,
-    borderRadius: 8,
-    border: "1px solid #ccc",
+  input:{
+
+    width:"100%",
+
+    padding:12,
+
+    marginBottom:15,
+
+    borderRadius:8,
+
+    border:"1px solid #ccc"
+
   },
 
-  loginButton: {
-    padding: "10px 18px",
-    borderRadius: 8,
-    border: "none",
-    background: "#1e3c72",
-    color: "white",
-    cursor: "pointer",
-    width: "100%",
+  loginButton:{
+
+    padding:"10px 18px",
+
+    borderRadius:8,
+
+    border:"none",
+
+    background:"#1e3c72",
+
+    color:"white",
+
+    cursor:"pointer",
+
+    width:"100%"
+
   },
 
   menuButton:{
+
     padding:10,
+
     borderRadius:8,
+
     border:"none",
+
     background:"#1e3c72",
+
     color:"white",
+
     cursor:"pointer"
+
   }
 
 };
