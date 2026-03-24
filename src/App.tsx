@@ -79,6 +79,7 @@ export default function App() {
       .from("db_usuarios_apps")
       .select("id, matricula, nome")
       .eq("matricula", matricula)
+      .eq("senha", senha)
       .single();
 
     if (error || !data) {
@@ -119,10 +120,6 @@ export default function App() {
     setPagina("login");
 
   }
-
-  // ============================
-  // USUÁRIO LOGADO
-  // ============================
 
   if (usuario) {
 
@@ -205,7 +202,7 @@ export default function App() {
           <h1>Acompanhamento GEO em desenvolvimento aguarde...</h1>
 
           <button
-            style={styles.button}
+            style={styles.menuButton}
             onClick={() => setPagina("menu")}
           >
             Voltar
@@ -226,7 +223,7 @@ export default function App() {
           <h1>Proorc 2.0 em desenvolvimento aguarde...</h1>
 
           <button
-            style={styles.button}
+            style={styles.menuButton}
             onClick={() => setPagina("menu")}
           >
             Voltar
@@ -250,10 +247,6 @@ export default function App() {
     );
 
   }
-
-  // ============================
-  // LOGIN
-  // ============================
 
   return (
 
@@ -281,7 +274,7 @@ export default function App() {
         {erro && <p style={{ color: "#c0392b" }}>{erro}</p>}
 
         <button
-          style={styles.button}
+          style={styles.loginButton}
           type="submit"
         >
           {loading ? "Entrando..." : "Entrar"}
@@ -321,16 +314,23 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: "1px solid #ccc",
   },
 
-  button: {
-    padding: 18,
-    fontSize: 16,
-    borderRadius: 10,
-    border: "1px solid rgba(255,255,255,0.25)",
-    backgroundColor: "rgba(255,255,255,0.12)",
+  loginButton: {
+    padding: "10px 18px",
+    borderRadius: 8,
+    border: "none",
+    background: "#1e3c72",
     color: "white",
     cursor: "pointer",
-    backdropFilter: "blur(6px)",
-    transition: "all 0.3s ease",
+    width: "100%",
   },
+
+  menuButton:{
+    padding:10,
+    borderRadius:8,
+    border:"none",
+    background:"#1e3c72",
+    color:"white",
+    cursor:"pointer"
+  }
 
 };
