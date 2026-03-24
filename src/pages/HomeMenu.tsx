@@ -7,10 +7,10 @@ type Props = {
   permissoes:any[];
 
   usuario: {
-    matricula: string;
-    nome: string;
-    tipo: string;
-  };
+ id?: string;
+ matricula: string;
+ nome: string;
+};
 };
 
 export default function HomeMenu({
