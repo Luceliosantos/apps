@@ -142,7 +142,10 @@ export default function App() {
 
 
 
-const usuarioLogado = data[0];
+const usuarioLogado = {
+  ...data[0],
+  tipo: "user"
+};
 
 setUsuario(usuarioLogado);
 
