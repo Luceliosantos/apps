@@ -3,6 +3,9 @@ import { Pagina } from "../App";
 type Props = {
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
   handleLogout: () => void;
+
+  permissoes:any[];
+
   usuario: {
     matricula: string;
     nome: string;
@@ -13,8 +16,20 @@ type Props = {
 export default function HomeMenu({
   setPagina,
   handleLogout,
-  usuario
+  usuario,
+  permissoes
 }: Props) {
+
+  // verifica admin global
+  const adminGlobal = permissoes?.some(
+
+    p =>
+
+    p.sistema === "global" &&
+
+    p.tipo === "admin"
+
+  );
 
   return (
 
@@ -61,6 +76,17 @@ export default function HomeMenu({
           >
             Proorc 2.0
           </button>
+
+          {adminGlobal && (
+
+            <button
+              style={styles.button}
+              onClick={() => setPagina("usuarios")}
+            >
+              Usuarios
+            </button>
+
+          )}
 
         </div>
 
