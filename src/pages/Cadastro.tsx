@@ -148,8 +148,11 @@ export default function Cadastro({
           </div>
 
           <div style={styles.acoesUsuario}>
-            <button style={styles.btnPrimario} onClick={() => setPagina("home")}>
-              <span>🏠 Home</span>
+            <button
+              style={styles.button}
+              onClick={() => setPagina("home")}
+            >
+              Home
             </button>
           </div>
         </div>
@@ -203,24 +206,23 @@ export default function Cadastro({
 
                   <div style={styles.botaoContainer}>
                     <button
-                      style={styles.btnCadastrar}
+                      style={{
+                        ...styles.button,
+                        opacity:
+                          loading ||
+                          registros.filter(r => !r.erro).length === 0
+                            ? 0.5
+                            : 1,
+                      }}
                       onClick={handleCadastrar}
                       disabled={
                         loading ||
                         registros.filter(r => !r.erro).length === 0
                       }
                     >
-                      {loading ? (
-                        <>
-                          <span style={styles.spinner}></span>
-                          Cadastrando...
-                        </>
-                      ) : (
-                        <>
-                          ⚡ Cadastrar{" "}
-                          {registros.filter(r => !r.erro).length} Chaves
-                        </>
-                      )}
+                      {loading
+                        ? "Cadastrando..."
+                        : `Cadastrar ${registros.filter(r => !r.erro).length} Chaves`}
                     </button>
                   </div>
                 </div>
@@ -247,10 +249,10 @@ export default function Cadastro({
                           <td style={styles.tdStatus}>
                             {r.erro ? (
                               <span style={styles.statusErro}>
-                                ❌ {r.erro}
+                                {r.erro}
                               </span>
                             ) : (
-                              <span style={styles.statusOk}>✅ OK</span>
+                              <span style={styles.statusOk}>OK</span>
                             )}
                           </td>
                         </tr>
@@ -269,215 +271,46 @@ export default function Cadastro({
 
 const styles: { [key: string]: React.CSSProperties } = {
 
-container: {
-  minHeight: "100vh",
-  backgroundImage: `
-    linear-gradient(rgba(10,31,68,0.55), rgba(10,31,68,0.75)),
-    url("https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg")
-  `,
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-  backgroundRepeat: "no-repeat",
-  backgroundAttachment: "fixed",
-  position: "relative",
-  overflow: "hidden",
-},
+  container: {
+    minHeight: "100vh",
+    backgroundImage: `
+      linear-gradient(rgba(10,31,68,0.55), rgba(10,31,68,0.75)),
+      url("https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg")
+    `,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    backgroundAttachment: "fixed",
+    position: "relative",
+    overflow: "hidden",
+  },
 
   electricParticles: {
     position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundImage: `
-      radial-gradient(2px 2px at 20px 30px, #fff, transparent),
-      radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
-      radial-gradient(1px 1px at 90px 40px, #fff, transparent),
-      radial-gradient(1px 1px at 130px 80px, rgba(255,200,0,0.6), transparent)
-    `,
-    backgroundRepeat: "repeat",
-    backgroundSize: "200px 100px",
-    animation: "sparkle 20s linear infinite",
+    inset: 0,
     pointerEvents: "none",
-    zIndex: 1,
   },
 
-overlay: {
-  minHeight: "100vh",
-  background: "transparent",
-  padding: "40px 20px",
-  color: "white",
-  position: "relative",
-  zIndex: 2,
-},
+  overlay: {
+    minHeight: "100vh",
+    padding: "40px 20px",
+    color: "white",
+    position: "relative",
+    zIndex: 2,
+  },
 
   topBar: {
     maxWidth: "1200px",
     margin: "0 auto 60px",
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "flex-start",
-    gap: "20px",
-    padding: "0 20px",
   },
 
-  headerUsuario: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-  },
+  headerUsuario: {},
 
   linhaUsuario: {
     fontSize: 22,
     fontWeight: 700,
-    color: "#ffffff",
-    textShadow: "0 0 10px rgba(0,212,255,0.6)",
-  },
-
-  caixaQuantidade: {
-    background: "rgba(0,212,255,0.15)",
-    border: "2px solid rgba(0,212,255,0.4)",
-    borderRadius: "20px",
-    padding: "30px",
-    marginTop: "20px",
-    marginBottom: "20px",
-  },
-
-  statsContent: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "25px",
-    flexWrap: "wrap",
-    gap: "20px",
-  },
-
-  botaoContainer: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-  },
-
-  tabelaContainer: {
-    overflowX: "auto",
-    borderRadius: "16px",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
-  },
-
-  tabela: {
-    width: "100%",
-    borderCollapse: "collapse",
-    background: "white",
-    borderRadius: "16px",
-    overflow: "hidden",
-    border: "2px solid #e5e7eb",
-  },
-
-  thead: {
-    background: "linear-gradient(135deg, #1e3c72, #2a4a92)",
-  },
-
-  thNumero: {
-    width: "15%",
-    padding: "20px 12px",
-    color: "white",
-    fontWeight: "700",
-    fontSize: "14px",
-    textAlign: "center",
-    textTransform: "uppercase",
-    letterSpacing: "0.5px",
-    borderRight: "2px solid #4b6cb7",
-  },
-
-  thData: {
-    width: "15%",
-    padding: "20px 12px",
-    color: "white",
-    fontWeight: "700",
-    fontSize: "14px",
-    textAlign: "center",
-    textTransform: "uppercase",
-    letterSpacing: "0.5px",
-    borderRight: "2px solid #4b6cb7",
-  },
-
-  thStatus: {
-    width: "70%",
-    padding: "20px 16px",
-    color: "white",
-    fontWeight: "700",
-    fontSize: "14px",
-    textAlign: "center",
-    textTransform: "uppercase",
-    letterSpacing: "0.5px",
-  },
-
-  tdNumero: {
-    padding: "16px 12px",
-    borderRight: "1px solid #e5e7eb",
-    fontSize: "14px",
-    fontWeight: "600",
-    color: "#1f2937",
-    textAlign: "center",
-  },
-
-  tdData: {
-    padding: "16px 12px",
-    borderRight: "1px solid #e5e7eb",
-    fontSize: "14px",
-    fontWeight: "600",
-    color: "#1f2937",
-    textAlign: "center",
-  },
-
-  tdStatus: {
-    padding: "16px",
-    fontSize: "14px",
-    fontWeight: "600",
-    color: "#1f2937",
-    textAlign: "center",
-  },
-
-  linhaErro: {
-    background: "#fee2e2",
-  },
-
-  linhaOk: {
-    background: "rgba(34,197,94,0.05)",
-  },
-
-  statusErro: {
-    color: "#dc2626",
-    fontWeight: "700",
-  },
-
-  statusOk: {
-    color: "#059669",
-    fontWeight: "700",
-  },
-
-  btnPrimario: {
-    padding: "12px 24px",
-    background:
-      "linear-gradient(45deg, rgba(0,212,255,0.2), rgba(0,212,255,0.1))",
-    border: "2px solid rgba(0,212,255,0.5)",
-    borderRadius: "12px",
-    color: "white",
-    fontWeight: "600",
-    cursor: "pointer",
-    backdropFilter: "blur(10px)",
-  },
-
-  btnCadastrar: {
-    padding: "16px 32px",
-    background: "linear-gradient(45deg, #00d4ff, #0099cc)",
-    border: "none",
-    borderRadius: "12px",
-    color: "white",
-    fontSize: "16px",
-    fontWeight: "700",
-    cursor: "pointer",
-    width: "100%",
   },
 
   mainContent: {
@@ -488,54 +321,99 @@ overlay: {
   cardPrincipal: {
     background: "rgba(255,255,255,0.06)",
     backdropFilter: "blur(20px)",
-    border: "1px solid rgba(255,255,255,0.1)",
     borderRadius: "24px",
     padding: "40px",
-    boxShadow: "0 25px 50px rgba(0,0,0,0.3)",
   },
 
-  inputFile: {
-    display: "none",
-  },
+  inputFile: { display: "none" },
 
   labelUpload: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     padding: "40px",
-    border: "3px dashed rgba(0,212,255,0.5)",
+    border: "2px dashed rgba(255,255,255,0.4)",
     borderRadius: "20px",
     cursor: "pointer",
-    background: "rgba(0,212,255,0.05)",
-    textAlign: "center",
   },
 
   uploadIcon: {
-    fontSize: "48px",
-    marginBottom: "20px",
+    fontSize: 48,
+  },
+
+  caixaQuantidade: {
+    marginTop: 20,
+  },
+
+  statsContent: {
+    marginBottom: 20,
+  },
+
+  botaoContainer: {
+    display: "flex",
+    justifyContent: "center",
+  },
+
+  tabelaContainer: {
+    overflowX: "auto",
+    marginTop: 20,
+  },
+
+  tabela: {
+    width: "100%",
+    background: "white",
+    color: "black",
+  },
+
+  thead: {
+    background: "#1e3c72",
+    color: "white",
+  },
+
+  thNumero: { padding: 10 },
+  thData: { padding: 10 },
+  thStatus: { padding: 10 },
+
+  tdNumero: { padding: 10 },
+  tdData: { padding: 10 },
+  tdStatus: { padding: 10 },
+
+  linhaErro: {
+    background: "#ffdede",
+  },
+
+  linhaOk: {},
+
+  statusErro: {
+    color: "red",
+  },
+
+  statusOk: {
+    color: "green",
   },
 
   alertaErro: {
-    background: "rgba(231,76,60,0.15)",
-    border: "1px solid rgba(231,76,60,0.4)",
-    borderRadius: "12px",
-    padding: "16px 24px",
-    marginBottom: "24px",
+    marginTop: 20,
     color: "#ff6b6b",
   },
 
   statNumber: {
-    fontSize: "36px",
-    fontWeight: "800",
+    fontSize: 28,
   },
 
-  validos: {
-    color: "#00ff88",
-    fontWeight: "600",
+  validos: { color: "#00ff88" },
+  invalidos: { color: "#ff6b6b" },
+
+  button: {
+    padding: 18,
+    fontSize: 16,
+    borderRadius: 10,
+    border: "1px solid rgba(255,255,255,0.25)",
+    backgroundColor: "rgba(255,255,255,0.12)",
+    color: "white",
+    cursor: "pointer",
+    backdropFilter: "blur(6px)",
+    transition: "all 0.3s ease",
   },
 
-  invalidos: {
-    color: "#ff6b6b",
-    fontWeight: "600",
-  },
 };
