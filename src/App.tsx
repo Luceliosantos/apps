@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
+
 import CadastroChaves from "./pages/CadastroChaves";
 import Cadastro from "./pages/Cadastro";
 import Associacao from "./pages/Associacao";
@@ -29,10 +30,12 @@ export type Pagina =
 export default function App() {
 
   const [usuario, setUsuario] = useState<Usuario | null>(null);
+
   const [matricula, setMatricula] = useState("");
   const [senha, setSenha] = useState("");
+
   const [novaSenha, setNovaSenha] = useState("");
-  const [confirmaSenha, setConfirmaSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState("");
 
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
@@ -124,16 +127,16 @@ export default function App() {
 
   async function salvarNovaSenha(){
 
-    if(!novaSenha){
+    if (!novaSenha) {
 
       setErro("Informe a nova senha");
       return;
 
     }
 
-    if(novaSenha !== confirmaSenha){
+    if (novaSenha !== confirmarSenha) {
 
-      setErro("As senhas não coincidem");
+      setErro("As senhas não conferem");
       return;
 
     }
@@ -142,14 +145,14 @@ export default function App() {
       .from("db_usuarios_apps")
       .update({
 
-        senha:novaSenha,
-        trocar_senha:false
+        senha: novaSenha,
+        trocar_senha: false
 
       })
       .eq("id", usuario?.id);
 
     setNovaSenha("");
-    setConfirmaSenha("");
+    setConfirmarSenha("");
 
     setPagina("menu");
 
@@ -158,6 +161,7 @@ export default function App() {
   function handleLogout(){
 
     setUsuario(null);
+
     setPermissoes([]);
 
     setMatricula("");
@@ -166,6 +170,10 @@ export default function App() {
     setPagina("login");
 
   }
+
+  // ============================
+  // USUÁRIO LOGADO
+  // ============================
 
   if(usuario){
 
@@ -191,14 +199,16 @@ export default function App() {
               type="password"
               placeholder="Confirmar senha"
               style={styles.input}
-              value={confirmaSenha}
-              onChange={(e)=>setConfirmaSenha(e.target.value)}
+              value={confirmarSenha}
+              onChange={(e)=>setConfirmarSenha(e.target.value)}
             />
 
             {erro && (
+
               <p style={{color:"#c0392b"}}>
                 {erro}
               </p>
+
             )}
 
             <button
@@ -345,6 +355,10 @@ export default function App() {
 
   }
 
+  // ============================
+  // LOGIN
+  // ============================
+
   return(
 
     <div style={styles.loginContainer}>
@@ -372,9 +386,11 @@ export default function App() {
         />
 
         {erro && (
+
           <p style={{color:"#c0392b"}}>
             {erro}
           </p>
+
         )}
 
         <button
