@@ -204,7 +204,10 @@ export default function App() {
 
           <h1>Acompanhamento GEO em desenvolvimento aguarde...</h1>
 
-          <button onClick={() => setPagina("menu")}>
+          <button
+            style={styles.button}
+            onClick={() => setPagina("menu")}
+          >
             Voltar
           </button>
 
@@ -222,7 +225,10 @@ export default function App() {
 
           <h1>Proorc 2.0 em desenvolvimento aguarde...</h1>
 
-          <button onClick={() => setPagina("menu")}>
+          <button
+            style={styles.button}
+            onClick={() => setPagina("menu")}
+          >
             Voltar
           </button>
 
@@ -274,10 +280,11 @@ export default function App() {
 
         {erro && <p style={{ color: "#c0392b" }}>{erro}</p>}
 
-        <button style={styles.loginButton} type="submit">
-
+        <button
+          style={styles.button}
+          type="submit"
+        >
           {loading ? "Entrando..." : "Entrar"}
-
         </button>
 
       </form>
@@ -314,14 +321,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: "1px solid #ccc",
   },
 
-  loginButton: {
-    width: "100%",
-    padding: 14,
-    backgroundColor: "#1e3c72",
+  button: {
+    padding: 18,
+    fontSize: 16,
+    borderRadius: 10,
+    border: "1px solid rgba(255,255,255,0.25)",
+    backgroundColor: "rgba(255,255,255,0.12)",
     color: "white",
-    border: "none",
-    borderRadius: 8,
     cursor: "pointer",
+    backdropFilter: "blur(6px)",
+    transition: "all 0.3s ease",
   },
 
 };
