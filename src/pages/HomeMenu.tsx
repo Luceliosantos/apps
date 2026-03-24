@@ -7,10 +7,10 @@ type Props = {
   permissoes:any[];
 
   usuario: {
- id?: string;
- matricula: string;
- nome: string;
-};
+    id?: string;
+    matricula: string;
+    nome: string;
+  };
 };
 
 export default function HomeMenu({
@@ -20,16 +20,16 @@ export default function HomeMenu({
   permissoes
 }: Props) {
 
-  // verifica admin global
-  const adminGlobal = permissoes?.some(
+  const adminGlobal =
+    permissoes?.some(
 
-    p =>
+      p =>
 
-    p.sistema === "global" &&
+      p.sistema === "global" &&
 
-    p.tipo === "admin"
+      p.tipo === "admin"
 
-  );
+    );
 
   return (
 
@@ -38,16 +38,21 @@ export default function HomeMenu({
       <div style={styles.overlay}>
 
         <div style={styles.header}>
+
           <div>
             <strong>{usuario.nome}</strong> | {usuario.matricula}
           </div>
 
           <button
-            style={styles.logout}
+            style={{
+              ...styles.button,
+              ...styles.logoutButton
+            }}
             onClick={handleLogout}
           >
             Sair
           </button>
+
         </div>
 
         <div style={styles.titleArea}>
@@ -120,15 +125,6 @@ const styles: { [key:string]: React.CSSProperties } = {
     marginBottom:60
   },
 
-  logout:{
-    padding:"8px 16px",
-    borderRadius:8,
-    border:"1px solid rgba(255,255,255,0.3)",
-    background:"rgba(192,57,43,0.6)",
-    color:"white",
-    cursor:"pointer"
-  },
-
   titleArea:{
     textAlign:"center",
     marginBottom:40
@@ -142,13 +138,20 @@ const styles: { [key:string]: React.CSSProperties } = {
   },
 
   button:{
-    padding:20,
-    borderRadius:12,
-    border:"1px solid rgba(255,255,255,0.3)",
-    background:"rgba(255,255,255,0.15)",
+    padding:18,
+    fontSize:16,
+    borderRadius:10,
+    border:"1px solid rgba(255,255,255,0.25)",
+    backgroundColor:"rgba(255,255,255,0.12)",
     color:"white",
-    fontSize:18,
-    cursor:"pointer"
+    cursor:"pointer",
+    backdropFilter:"blur(6px)",
+    transition:"all 0.3s ease"
+  },
+
+  logoutButton:{
+    border:"1px solid rgba(255,0,0,0.6)",
+    backgroundColor:"rgba(192,57,43,0.45)"
   }
 
 };
