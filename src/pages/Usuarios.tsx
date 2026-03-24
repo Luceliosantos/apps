@@ -100,7 +100,7 @@ export default function Usuarios({ setPagina }: Props) {
       <h2>Administração de Usuários</h2>
 
       <button
-        style={styles.voltar}
+        style={styles.button}
         onClick={() => setPagina("menu")}
       >
         Voltar
@@ -206,16 +206,22 @@ const styles:{[key:string]:React.CSSProperties} = {
     padding:40
   },
 
-  voltar:{
-    marginBottom:20,
-    padding:"8px 16px",
-    borderRadius:6,
-    cursor:"pointer"
-  },
-
   table:{
     borderCollapse:"collapse",
     width:"100%"
+  },
+
+  button:{
+    padding:18,
+    fontSize:16,
+    borderRadius:10,
+    border:"1px solid rgba(255,255,255,0.25)",
+    backgroundColor:"rgba(255,255,255,0.12)",
+    color:"black",
+    cursor:"pointer",
+    backdropFilter:"blur(6px)",
+    transition:"all 0.3s ease",
+    marginBottom:20
   }
 
 };
