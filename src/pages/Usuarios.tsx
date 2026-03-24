@@ -174,7 +174,6 @@ export default function Usuarios({ setPagina }: Props) {
 
         </div>
 
-        {/* cadastro */}
         <div style={styles.novoUsuario}>
 
           <h3>Novo Usuário</h3>
@@ -210,7 +209,6 @@ export default function Usuarios({ setPagina }: Props) {
 
         </div>
 
-        {/* tabela */}
         <table style={styles.table}>
 
           <thead>
@@ -291,6 +289,10 @@ export default function Usuarios({ setPagina }: Props) {
                       style={styles.select}
 
                     >
+
+                      <option value="bloqueado">
+                        bloqueado
+                      </option>
 
                       {tipos
 
