@@ -11,6 +11,7 @@ type Props = {
     nome: string;
     tipo: string;
   };
+  permissoes:any[];
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
 };
 
@@ -18,7 +19,42 @@ type Registro = {
   [key: string]: any;
 };
 
-export default function Consulta({ usuario, setPagina }: Props) {
+export default function Consulta({
+  usuario,
+  permissoes,
+  setPagina
+}: Props) {
+
+  function temPermissao(
+    sistema:string,
+    tipos:string[]
+  ){
+
+    const p =
+      permissoes.find(
+        x => x.sistema === sistema
+      );
+
+    if(!p) return false;
+
+    if(p.tipo === "admin") return true;
+
+    return tipos.includes(p.tipo);
+
+  }
+
+  if(
+    !temPermissao(
+      "chaves",
+      ["leitura","gravacao","comissionador","cad_ch"]
+    )
+  ){
+
+    setPagina("home");
+
+    return null;
+
+  }
 
   const [tipoBusca, setTipoBusca] = useState("");
   const [valorBusca, setValorBusca] = useState("");
@@ -53,7 +89,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
     e.currentTarget.style.transform="translateY(0px)";
   }
 
-  async function consultar() {
+  async function consultar(){
 
     setLoading(true);
 
@@ -62,7 +98,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
         .from("db_chaves")
         .select("*");
 
-    if (tipoBusca === "ns") {
+    if(tipoBusca === "ns"){
 
       query =
         query.eq(
@@ -71,7 +107,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
         );
 
     }
-    else if (tipoBusca === "numero") {
+    else if(tipoBusca === "numero"){
 
       query =
         query.eq(
@@ -80,7 +116,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
         );
 
     }
-    else if (tipoBusca === "dt_ass_db") {
+    else if(tipoBusca === "dt_ass_db"){
 
       query =
         query.eq(
@@ -89,7 +125,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
         );
 
     }
-    else {
+    else{
 
       query =
         query.ilike(
@@ -102,7 +138,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
     const { data, error } =
       await query;
 
-    if (!error && data) {
+    if(!error && data){
 
       setDados(data);
 
@@ -112,7 +148,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
 
   }
 
-  async function chavesEmpenhadas() {
+  async function chavesEmpenhadas(){
 
     const { data } =
       await supabase
@@ -124,11 +160,11 @@ export default function Consulta({ usuario, setPagina }: Props) {
           null
         );
 
-    if (data) setDados(data);
+    if(data) setDados(data);
 
   }
 
-  async function chavesDisponiveis() {
+  async function chavesDisponiveis(){
 
     const { data } =
       await supabase
@@ -139,16 +175,14 @@ export default function Consulta({ usuario, setPagina }: Props) {
           null
         );
 
-    if (data) setDados(data);
+    if(data) setDados(data);
 
   }
 
-  function gerarExcel() {
+  function gerarExcel(){
 
     const worksheet =
-      XLSX.utils.json_to_sheet(
-        dados
-      );
+      XLSX.utils.json_to_sheet(dados);
 
     const workbook =
       XLSX.utils.book_new();
@@ -166,16 +200,16 @@ export default function Consulta({ usuario, setPagina }: Props) {
 
   }
 
-  function gerarPDF() {
+  function gerarPDF(){
 
-    if (dados.length === 0) return;
+    if(dados.length === 0) return;
 
     const doc =
       new jsPDF();
 
-    autoTable(doc, {
+    autoTable(doc,{
 
-      head: [
+      head:[
         Object.keys(dados[0])
       ],
 
@@ -190,10 +224,12 @@ export default function Consulta({ usuario, setPagina }: Props) {
 
   }
 
-  function limpar() {
+  function limpar(){
 
     setDados([]);
+
     setTipoBusca("");
+
     setValorBusca("");
 
   }
@@ -241,9 +277,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
             <button
               {...propsBotao()}
               onClick={gerarPDF}
-              disabled={
-                dados.length === 0
-              }
+              disabled={dados.length === 0}
               style={styles.button}
             >
               Gerar pdf
@@ -252,9 +286,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
             <button
               {...propsBotao()}
               onClick={gerarExcel}
-              disabled={
-                dados.length === 0
-              }
+              disabled={dados.length === 0}
               style={styles.button}
             >
               Gerar xls
@@ -303,7 +335,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
 
             <select
               value={tipoBusca}
-              onChange={(e) =>
+              onChange={(e)=>
                 setTipoBusca(
                   e.target.value
                 )
@@ -344,7 +376,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
                   : "text"
               }
               value={valorBusca}
-              onChange={(e) =>
+              onChange={(e)=>
                 setValorBusca(
                   e.target.value
                 )
@@ -363,9 +395,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
 
             <button
               {...propsBotao()}
-              onClick={
-                chavesDisponiveis
-              }
+              onClick={chavesDisponiveis}
               style={styles.button}
             >
               Chaves disponíveis
@@ -373,9 +403,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
 
             <button
               {...propsBotao()}
-              onClick={
-                chavesEmpenhadas
-              }
+              onClick={chavesEmpenhadas}
               style={styles.button}
             >
               Chaves empenhadas
@@ -396,9 +424,7 @@ export default function Consulta({ usuario, setPagina }: Props) {
                 {dados[0] &&
 
                   Object
-                    .keys(
-                      dados[0]
-                    )
+                    .keys(dados[0])
                     .map(coluna => (
 
                       <th
@@ -465,44 +491,26 @@ export default function Consulta({ usuario, setPagina }: Props) {
 
 }
 
-const styles: {
-  [key:string]:
-    React.CSSProperties
-} = {
+const styles:{[key:string]:React.CSSProperties} = {
 
   container:{
-
     minHeight:"100vh",
-
-    backgroundImage:
-      "url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg/377c7a2b-edfd-dd1e-c8a6-91d79dc31a39?version=1.0&t=1726774318701')",
-
+    backgroundImage:"url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg/377c7a2b-edfd-dd1e-c8a6-91d79dc31a39?version=1.0&t=1726774318701')",
     backgroundSize:"cover",
-
     backgroundPosition:"center"
-
   },
 
   overlay:{
-
     minHeight:"100vh",
-
     backgroundColor:"rgba(0,0,0,0.55)",
-
     padding:40
-
   },
 
   header:{
-
     display:"flex",
-
     justifyContent:"space-between",
-
     color:"white",
-
     marginBottom:40
-
   },
 
   headerButtons:{
