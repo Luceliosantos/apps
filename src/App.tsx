@@ -125,11 +125,31 @@ export default function App() {
 
   }
 
+  function validarSenhaForte(senha:string){
+
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
+
+    return regex.test(senha);
+
+  }
+
   async function salvarNovaSenha(){
+
+    setErro("");
 
     if (!novaSenha) {
 
       setErro("Informe a nova senha");
+      return;
+
+    }
+
+    if (!validarSenhaForte(novaSenha)) {
+
+      setErro(
+        "Senha deve ter no mínimo 8 caracteres, incluindo maiúscula, minúscula, número e caractere especial."
+      );
       return;
 
     }
@@ -141,7 +161,7 @@ export default function App() {
 
     }
 
-    await supabase
+    const { error } = await supabase
       .from("db_usuarios_apps")
       .update({
 
@@ -150,6 +170,13 @@ export default function App() {
 
       })
       .eq("id", usuario?.id);
+
+    if (error) {
+
+      setErro("Erro ao salvar nova senha.");
+      return;
+
+    }
 
     setNovaSenha("");
     setConfirmarSenha("");
