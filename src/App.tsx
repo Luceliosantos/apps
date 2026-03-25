@@ -99,7 +99,7 @@ export default function App() {
     setErro("");
     setLoading(true);
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("db_usuarios_apps")
       .select("id, matricula, nome, trocar_senha")
       .eq("matricula", matricula)
@@ -384,13 +384,14 @@ export default function App() {
 
       return(
 
-        <Cadastro
-          usuario={usuario}
-          chavesDisponiveis={chavesDisponiveis}
-          atualizarContagem={atualizarContagem}
-          setPagina={setPagina}
-          handleLogout={handleLogout}
-        />
+<Cadastro
+ usuario={usuario}
+ permissoes={permissoes}
+ chavesDisponiveis={chavesDisponiveis}
+ atualizarContagem={atualizarContagem}
+ setPagina={setPagina}
+ handleLogout={handleLogout}
+/>
 
       );
 
@@ -400,11 +401,12 @@ export default function App() {
 
       return(
 
-        <Associacao
-          usuario={usuario}
-          atualizarContagem={atualizarContagem}
-          setPagina={setPagina}
-        />
+<Associacao
+ usuario={usuario}
+ permissoes={permissoes}
+ atualizarContagem={atualizarContagem}
+ setPagina={setPagina}
+/>
 
       );
 
@@ -414,10 +416,11 @@ export default function App() {
 
       return(
 
-        <Consulta
-          usuario={usuario}
-          setPagina={setPagina}
-        />
+<Consulta
+ usuario={usuario}
+ permissoes={permissoes}
+ setPagina={setPagina}
+/>
 
       );
 
