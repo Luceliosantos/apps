@@ -36,24 +36,28 @@ export default function HomeMenu({
 
   }
 
+  // acesso módulo chaves
   const acessoChaves =
     temPermissao(
       "chaves",
       ["leitura","gravacao","comissionador","cad_ch"]
     );
 
+  // acesso geo
   const acessoGeo =
     temPermissao(
       "acomp_geo",
       ["leitura"]
     );
 
+  // acesso proorc
   const acessoProorc =
     temPermissao(
       "proorc",
-      ["leitura"]
+      ["leitura","gravacao"]
     );
 
+  // admin global
   const adminGlobal =
     temPermissao(
       "global",
