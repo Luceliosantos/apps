@@ -95,34 +95,29 @@ export default function Usuarios({ setPagina }: Props) {
 
   async function salvarUsuario(id_usuario:string){
 
-    for(const sistema of sistemas){
+  for(const sistema of sistemas){
 
-      const tipo =
-        permissoes[String(id_usuario)]?.[sistema]
-        || (sistema === "global"
-          ? "usuario"
-          : "bloqueado");
+    const tipo =
+      permissoes[String(id_usuario)]?.[sistema]
+      || (sistema === "global"
+        ? "usuario"
+        : "bloqueado");
 
-      await supabase
-        .from("db_usuarios_apps_permissoes")
-        .upsert(
-          {
-            id_usuario,
-            sistema,
-            tipo
-          },
-          {
-            onConflict:"id_usuario,sistema"
-          }
-        );
-
-    }
-
-    alert("Permissões salvas");
-
-    carregarDados();
+    await supabase
+      .from("db_usuarios_apps_permissoes")
+      .upsert({
+        id_usuario,
+        sistema,
+        tipo
+      });
 
   }
+
+  alert("Permissões salvas");
+
+  await carregarDados();
+
+}
 
   async function excluirUsuario(id_usuario:string){
 
