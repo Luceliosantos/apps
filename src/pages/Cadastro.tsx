@@ -58,12 +58,10 @@ export default function Cadastro({
   }
 
   if(
-
     !temPermissao(
       "chaves",
       ["cad_ch"]
     )
-
   ){
 
     setPagina("home");
@@ -78,19 +76,17 @@ export default function Cadastro({
 
   const [loading, setLoading] = useState(false);
 
-
   function dataHojeBR(){
 
     return new Date().toLocaleDateString("pt-BR");
 
   }
 
-
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>){
+  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
 
     const file = e.target.files?.[0];
 
-    if(!file) return;
+    if (!file) return;
 
     const reader = new FileReader();
 
@@ -98,36 +94,29 @@ export default function Cadastro({
 
       const data = evt.target?.result;
 
-      if(!data) return;
+      if (!data) return;
 
-      const workbook =
-        XLSX.read(data,{ type:"binary" });
+      const workbook = XLSX.read(data, { type: "binary" });
 
-      const sheetName =
-        workbook.SheetNames[0];
+      const sheetName = workbook.SheetNames[0];
 
-      const worksheet =
-        workbook.Sheets[sheetName];
+      const worksheet = workbook.Sheets[sheetName];
 
-      const json:any[][] =
-        XLSX.utils.sheet_to_json(
-          worksheet,
-          { header:1 }
-        );
+      const json: any[][] = XLSX.utils.sheet_to_json(worksheet, {
+        header: 1,
+      });
 
-      const novos:Registro[] = [];
+      const novos: Registro[] = [];
 
-      for(let i=1;i<json.length;i++){
+      for (let i = 1; i < json.length; i++) {
 
-        const numero =
-          String(json[i][0] ?? "").trim();
+        const numero = String(json[i][0] ?? "").trim();
 
-        let erro="";
+        let erro = "";
 
-        if(!/^\d{6}$/.test(numero)){
+        if (!/^\d{6}$/.test(numero)) {
 
-          erro =
-            "Número deve ter 6 dígitos numéricos";
+          erro = "Número deve ter 6 dígitos numéricos";
 
         }
 
@@ -135,9 +124,9 @@ export default function Cadastro({
 
           numero,
 
-          data:dataHojeBR(),
+          data: dataHojeBR(),
 
-          erro:erro || undefined
+          erro: erro || undefined,
 
         });
 
@@ -153,8 +142,7 @@ export default function Cadastro({
 
   }
 
-
-  async function handleCadastrar(){
+  async function handleCadastrar() {
 
     setErroImportacao("");
 
@@ -162,21 +150,19 @@ export default function Cadastro({
 
     let possuiErro = false;
 
-    for(let i=0;i<registrosAtualizados.length;i++){
+    for (let i = 0; i < registrosAtualizados.length; i++) {
 
       const r = registrosAtualizados[i];
 
-      const { data } =
-        await supabase
-          .from("db_chaves")
-          .select("id")
-          .eq("numero", r.numero)
-          .maybeSingle();
+      const { data } = await supabase
+        .from("db_chaves")
+        .select("id")
+        .eq("numero", r.numero)
+        .maybeSingle();
 
-      if(data){
+      if (data) {
 
-        registrosAtualizados[i].erro =
-          "Chave já existente no banco";
+        registrosAtualizados[i].erro = "Chave já existente no banco";
 
         possuiErro = true;
 
@@ -186,7 +172,7 @@ export default function Cadastro({
 
     setRegistros(registrosAtualizados);
 
-    if(possuiErro){
+    if (possuiErro) {
 
       setErroImportacao(
         "Existem registros inválidos ou duplicados. Corrija antes de cadastrar."
@@ -198,21 +184,17 @@ export default function Cadastro({
 
     setLoading(true);
 
-    for(const r of registrosAtualizados){
+    for (const r of registrosAtualizados) {
 
-      await supabase
-        .from("db_chaves")
-        .insert([{
+      await supabase.from("db_chaves").insert([
+        {
+          numero: r.numero,
 
-          numero:r.numero,
+          dt_disp: new Date().toISOString().split("T")[0],
 
-          dt_disp:new Date()
-            .toISOString()
-            .split("T")[0],
-
-          usu_cad_db:usuario.matricula
-
-        }]);
+          usu_cad_db: usuario.matricula,
+        },
+      ]);
 
     }
 
@@ -225,7 +207,6 @@ export default function Cadastro({
     setLoading(false);
 
   }
-
 
   return (
 
@@ -241,11 +222,7 @@ export default function Cadastro({
 
             <div style={styles.linhaUsuario}>
 
-              {usuario.matricula}
-
-              {" - "}
-
-              {usuario.nome}
+              {usuario.matricula} - {usuario.nome}
 
             </div>
 
@@ -264,51 +241,29 @@ export default function Cadastro({
 
         </div>
 
-
         <div style={styles.mainContent}>
 
           <div style={styles.cardPrincipal}>
 
-
             <div style={styles.uploadArea}>
 
               <input
-
                 type="file"
-
                 accept=".xls,.xlsx"
-
                 onChange={handleFile}
-
                 style={styles.inputFile}
-
                 id="file-upload"
-
               />
 
-              <label
-
-                htmlFor="file-upload"
-
-                style={styles.labelUpload}
-
-              >
+              <label htmlFor="file-upload" style={styles.labelUpload}>
 
                 <div style={styles.uploadIcon}>📁</div>
 
                 <div>
 
-                  <strong>
+                  <strong>Selecionar Arquivo Excel</strong>
 
-                    Selecionar Arquivo Excel
-
-                  </strong>
-
-                  <p>
-
-                    Arraste ou clique para importar
-
-                  </p>
+                  <p>Arraste ou clique para importar (.xls, .xlsx)</p>
 
                 </div>
 
@@ -316,24 +271,21 @@ export default function Cadastro({
 
             </div>
 
-
             {erroImportacao && (
 
               <div style={styles.alertaErro}>
 
-                ⚠️ {erroImportacao}
+                <span>⚠️ {erroImportacao}</span>
 
               </div>
 
             )}
-
 
             {registros.length > 0 && (
 
               <>
 
                 <div style={styles.caixaQuantidade}>
-
 
                   <div style={styles.statsContent}>
 
@@ -345,14 +297,9 @@ export default function Cadastro({
 
                       </strong>
 
-                      <span>
-
-                        registros importados
-
-                      </span>
+                      <span> registros importados</span>
 
                     </div>
-
 
                     <div style={styles.validosInvalidos}>
 
@@ -369,7 +316,6 @@ export default function Cadastro({
                         {" "}válidos
 
                       </span>
-
 
                       <span style={styles.invalidos}>
 
@@ -389,7 +335,6 @@ export default function Cadastro({
 
                   </div>
 
-
                   <div style={styles.botaoContainer}>
 
                     <button
@@ -400,17 +345,14 @@ export default function Cadastro({
 
                         opacity:
 
-                          loading
-
-                          ||
+                          loading ||
 
                           registros.filter(
                             r => !r.erro
                           ).length === 0
 
-                          ? 0.5
-
-                          : 1
+                            ? 0.5
+                            : 1,
 
                       }}
 
@@ -418,9 +360,7 @@ export default function Cadastro({
 
                       disabled={
 
-                        loading
-
-                        ||
+                        loading ||
 
                         registros.filter(
                           r => !r.erro
@@ -433,14 +373,12 @@ export default function Cadastro({
                       {
 
                         loading
-
-                        ? "Cadastrando..."
-
-                        : `Cadastrar ${
-                            registros.filter(
-                              r => !r.erro
-                            ).length
-                          } Chaves`
+                          ? "Cadastrando..."
+                          : `Cadastrar ${
+                              registros.filter(
+                                r => !r.erro
+                              ).length
+                            } Chaves`
 
                       }
 
@@ -450,7 +388,6 @@ export default function Cadastro({
 
                 </div>
 
-
                 <div style={styles.tabelaContainer}>
 
                   <table style={styles.tabela}>
@@ -459,50 +396,32 @@ export default function Cadastro({
 
                       <tr>
 
-                        <th style={styles.thNumero}>
-                          Número
-                        </th>
+                        <th style={styles.thNumero}>Número</th>
 
-                        <th style={styles.thData}>
-                          Data
-                        </th>
+                        <th style={styles.thData}>Data</th>
 
-                        <th style={styles.thStatus}>
-                          Status
-                        </th>
+                        <th style={styles.thStatus}>Status</th>
 
                       </tr>
 
                     </thead>
 
-
                     <tbody>
 
-                      {registros.map((r,index)=>(
+                      {registros.map((r, index) => (
 
                         <tr
-
                           key={index}
-
                           style={
-
                             r.erro
-
-                            ? styles.linhaErro
-
-                            : styles.linhaOk
-
+                              ? styles.linhaErro
+                              : styles.linhaOk
                           }
-
                         >
 
-                          <td style={styles.tdNumero}>
-                            {r.numero}
-                          </td>
+                          <td style={styles.tdNumero}>{r.numero}</td>
 
-                          <td style={styles.tdData}>
-                            {r.data}
-                          </td>
+                          <td style={styles.tdData}>{r.data}</td>
 
                           <td style={styles.tdStatus}>
 
@@ -510,23 +429,17 @@ export default function Cadastro({
 
                               r.erro
 
-                              ? (
+                                ? (
+                                  <span style={styles.statusErro}>
+                                    {r.erro}
+                                  </span>
+                                )
 
-                                <span style={styles.statusErro}>
-
-                                  {r.erro}
-
-                                </span>
-
-                              )
-
-                              : (
-
-                                <span style={styles.statusOk}>
-                                  OK
-                                </span>
-
-                              )
+                                : (
+                                  <span style={styles.statusOk}>
+                                    OK
+                                  </span>
+                                )
 
                             }
 
@@ -557,3 +470,154 @@ export default function Cadastro({
   );
 
 }
+
+
+const styles: { [key: string]: React.CSSProperties } = {
+
+  container: {
+    minHeight: "100vh",
+    backgroundImage: `
+      linear-gradient(rgba(10,31,68,0.55), rgba(10,31,68,0.75)),
+      url("https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg")
+    `,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    backgroundAttachment: "fixed",
+    position: "relative",
+    overflow: "hidden",
+  },
+
+  electricParticles: {
+    position: "absolute",
+    inset: 0,
+    pointerEvents: "none",
+  },
+
+  overlay: {
+    minHeight: "100vh",
+    padding: "40px 20px",
+    color: "white",
+    position: "relative",
+    zIndex: 2,
+  },
+
+  topBar: {
+    maxWidth: "1200px",
+    margin: "0 auto 60px",
+    display: "flex",
+    justifyContent: "space-between",
+  },
+
+  headerUsuario: {},
+
+  linhaUsuario: {
+    fontSize: 22,
+    fontWeight: 700,
+  },
+
+  mainContent: {
+    maxWidth: "1200px",
+    margin: "0 auto",
+  },
+
+  cardPrincipal: {
+    background: "rgba(255,255,255,0.06)",
+    backdropFilter: "blur(20px)",
+    borderRadius: "24px",
+    padding: "40px",
+  },
+
+  inputFile: { display: "none" },
+
+  labelUpload: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: "40px",
+    border: "2px dashed rgba(255,255,255,0.4)",
+    borderRadius: "20px",
+    cursor: "pointer",
+  },
+
+  uploadIcon: {
+    fontSize: 48,
+  },
+
+  caixaQuantidade: {
+    marginTop: 20,
+  },
+
+  statsContent: {
+    marginBottom: 20,
+  },
+
+  botaoContainer: {
+    display: "flex",
+    justifyContent: "center",
+  },
+
+  tabelaContainer: {
+    overflowX: "auto",
+    marginTop: 20,
+  },
+
+  tabela: {
+    width: "100%",
+    background: "white",
+    color: "black",
+  },
+
+  thead: {
+    background: "#1e3c72",
+    color: "white",
+  },
+
+  thNumero: { padding: 10 },
+  thData: { padding: 10 },
+  thStatus: { padding: 10 },
+
+  tdNumero: { padding: 10 },
+  tdData: { padding: 10 },
+  tdStatus: { padding: 10 },
+
+  linhaErro: {
+    background: "#ffdede",
+  },
+
+  linhaOk: {},
+
+  statusErro: {
+    color: "red",
+  },
+
+  statusOk: {
+    color: "green",
+  },
+
+  alertaErro: {
+    marginTop: 20,
+    color: "#ff6b6b",
+  },
+
+  statNumber: {
+    fontSize: 28,
+  },
+
+  validos: { color: "#00ff88" },
+
+  invalidos: { color: "#ff6b6b" },
+
+  button: {
+    padding: 18,
+    fontSize: 16,
+    borderRadius: 10,
+    border: "1px solid rgba(255,255,255,0.25)",
+    backgroundColor: "rgba(255,255,255,0.12)",
+    color: "white",
+    cursor: "pointer",
+    backdropFilter: "blur(6px)",
+    transition: "all 0.3s ease",
+  },
+
+};
