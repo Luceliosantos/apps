@@ -15,6 +15,7 @@ type Props = {
     nome: string;
     tipo: string;
   };
+  permissoes:any[];
   chavesDisponiveis: number;
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
   handleLogout: () => void;
@@ -23,397 +24,226 @@ type Props = {
 
 export default function Cadastro({
   usuario,
+  permissoes,
   setPagina,
   atualizarContagem,
 }: Props) {
+
+  function temPermissao(sistema:string, tipos:string[]){
+
+    const p = permissoes.find(x => x.sistema === sistema);
+
+    if(!p) return false;
+
+    if(p.tipo === "admin") return true;
+
+    return tipos.includes(p.tipo);
+
+  }
+
+  if(!temPermissao("chaves",["cad_ch"])){
+
+    setPagina("home");
+
+    return null;
+
+  }
+
   const [registros, setRegistros] = useState<Registro[]>([]);
   const [erroImportacao, setErroImportacao] = useState("");
   const [loading, setLoading] = useState(false);
 
+  function dataHojeBR(){
+
+    return new Date().toLocaleDateString("pt-BR");
+
+  }
+
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+
     const file = e.target.files?.[0];
+
     if (!file) return;
 
     const reader = new FileReader();
 
     reader.onload = (evt) => {
+
       const data = evt.target?.result;
+
       if (!data) return;
 
       const workbook = XLSX.read(data, { type: "binary" });
+
       const sheetName = workbook.SheetNames[0];
+
       const worksheet = workbook.Sheets[sheetName];
 
-      const json: any[][] = XLSX.utils.sheet_to_json(worksheet, {
-        header: 1,
-      });
+      const json: any[][] = XLSX.utils.sheet_to_json(worksheet,{ header: 1 });
 
       const novos: Registro[] = [];
 
       for (let i = 1; i < json.length; i++) {
+
         const numero = String(json[i][0] ?? "").trim();
-        const dataExcel = json[i][1];
 
         let erro = "";
 
         if (!/^\d{6}$/.test(numero)) {
-          erro = "Número deve ter 6 dígitos numéricos";
-        }
 
-        let dataFormatada = "";
+          erro = "Número deve ter 6 dígitos";
 
-        if (!dataExcel) {
-          erro = "Data inválida ou vazia";
-        } else {
-          if (typeof dataExcel === "number") {
-            dataFormatada = XLSX.SSF.format("dd/mm/yyyy", dataExcel);
-          } else {
-            dataFormatada = new Date(dataExcel).toLocaleDateString("pt-BR");
-          }
         }
 
         novos.push({
+
           numero,
-          data: dataFormatada,
+
+          data: dataHojeBR(),
+
           erro: erro || undefined,
+
         });
+
       }
 
       setRegistros(novos);
+
       setErroImportacao("");
+
     };
 
     reader.readAsBinaryString(file);
+
   }
 
-  async function handleCadastrar() {
+  async function handleCadastrar(){
+
     setErroImportacao("");
 
     const registrosAtualizados = [...registros];
+
     let possuiErro = false;
 
-    for (let i = 0; i < registrosAtualizados.length; i++) {
+    for (let i = 0; i < registrosAtualizados.length; i++){
+
       const r = registrosAtualizados[i];
 
       const { data } = await supabase
+
         .from("db_chaves")
+
         .select("id")
+
         .eq("numero", r.numero)
+
         .maybeSingle();
 
-      if (data) {
-        registrosAtualizados[i].erro = "Chave já existente no banco";
+      if (data){
+
+        registrosAtualizados[i].erro = "Chave já existe";
+
         possuiErro = true;
+
       }
+
     }
 
     setRegistros(registrosAtualizados);
 
-    if (possuiErro) {
-      setErroImportacao(
-        "Existem registros inválidos ou duplicados. Corrija antes de cadastrar."
-      );
+    if (possuiErro){
+
+      setErroImportacao("Existem duplicidades.");
+
       return;
+
     }
 
     setLoading(true);
 
-    for (const r of registrosAtualizados) {
-      await supabase.from("db_chaves").insert([
-        {
-          numero: r.numero,
-          dt_disp: r.data.split("/").reverse().join("-"),
-          usu_cad_db: usuario.matricula,
-        },
-      ]);
+    for (const r of registrosAtualizados){
+
+      await supabase.from("db_chaves").insert([{
+
+        numero: r.numero,
+
+        dt_disp: new Date().toISOString().split("T")[0],
+
+        usu_cad_db: usuario.matricula,
+
+      }]);
+
     }
 
-    alert("Chaves cadastradas com sucesso!");
+    alert("Chaves cadastradas!");
 
     setRegistros([]);
+
     atualizarContagem();
+
     setLoading(false);
+
   }
 
   return (
+
     <div style={styles.container}>
-      <div style={styles.electricParticles}></div>
 
       <div style={styles.overlay}>
+
         <div style={styles.topBar}>
-          <div style={styles.headerUsuario}>
-            <div style={styles.linhaUsuario}>
-              {usuario.matricula} - {usuario.nome}
-            </div>
-          </div>
 
-          <div style={styles.acoesUsuario}>
-            <button
-              style={styles.button}
-              onClick={() => setPagina("home")}
-            >
-              Home
-            </button>
-          </div>
+          <strong>
+
+            {usuario.matricula} - {usuario.nome}
+
+          </strong>
+
+          <button style={styles.button} onClick={()=>setPagina("home")}>
+            Home
+          </button>
+
         </div>
 
-        <div style={styles.mainContent}>
-          <div style={styles.cardPrincipal}>
-            <div style={styles.uploadArea}>
-              <input
-                type="file"
-                accept=".xls,.xlsx"
-                onChange={handleFile}
-                style={styles.inputFile}
-                id="file-upload"
-              />
-              <label htmlFor="file-upload" style={styles.labelUpload}>
-                <div style={styles.uploadIcon}>📁</div>
-                <div>
-                  <strong>Selecionar Arquivo Excel</strong>
-                  <p>Arraste ou clique para importar (.xls, .xlsx)</p>
-                </div>
-              </label>
-            </div>
+        {registros.length === 0 && (
 
-            {erroImportacao && (
-              <div style={styles.alertaErro}>
-                <span>⚠️ {erroImportacao}</span>
-              </div>
-            )}
+          <input type="file" accept=".xls,.xlsx" onChange={handleFile} />
 
-            {registros.length > 0 && (
-              <>
-                <div style={styles.caixaQuantidade}>
-                  <div style={styles.statsContent}>
-                    <div style={styles.statItem}>
-                      <strong style={styles.statNumber}>
-                        {registros.length}
-                      </strong>
-                      <span>registros importados</span>
-                    </div>
+        )}
 
-                    <div style={styles.validosInvalidos}>
-                      <span style={styles.validos}>
-                        {registros.filter(r => !r.erro).length} válidos
-                      </span>
+        {registros.length > 0 && (
 
-                      <span style={styles.invalidos}>
-                        {registros.filter(r => r.erro).length} com erro
-                      </span>
-                    </div>
-                  </div>
+          <button
+            style={styles.button}
+            onClick={handleCadastrar}
+            disabled={loading}
+          >
 
-                  <div style={styles.botaoContainer}>
-                    <button
-                      style={{
-                        ...styles.button,
-                        opacity:
-                          loading ||
-                          registros.filter(r => !r.erro).length === 0
-                            ? 0.5
-                            : 1,
-                      }}
-                      onClick={handleCadastrar}
-                      disabled={
-                        loading ||
-                        registros.filter(r => !r.erro).length === 0
-                      }
-                    >
-                      {loading
-                        ? "Cadastrando..."
-                        : `Cadastrar ${registros.filter(r => !r.erro).length} Chaves`}
-                    </button>
-                  </div>
-                </div>
+            {loading
+              ? "Cadastrando..."
+              : `Cadastrar ${registros.length} chaves`
+            }
 
-                <div style={styles.tabelaContainer}>
-                  <table style={styles.tabela}>
-                    <thead style={styles.thead}>
-                      <tr>
-                        <th style={styles.thNumero}>Número</th>
-                        <th style={styles.thData}>Data</th>
-                        <th style={styles.thStatus}>Status</th>
-                      </tr>
-                    </thead>
+          </button>
 
-                    <tbody>
-                      {registros.map((r, index) => (
-                        <tr
-                          key={index}
-                          style={r.erro ? styles.linhaErro : styles.linhaOk}
-                        >
-                          <td style={styles.tdNumero}>{r.numero}</td>
-                          <td style={styles.tdData}>{r.data}</td>
+        )}
 
-                          <td style={styles.tdStatus}>
-                            {r.erro ? (
-                              <span style={styles.statusErro}>
-                                {r.erro}
-                              </span>
-                            ) : (
-                              <span style={styles.statusOk}>OK</span>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
       </div>
+
     </div>
+
   );
+
 }
 
-const styles: { [key: string]: React.CSSProperties } = {
+const styles:any = {
 
-  container: {
-    minHeight: "100vh",
-    backgroundImage: `
-      linear-gradient(rgba(10,31,68,0.55), rgba(10,31,68,0.75)),
-      url("https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg")
-    `,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-    backgroundAttachment: "fixed",
-    position: "relative",
-    overflow: "hidden",
-  },
+  container:{padding:40},
 
-  electricParticles: {
-    position: "absolute",
-    inset: 0,
-    pointerEvents: "none",
-  },
+  overlay:{},
 
-  overlay: {
-    minHeight: "100vh",
-    padding: "40px 20px",
-    color: "white",
-    position: "relative",
-    zIndex: 2,
-  },
+  topBar:{display:"flex",justifyContent:"space-between"},
 
-  topBar: {
-    maxWidth: "1200px",
-    margin: "0 auto 60px",
-    display: "flex",
-    justifyContent: "space-between",
-  },
-
-  headerUsuario: {},
-
-  linhaUsuario: {
-    fontSize: 22,
-    fontWeight: 700,
-  },
-
-  mainContent: {
-    maxWidth: "1200px",
-    margin: "0 auto",
-  },
-
-  cardPrincipal: {
-    background: "rgba(255,255,255,0.06)",
-    backdropFilter: "blur(20px)",
-    borderRadius: "24px",
-    padding: "40px",
-  },
-
-  inputFile: { display: "none" },
-
-  labelUpload: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    padding: "40px",
-    border: "2px dashed rgba(255,255,255,0.4)",
-    borderRadius: "20px",
-    cursor: "pointer",
-  },
-
-  uploadIcon: {
-    fontSize: 48,
-  },
-
-  caixaQuantidade: {
-    marginTop: 20,
-  },
-
-  statsContent: {
-    marginBottom: 20,
-  },
-
-  botaoContainer: {
-    display: "flex",
-    justifyContent: "center",
-  },
-
-  tabelaContainer: {
-    overflowX: "auto",
-    marginTop: 20,
-  },
-
-  tabela: {
-    width: "100%",
-    background: "white",
-    color: "black",
-  },
-
-  thead: {
-    background: "#1e3c72",
-    color: "white",
-  },
-
-  thNumero: { padding: 10 },
-  thData: { padding: 10 },
-  thStatus: { padding: 10 },
-
-  tdNumero: { padding: 10 },
-  tdData: { padding: 10 },
-  tdStatus: { padding: 10 },
-
-  linhaErro: {
-    background: "#ffdede",
-  },
-
-  linhaOk: {},
-
-  statusErro: {
-    color: "red",
-  },
-
-  statusOk: {
-    color: "green",
-  },
-
-  alertaErro: {
-    marginTop: 20,
-    color: "#ff6b6b",
-  },
-
-  statNumber: {
-    fontSize: 28,
-  },
-
-  validos: { color: "#00ff88" },
-  invalidos: { color: "#ff6b6b" },
-
-  button: {
-    padding: 18,
-    fontSize: 16,
-    borderRadius: 10,
-    border: "1px solid rgba(255,255,255,0.25)",
-    backgroundColor: "rgba(255,255,255,0.12)",
-    color: "white",
-    cursor: "pointer",
-    backdropFilter: "blur(6px)",
-    transition: "all 0.3s ease",
-  },
+  button:{padding:10}
 
 };
