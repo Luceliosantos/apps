@@ -103,13 +103,28 @@ export default function Usuarios({ setPagina }: Props) {
         ? "usuario"
         : "bloqueado");
 
-    await supabase
-      .from("db_usuarios_apps_permissoes")
-      .upsert({
-        id_usuario,
-        sistema,
-        tipo
-      });
+    // primeiro tenta atualizar
+    const { data, error } =
+      await supabase
+        .from("db_usuarios_apps_permissoes")
+        .update({ tipo })
+        .eq("id_usuario", id_usuario)
+        .eq("sistema", sistema);
+
+    // se não existir registro, insere
+    if(!data || data.length === 0){
+
+      await supabase
+        .from("db_usuarios_apps_permissoes")
+        .insert({
+
+          id_usuario,
+          sistema,
+          tipo
+
+        });
+
+    }
 
   }
 
