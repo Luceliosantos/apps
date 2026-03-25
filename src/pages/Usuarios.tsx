@@ -56,7 +56,6 @@ export default function Usuarios({ setPagina }: Props) {
     setUsuarios(usuariosData || []);
     setTipos(tiposData || []);
 
-    // monta mapa correto das permissões existentes
     const mapa:any = {};
 
     (permissoesData || []).forEach(p => {
@@ -76,42 +75,44 @@ export default function Usuarios({ setPagina }: Props) {
   }
 
   function alterarPermissao(
-  id_usuario:string,
-  sistema:string,
-  tipo:string
-){
+    id_usuario:string,
+    sistema:string,
+    tipo:string
+  ){
 
-  setPermissoes((prev:any) => ({
+    setPermissoes((prev:any) => ({
 
-    ...prev,
+      ...prev,
 
-    [String(id_usuario)]:{
+      [String(id_usuario)]:{
 
-      ...prev?.[String(id_usuario)],
+        ...prev?.[String(id_usuario)],
 
-      [sistema]:tipo
+        [sistema]:tipo
 
-    }
+      }
 
-  }));
+    }));
 
-}
+  }
 
   async function salvarUsuario(id_usuario:string){
 
     for(const sistema of sistemas){
+
+      const tipo =
+        permissoes[String(id_usuario)]?.[sistema]
+        || (sistema === "global"
+          ? "usuario"
+          : "bloqueado");
 
       await supabase
         .from("db_usuarios_apps_permissoes")
         .upsert({
 
           id_usuario,
-
           sistema,
-
-          tipo:
-            permissoes[String(id_usuario)]?.[sistema]
-            || "bloqueado"
+          tipo
 
         });
 
@@ -121,32 +122,67 @@ export default function Usuarios({ setPagina }: Props) {
 
   }
 
+  async function excluirUsuario(id_usuario:string){
+
+    const confirmar =
+      confirm("Deseja realmente excluir este usuário?");
+
+    if(!confirmar) return;
+
+    await supabase
+      .from("db_usuarios_apps_permissoes")
+      .delete()
+      .eq("id_usuario", id_usuario);
+
+    await supabase
+      .from("db_usuarios_apps")
+      .delete()
+      .eq("id", id_usuario);
+
+    carregarDados();
+
+  }
+
   async function cadastrarUsuario(){
 
     if(!novoNome || !novaMatricula){
 
       alert("Preencha nome e matrícula");
-
       return;
 
     }
 
-    const { error } =
+    const { data, error } =
       await supabase
         .from("db_usuarios_apps")
-.insert({
-  nome:novoNome,
-  matricula:novaMatricula,
-  senha:novaMatricula
-});
+        .insert({
+
+          nome:novoNome,
+          matricula:novaMatricula,
+          senha:novaMatricula,
+          trocar_senha:true
+
+        })
+        .select()
+        .single();
 
     if(error){
 
       alert(error.message);
-
       return;
 
     }
+
+    // cria permissões padrão
+    await supabase
+      .from("db_usuarios_apps_permissoes")
+      .insert({
+
+        id_usuario:data.id,
+        sistema:"global",
+        tipo:"usuario"
+
+      });
 
     setNovoNome("");
     setNovaMatricula("");
@@ -215,13 +251,9 @@ export default function Usuarios({ setPagina }: Props) {
 
             <tr>
 
-              <th style={styles.th}>
-                Nome
-              </th>
+              <th style={styles.th}>Nome</th>
 
-              <th style={styles.th}>
-                Matrícula
-              </th>
+              <th style={styles.th}>Matrícula</th>
 
               {sistemas.map(s => (
 
@@ -232,7 +264,11 @@ export default function Usuarios({ setPagina }: Props) {
               ))}
 
               <th style={styles.th}>
-                Ação
+                Editar
+              </th>
+
+              <th style={styles.th}>
+                Excluir
               </th>
 
             </tr>
@@ -272,7 +308,9 @@ export default function Usuarios({ setPagina }: Props) {
 
                         value={
                           permissoes[String(u.id)]?.[sistema]
-                          || "bloqueado"
+                          || (sistema === "global"
+                            ? "usuario"
+                            : "bloqueado")
                         }
 
                         onChange={(e) =>
@@ -327,6 +365,24 @@ export default function Usuarios({ setPagina }: Props) {
                   >
 
                     Aplicar
+
+                  </button>
+
+                </td>
+
+                <td style={styles.td}>
+
+                  <button
+
+                    style={styles.deleteButton}
+
+                    onClick={() =>
+                      excluirUsuario(u.id)
+                    }
+
+                  >
+
+                    Excluir
 
                   </button>
 
@@ -417,6 +473,15 @@ const styles:{[key:string]:React.CSSProperties} = {
     borderRadius:8,
     border:"1px solid #1e3c72",
     background:"#1e3c72",
+    color:"white",
+    cursor:"pointer"
+  },
+
+  deleteButton:{
+    padding:"8px 14px",
+    borderRadius:8,
+    border:"1px solid #c0392b",
+    background:"#c0392b",
     color:"white",
     cursor:"pointer"
   }
