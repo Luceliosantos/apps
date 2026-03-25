@@ -99,12 +99,12 @@ export default function App() {
     setErro("");
     setLoading(true);
 
-    const { error } = await supabase
-      .from("db_usuarios_apps")
-      .select("id, matricula, nome, trocar_senha")
-      .eq("matricula", matricula)
-      .eq("senha", senha)
-      .single();
+const { data, error } = await supabase
+  .from("db_usuarios_apps")
+  .select("id, matricula, nome, trocar_senha")
+  .eq("matricula", matricula)
+  .eq("senha", senha)
+  .single();
 
     if (error || !data) {
 
@@ -179,14 +179,12 @@ export default function App() {
 
     }
 
-    const { data, error } = await supabase
-      .from("db_usuarios_apps")
-      .update({
-
-        senha: novaSenha,
-        trocar_senha: false
-
-      })
+const { error } = await supabase
+  .from("db_usuarios_apps")
+  .update({
+    senha: novaSenha,
+    trocar_senha:false
+  })
       .eq("id", usuario?.id)
       .select();
 
