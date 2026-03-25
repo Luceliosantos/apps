@@ -15,23 +15,39 @@ type Props = {
     nome: string;
     tipo: string;
   };
+
   permissoes:any[];
+
   chavesDisponiveis: number;
+
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
+
   handleLogout: () => void;
+
   atualizarContagem: () => Promise<void>;
 };
 
 export default function Cadastro({
+
   usuario,
+
   permissoes,
+
   setPagina,
+
   atualizarContagem,
+
 }: Props) {
 
-  function temPermissao(sistema:string, tipos:string[]){
+  function temPermissao(
+    sistema:string,
+    tipos:string[]
+  ){
 
-    const p = permissoes.find(x => x.sistema === sistema);
+    const p =
+      permissoes.find(
+        x => x.sistema === sistema
+      );
 
     if(!p) return false;
 
@@ -41,7 +57,14 @@ export default function Cadastro({
 
   }
 
-  if(!temPermissao("chaves",["cad_ch"])){
+  if(
+
+    !temPermissao(
+      "chaves",
+      ["cad_ch"]
+    )
+
+  ){
 
     setPagina("home");
 
@@ -50,8 +73,11 @@ export default function Cadastro({
   }
 
   const [registros, setRegistros] = useState<Registro[]>([]);
-  const [_, setErroImportacao] = useState("");
+
+  const [erroImportacao, setErroImportacao] = useState("");
+
   const [loading, setLoading] = useState(false);
+
 
   function dataHojeBR(){
 
@@ -59,11 +85,12 @@ export default function Cadastro({
 
   }
 
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+
+  function handleFile(e: React.ChangeEvent<HTMLInputElement>){
 
     const file = e.target.files?.[0];
 
-    if (!file) return;
+    if(!file) return;
 
     const reader = new FileReader();
 
@@ -71,27 +98,36 @@ export default function Cadastro({
 
       const data = evt.target?.result;
 
-      if (!data) return;
+      if(!data) return;
 
-      const workbook = XLSX.read(data, { type: "binary" });
+      const workbook =
+        XLSX.read(data,{ type:"binary" });
 
-      const sheetName = workbook.SheetNames[0];
+      const sheetName =
+        workbook.SheetNames[0];
 
-      const worksheet = workbook.Sheets[sheetName];
+      const worksheet =
+        workbook.Sheets[sheetName];
 
-      const json: any[][] = XLSX.utils.sheet_to_json(worksheet,{ header: 1 });
+      const json:any[][] =
+        XLSX.utils.sheet_to_json(
+          worksheet,
+          { header:1 }
+        );
 
-      const novos: Registro[] = [];
+      const novos:Registro[] = [];
 
-      for (let i = 1; i < json.length; i++) {
+      for(let i=1;i<json.length;i++){
 
-        const numero = String(json[i][0] ?? "").trim();
+        const numero =
+          String(json[i][0] ?? "").trim();
 
-        let erro = "";
+        let erro="";
 
-        if (!/^\d{6}$/.test(numero)) {
+        if(!/^\d{6}$/.test(numero)){
 
-          erro = "Número deve ter 6 dígitos";
+          erro =
+            "Número deve ter 6 dígitos numéricos";
 
         }
 
@@ -99,9 +135,9 @@ export default function Cadastro({
 
           numero,
 
-          data: dataHojeBR(),
+          data:dataHojeBR(),
 
-          erro: erro || undefined,
+          erro:erro || undefined
 
         });
 
@@ -117,6 +153,7 @@ export default function Cadastro({
 
   }
 
+
   async function handleCadastrar(){
 
     setErroImportacao("");
@@ -125,23 +162,21 @@ export default function Cadastro({
 
     let possuiErro = false;
 
-    for (let i = 0; i < registrosAtualizados.length; i++){
+    for(let i=0;i<registrosAtualizados.length;i++){
 
       const r = registrosAtualizados[i];
 
-      const { data } = await supabase
+      const { data } =
+        await supabase
+          .from("db_chaves")
+          .select("id")
+          .eq("numero", r.numero)
+          .maybeSingle();
 
-        .from("db_chaves")
+      if(data){
 
-        .select("id")
-
-        .eq("numero", r.numero)
-
-        .maybeSingle();
-
-      if (data){
-
-        registrosAtualizados[i].erro = "Chave já existe";
+        registrosAtualizados[i].erro =
+          "Chave já existente no banco";
 
         possuiErro = true;
 
@@ -151,9 +186,11 @@ export default function Cadastro({
 
     setRegistros(registrosAtualizados);
 
-    if (possuiErro){
+    if(possuiErro){
 
-      setErroImportacao("Existem duplicidades.");
+      setErroImportacao(
+        "Existem registros inválidos ou duplicados. Corrija antes de cadastrar."
+      );
 
       return;
 
@@ -161,21 +198,25 @@ export default function Cadastro({
 
     setLoading(true);
 
-    for (const r of registrosAtualizados){
+    for(const r of registrosAtualizados){
 
-      await supabase.from("db_chaves").insert([{
+      await supabase
+        .from("db_chaves")
+        .insert([{
 
-        numero: r.numero,
+          numero:r.numero,
 
-        dt_disp: new Date().toISOString().split("T")[0],
+          dt_disp:new Date()
+            .toISOString()
+            .split("T")[0],
 
-        usu_cad_db: usuario.matricula,
+          usu_cad_db:usuario.matricula
 
-      }]);
+        }]);
 
     }
 
-    alert("Chaves cadastradas!");
+    alert("Chaves cadastradas com sucesso!");
 
     setRegistros([]);
 
@@ -185,48 +226,329 @@ export default function Cadastro({
 
   }
 
+
   return (
 
     <div style={styles.container}>
+
+      <div style={styles.electricParticles}></div>
 
       <div style={styles.overlay}>
 
         <div style={styles.topBar}>
 
-          <strong>
+          <div style={styles.headerUsuario}>
 
-            {usuario.matricula} - {usuario.nome}
+            <div style={styles.linhaUsuario}>
 
-          </strong>
+              {usuario.matricula}
 
-          <button style={styles.button} onClick={()=>setPagina("home")}>
-            Home
-          </button>
+              {" - "}
+
+              {usuario.nome}
+
+            </div>
+
+          </div>
+
+          <div style={styles.acoesUsuario}>
+
+            <button
+              style={styles.button}
+              onClick={() => setPagina("home")}
+            >
+              Home
+            </button>
+
+          </div>
 
         </div>
 
-        {registros.length === 0 && (
 
-          <input type="file" accept=".xls,.xlsx" onChange={handleFile} />
+        <div style={styles.mainContent}>
 
-        )}
+          <div style={styles.cardPrincipal}>
 
-        {registros.length > 0 && (
 
-          <button
-            style={styles.button}
-            onClick={handleCadastrar}
-            disabled={loading}
-          >
+            <div style={styles.uploadArea}>
 
-            {loading
-              ? "Cadastrando..."
-              : `Cadastrar ${registros.length} chaves`
-            }
+              <input
 
-          </button>
+                type="file"
 
-        )}
+                accept=".xls,.xlsx"
+
+                onChange={handleFile}
+
+                style={styles.inputFile}
+
+                id="file-upload"
+
+              />
+
+              <label
+
+                htmlFor="file-upload"
+
+                style={styles.labelUpload}
+
+              >
+
+                <div style={styles.uploadIcon}>📁</div>
+
+                <div>
+
+                  <strong>
+
+                    Selecionar Arquivo Excel
+
+                  </strong>
+
+                  <p>
+
+                    Arraste ou clique para importar
+
+                  </p>
+
+                </div>
+
+              </label>
+
+            </div>
+
+
+            {erroImportacao && (
+
+              <div style={styles.alertaErro}>
+
+                ⚠️ {erroImportacao}
+
+              </div>
+
+            )}
+
+
+            {registros.length > 0 && (
+
+              <>
+
+                <div style={styles.caixaQuantidade}>
+
+
+                  <div style={styles.statsContent}>
+
+                    <div style={styles.statItem}>
+
+                      <strong style={styles.statNumber}>
+
+                        {registros.length}
+
+                      </strong>
+
+                      <span>
+
+                        registros importados
+
+                      </span>
+
+                    </div>
+
+
+                    <div style={styles.validosInvalidos}>
+
+                      <span style={styles.validos}>
+
+                        {
+
+                          registros.filter(
+                            r => !r.erro
+                          ).length
+
+                        }
+
+                        {" "}válidos
+
+                      </span>
+
+
+                      <span style={styles.invalidos}>
+
+                        {
+
+                          registros.filter(
+                            r => r.erro
+                          ).length
+
+                        }
+
+                        {" "}com erro
+
+                      </span>
+
+                    </div>
+
+                  </div>
+
+
+                  <div style={styles.botaoContainer}>
+
+                    <button
+
+                      style={{
+
+                        ...styles.button,
+
+                        opacity:
+
+                          loading
+
+                          ||
+
+                          registros.filter(
+                            r => !r.erro
+                          ).length === 0
+
+                          ? 0.5
+
+                          : 1
+
+                      }}
+
+                      onClick={handleCadastrar}
+
+                      disabled={
+
+                        loading
+
+                        ||
+
+                        registros.filter(
+                          r => !r.erro
+                        ).length === 0
+
+                      }
+
+                    >
+
+                      {
+
+                        loading
+
+                        ? "Cadastrando..."
+
+                        : `Cadastrar ${
+                            registros.filter(
+                              r => !r.erro
+                            ).length
+                          } Chaves`
+
+                      }
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+
+                <div style={styles.tabelaContainer}>
+
+                  <table style={styles.tabela}>
+
+                    <thead style={styles.thead}>
+
+                      <tr>
+
+                        <th style={styles.thNumero}>
+                          Número
+                        </th>
+
+                        <th style={styles.thData}>
+                          Data
+                        </th>
+
+                        <th style={styles.thStatus}>
+                          Status
+                        </th>
+
+                      </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                      {registros.map((r,index)=>(
+
+                        <tr
+
+                          key={index}
+
+                          style={
+
+                            r.erro
+
+                            ? styles.linhaErro
+
+                            : styles.linhaOk
+
+                          }
+
+                        >
+
+                          <td style={styles.tdNumero}>
+                            {r.numero}
+                          </td>
+
+                          <td style={styles.tdData}>
+                            {r.data}
+                          </td>
+
+                          <td style={styles.tdStatus}>
+
+                            {
+
+                              r.erro
+
+                              ? (
+
+                                <span style={styles.statusErro}>
+
+                                  {r.erro}
+
+                                </span>
+
+                              )
+
+                              : (
+
+                                <span style={styles.statusOk}>
+                                  OK
+                                </span>
+
+                              )
+
+                            }
+
+                          </td>
+
+                        </tr>
+
+                      ))}
+
+                    </tbody>
+
+                  </table>
+
+                </div>
+
+              </>
+
+            )}
+
+          </div>
+
+        </div>
 
       </div>
 
@@ -235,15 +557,3 @@ export default function Cadastro({
   );
 
 }
-
-const styles:any = {
-
-  container:{padding:40},
-
-  overlay:{},
-
-  topBar:{display:"flex",justifyContent:"space-between"},
-
-  button:{padding:10}
-
-};
