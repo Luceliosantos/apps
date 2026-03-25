@@ -46,8 +46,7 @@ export default function Usuarios({ setPagina }: Props) {
 
     const { data: tiposData } = await supabase
       .from("db_usuarios_apps_tipos_permissoes")
-      .select("sistema, tipo")
-      .order("tipo");
+      .select("sistema, tipo");
 
     const { data: permissoesData } = await supabase
       .from("db_usuarios_apps_permissoes")
@@ -62,9 +61,7 @@ export default function Usuarios({ setPagina }: Props) {
 
       const id = String(p.id_usuario);
 
-      if (!mapa[id]) {
-        mapa[id] = {};
-      }
+      if (!mapa[id]) mapa[id] = {};
 
       mapa[id][p.sistema] = p.tipo;
 
@@ -86,7 +83,7 @@ export default function Usuarios({ setPagina }: Props) {
 
       [String(id_usuario)]:{
 
-        ...prev?.[String(id_usuario)],
+        ...prev[String(id_usuario)],
 
         [sistema]:tipo
 
@@ -108,23 +105,28 @@ export default function Usuarios({ setPagina }: Props) {
 
       await supabase
         .from("db_usuarios_apps_permissoes")
-        .upsert({
-
-          id_usuario,
-          sistema,
-          tipo
-
-        });
+        .upsert(
+          {
+            id_usuario,
+            sistema,
+            tipo
+          },
+          {
+            onConflict:"id_usuario,sistema"
+          }
+        );
 
     }
 
-    alert("Permissões atualizadas");
+    alert("Permissões salvas");
+
+    carregarDados();
 
   }
 
   async function excluirUsuario(id_usuario:string){
 
-    if(!confirm("Deseja realmente excluir este usuário?")) return;
+    if(!confirm("Confirma exclusão do usuário?")) return;
 
     await supabase
       .from("db_usuarios_apps_permissoes")
@@ -170,6 +172,7 @@ export default function Usuarios({ setPagina }: Props) {
 
     }
 
+    // cria permissao padrão
     await supabase
       .from("db_usuarios_apps_permissoes")
       .insert({
@@ -264,6 +267,7 @@ export default function Usuarios({ setPagina }: Props) {
               <tr key={u.id}>
 
                 <td style={styles.td}>{u.nome}</td>
+
                 <td style={styles.td}>{u.matricula}</td>
 
                 {sistemas.map(sistema => {
@@ -304,9 +308,7 @@ export default function Usuarios({ setPagina }: Props) {
                             key={t.tipo}
                             value={t.tipo}
                           >
-
                             {t.tipo}
-
                           </option>
 
                         ))}
