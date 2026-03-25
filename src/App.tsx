@@ -449,12 +449,13 @@ export default function App() {
 
     return(
 
-      <CadastroChaves
-        usuario={usuario}
-        chavesDisponiveis={chavesDisponiveis}
-        setPagina={setPagina}
-        handleLogout={handleLogout}
-      />
+<CadastroChaves
+ usuario={usuario}
+ permissoes={permissoes}
+ chavesDisponiveis={chavesDisponiveis}
+ setPagina={setPagina}
+ handleLogout={handleLogout}
+/>
 
     );
 
