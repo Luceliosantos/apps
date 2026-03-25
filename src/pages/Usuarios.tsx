@@ -97,11 +97,18 @@ export default function Usuarios({ setPagina }: Props) {
 
     for(const sistema of sistemas){
 
-      const tipo =
-        permissoes[String(id_usuario)]?.[sistema]
-        || (sistema === "global"
+      let tipo =
+        permissoes[String(id_usuario)]?.[sistema];
+
+      // regra padrão
+      if(!tipo){
+
+        tipo =
+          sistema === "global"
           ? "usuario"
-          : "bloqueado");
+          : "bloqueado";
+
+      }
 
       const { data } =
         await supabase
@@ -189,6 +196,7 @@ export default function Usuarios({ setPagina }: Props) {
 
     }
 
+    // permissões padrão
     const permissoesPadrao = [
 
       { sistema:"global", tipo:"usuario" },
@@ -282,7 +290,7 @@ export default function Usuarios({ setPagina }: Props) {
                 <th key={s} style={styles.th}>{s}</th>
               ))}
 
-              <th style={styles.th}>Editar</th>
+              <th style={styles.th}>Salvar</th>
               <th style={styles.th}>Excluir</th>
 
             </tr>
@@ -367,7 +375,7 @@ export default function Usuarios({ setPagina }: Props) {
                     style={styles.deleteButton}
                     onClick={() => excluirUsuario(u.id)}
                   >
-                    Aplicar
+                    Excluir
                   </button>
 
                 </td>
