@@ -124,10 +124,7 @@ export default function Usuarios({ setPagina }: Props) {
 
   async function excluirUsuario(id_usuario:string){
 
-    const confirmar =
-      confirm("Deseja realmente excluir este usuário?");
-
-    if(!confirmar) return;
+    if(!confirm("Deseja realmente excluir este usuário?")) return;
 
     await supabase
       .from("db_usuarios_apps_permissoes")
@@ -173,7 +170,6 @@ export default function Usuarios({ setPagina }: Props) {
 
     }
 
-    // cria permissões padrão
     await supabase
       .from("db_usuarios_apps_permissoes")
       .insert({
@@ -219,18 +215,14 @@ export default function Usuarios({ setPagina }: Props) {
             <input
               placeholder="Nome"
               value={novoNome}
-              onChange={e =>
-                setNovoNome(e.target.value)
-              }
+              onChange={e => setNovoNome(e.target.value)}
               style={styles.input}
             />
 
             <input
               placeholder="Matrícula"
               value={novaMatricula}
-              onChange={e =>
-                setNovaMatricula(e.target.value)
-              }
+              onChange={e => setNovaMatricula(e.target.value)}
               style={styles.input}
             />
 
@@ -252,24 +244,14 @@ export default function Usuarios({ setPagina }: Props) {
             <tr>
 
               <th style={styles.th}>Nome</th>
-
               <th style={styles.th}>Matrícula</th>
 
               {sistemas.map(s => (
-
-                <th key={s} style={styles.th}>
-                  {s}
-                </th>
-
+                <th key={s} style={styles.th}>{s}</th>
               ))}
 
-              <th style={styles.th}>
-                Editar
-              </th>
-
-              <th style={styles.th}>
-                Excluir
-              </th>
+              <th style={styles.th}>Editar</th>
+              <th style={styles.th}>Excluir</th>
 
             </tr>
 
@@ -281,23 +263,14 @@ export default function Usuarios({ setPagina }: Props) {
 
               <tr key={u.id}>
 
-                <td style={styles.td}>
-                  {u.nome}
-                </td>
-
-                <td style={styles.td}>
-                  {u.matricula}
-                </td>
+                <td style={styles.td}>{u.nome}</td>
+                <td style={styles.td}>{u.matricula}</td>
 
                 {sistemas.map(sistema => {
 
                   const opcoes =
                     tipos.filter(
-
-                      t =>
-
-                      t.sistema === sistema
-
+                      t => t.sistema === sistema
                     );
 
                   return (
@@ -314,17 +287,11 @@ export default function Usuarios({ setPagina }: Props) {
                         }
 
                         onChange={(e) =>
-
                           alterarPermissao(
-
                             u.id,
-
                             sistema,
-
                             e.target.value
-
                           )
-
                         }
 
                         style={styles.select}
@@ -355,17 +322,10 @@ export default function Usuarios({ setPagina }: Props) {
                 <td style={styles.td}>
 
                   <button
-
                     style={styles.button}
-
-                    onClick={() =>
-                      salvarUsuario(u.id)
-                    }
-
+                    onClick={() => salvarUsuario(u.id)}
                   >
-
                     Aplicar
-
                   </button>
 
                 </td>
@@ -373,17 +333,10 @@ export default function Usuarios({ setPagina }: Props) {
                 <td style={styles.td}>
 
                   <button
-
                     style={styles.deleteButton}
-
-                    onClick={() =>
-                      excluirUsuario(u.id)
-                    }
-
+                    onClick={() => excluirUsuario(u.id)}
                   >
-
-                    Excluir
-
+                    Aplicar
                   </button>
 
                 </td>
