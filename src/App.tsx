@@ -46,6 +46,24 @@ export default function App() {
 
   const [permissoes,setPermissoes] = useState<any[]>([]);
 
+  function temPermissao(
+    sistema:string,
+    tipos:string[]
+  ){
+
+    const p =
+      permissoes.find(
+        x => x.sistema === sistema
+      );
+
+    if(!p) return false;
+
+    if(p.tipo === "admin") return true;
+
+    return tipos.includes(p.tipo);
+
+  }
+
   async function atualizarContagem() {
 
     const { count } = await supabase
@@ -276,6 +294,60 @@ export default function App() {
 
       );
 
+    }
+
+    if(
+      pagina === "usuarios"
+      &&
+      !temPermissao("global",["admin"])
+    ){
+      setPagina("menu");
+      return null;
+    }
+
+    if(
+      pagina === "cadastro"
+      &&
+      !temPermissao("chaves",["cad_ch"])
+    ){
+      setPagina("menu");
+      return null;
+    }
+
+    if(
+      pagina === "associacao"
+      &&
+      !temPermissao("chaves",["comissionador","gravacao"])
+    ){
+      setPagina("menu");
+      return null;
+    }
+
+    if(
+      pagina === "consulta"
+      &&
+      !temPermissao("chaves",["leitura","gravacao"])
+    ){
+      setPagina("menu");
+      return null;
+    }
+
+    if(
+      pagina === "geo"
+      &&
+      !temPermissao("acomp_geo",["leitura"])
+    ){
+      setPagina("menu");
+      return null;
+    }
+
+    if(
+      pagina === "proorc"
+      &&
+      !temPermissao("proorc",["leitura"])
+    ){
+      setPagina("menu");
+      return null;
     }
 
     if(pagina === "usuarios"){
