@@ -30,21 +30,18 @@ export default function CadastroChaves({
 }: Props) {
 
   function temPermissao(
-
     sistema:string,
-
     tipos:string[]
-
   ){
 
-    const p = permissoes.find(
-
-      x => x.sistema === sistema
-
-    );
+    const p =
+      permissoes.find(
+        x => x.sistema === sistema
+      );
 
     if(!p) return false;
 
+    // admin sempre passa
     if(p.tipo === "admin") return true;
 
     return tipos.includes(p.tipo);
@@ -52,37 +49,43 @@ export default function CadastroChaves({
   }
 
 
-  const podeCadastrar =
-
+  // acesso ao módulo chaves
+  const acessoModulo =
     temPermissao(
-
       "chaves",
+      ["leitura","gravacao","comissionador","cad_ch"]
+    );
 
+
+  const podeCadastrar =
+    temPermissao(
+      "chaves",
       ["cad_ch"]
-
     );
 
 
   const podeAssociar =
-
     temPermissao(
-
       "chaves",
-
-      ["comissionador","gravacao"]
-
+      ["gravacao","comissionador"]
     );
 
 
   const podeConsultar =
-
     temPermissao(
-
       "chaves",
-
       ["leitura","gravacao","comissionador","cad_ch"]
-
     );
+
+
+  // segurança extra
+  if(!acessoModulo){
+
+    setPagina("menu");
+
+    return null;
+
+  }
 
 
   return (
@@ -152,11 +155,8 @@ export default function CadastroChaves({
           {podeCadastrar && (
 
             <button
-
               style={styles.button}
-
               onClick={() => setPagina("cadastro")}
-
             >
 
               Cadastrar
@@ -169,11 +169,8 @@ export default function CadastroChaves({
           {podeConsultar && (
 
             <button
-
               style={styles.button}
-
               onClick={() => setPagina("consulta")}
-
             >
 
               Consulta
@@ -186,11 +183,8 @@ export default function CadastroChaves({
           {podeAssociar && (
 
             <button
-
               style={styles.button}
-
               onClick={() => setPagina("associacao")}
-
             >
 
               Associar
@@ -201,17 +195,13 @@ export default function CadastroChaves({
 
 
           <button
-
             style={styles.button}
-
             onClick={() => setPagina("menu")}
-
           >
 
             Home
 
           </button>
-
 
         </div>
 
