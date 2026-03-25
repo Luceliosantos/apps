@@ -138,30 +138,30 @@ export default function App() {
 
     setErro("");
 
-    if (!novaSenha) {
+    if (!novaSenha){
 
       setErro("Informe a nova senha");
       return;
 
     }
 
-    if (!validarSenhaForte(novaSenha)) {
+    if (!validarSenhaForte(novaSenha)){
 
       setErro(
-        "Senha deve ter no mínimo 8 caracteres, incluindo maiúscula, minúscula, número e caractere especial."
+        "Senha fraca. Use no mínimo 8 caracteres com maiúscula, minúscula, número e símbolo."
       );
       return;
 
     }
 
-    if (novaSenha !== confirmarSenha) {
+    if (novaSenha !== confirmarSenha){
 
       setErro("As senhas não conferem");
       return;
 
     }
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("db_usuarios_apps")
       .update({
 
@@ -169,17 +169,27 @@ export default function App() {
         trocar_senha: false
 
       })
-      .eq("id", usuario?.id);
+      .eq("id", usuario?.id)
+      .select();
 
-    if (error) {
+    if (error){
 
-      setErro("Erro ao salvar nova senha.");
+      setErro("Erro ao salvar senha.");
+      return;
+
+    }
+
+    if (!data || data.length === 0){
+
+      setErro("Senha não foi atualizada.");
       return;
 
     }
 
     setNovaSenha("");
     setConfirmarSenha("");
+
+    alert("Senha alterada com sucesso");
 
     setPagina("menu");
 
@@ -329,9 +339,7 @@ export default function App() {
 
         <div style={{padding:40}}>
 
-          <h1>
-            Acompanhamento GEO em desenvolvimento
-          </h1>
+          <h1>Acompanhamento GEO em desenvolvimento</h1>
 
           <button
             style={styles.menuButton}
@@ -352,9 +360,7 @@ export default function App() {
 
         <div style={{padding:40}}>
 
-          <h1>
-            Proorc 2.0 em desenvolvimento
-          </h1>
+          <h1>Proorc 2.0 em desenvolvimento</h1>
 
           <button
             style={styles.menuButton}
@@ -440,80 +446,46 @@ export default function App() {
 const styles:{[key:string]:React.CSSProperties}={
 
   loginContainer:{
-
     height:"100vh",
-
     display:"flex",
-
     justifyContent:"center",
-
     alignItems:"center",
-
-    background:
-      "linear-gradient(to bottom,#1e3c72,#2a5298)"
-
+    background:"linear-gradient(to bottom,#1e3c72,#2a5298)"
   },
 
   loginCard:{
-
     background:"white",
-
     padding:40,
-
     borderRadius:12,
-
     width:350,
-
     textAlign:"center"
-
   },
 
   input:{
-
     width:"100%",
-
     padding:12,
-
     marginBottom:15,
-
     borderRadius:8,
-
     border:"1px solid #ccc"
-
   },
 
   loginButton:{
-
     padding:"10px 18px",
-
     borderRadius:8,
-
     border:"none",
-
     background:"#1e3c72",
-
     color:"white",
-
     cursor:"pointer",
-
     width:"100%"
-
   },
 
   menuButton:{
-
     padding:10,
-
     borderRadius:8,
-
     border:"none",
-
     background:"#1e3c72",
-
     color:"white",
-
     cursor:"pointer"
-
   }
 
 };
