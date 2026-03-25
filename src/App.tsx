@@ -197,13 +197,6 @@ export default function App() {
 
     }
 
-    if (!data || data.length === 0){
-
-      setErro("Senha não foi atualizada.");
-      return;
-
-    }
-
     setNovaSenha("");
     setConfirmarSenha("");
 
@@ -296,6 +289,19 @@ export default function App() {
 
     }
 
+    // acesso ao módulo chaves
+    if(
+      pagina === "home"
+      &&
+      !temPermissao(
+        "chaves",
+        ["leitura","gravacao","comissionador","cad_ch"]
+      )
+    ){
+      setPagina("menu");
+      return null;
+    }
+
     if(
       pagina === "usuarios"
       &&
@@ -310,32 +316,41 @@ export default function App() {
       &&
       !temPermissao("chaves",["cad_ch"])
     ){
-      setPagina("menu");
+      setPagina("home");
       return null;
     }
 
     if(
       pagina === "associacao"
       &&
-      !temPermissao("chaves",["comissionador","gravacao"])
+      !temPermissao(
+        "chaves",
+        ["gravacao","comissionador"]
+      )
     ){
-      setPagina("menu");
+      setPagina("home");
       return null;
     }
 
     if(
       pagina === "consulta"
       &&
-      !temPermissao("chaves",["leitura","gravacao"])
+      !temPermissao(
+        "chaves",
+        ["leitura","gravacao","comissionador","cad_ch"]
+      )
     ){
-      setPagina("menu");
+      setPagina("home");
       return null;
     }
 
     if(
       pagina === "geo"
       &&
-      !temPermissao("acomp_geo",["leitura"])
+      !temPermissao(
+        "acomp_geo",
+        ["leitura"]
+      )
     ){
       setPagina("menu");
       return null;
@@ -344,7 +359,10 @@ export default function App() {
     if(
       pagina === "proorc"
       &&
-      !temPermissao("proorc",["leitura"])
+      !temPermissao(
+        "proorc",
+        ["leitura","gravacao"]
+      )
     ){
       setPagina("menu");
       return null;
@@ -449,13 +467,13 @@ export default function App() {
 
     return(
 
-<CadastroChaves
- usuario={usuario}
- permissoes={permissoes}
- chavesDisponiveis={chavesDisponiveis}
- setPagina={setPagina}
- handleLogout={handleLogout}
-/>
+      <CadastroChaves
+        usuario={usuario}
+        permissoes={permissoes}
+        chavesDisponiveis={chavesDisponiveis}
+        setPagina={setPagina}
+        handleLogout={handleLogout}
+      />
 
     );
 
