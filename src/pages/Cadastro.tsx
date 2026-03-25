@@ -50,7 +50,7 @@ export default function Cadastro({
   }
 
   const [registros, setRegistros] = useState<Registro[]>([]);
-  const [erroImportacao, setErroImportacao] = useState("");
+  const [_, setErroImportacao] = useState("");
   const [loading, setLoading] = useState(false);
 
   function dataHojeBR(){
