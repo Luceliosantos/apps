@@ -95,43 +95,51 @@ export default function Usuarios({ setPagina }: Props) {
 
   async function salvarUsuario(id_usuario:string){
 
-  for(const sistema of sistemas){
+    for(const sistema of sistemas){
 
-    const tipo =
-      permissoes[String(id_usuario)]?.[sistema]
-      || (sistema === "global"
-        ? "usuario"
-        : "bloqueado");
+      const tipo =
+        permissoes[String(id_usuario)]?.[sistema]
+        || (sistema === "global"
+          ? "usuario"
+          : "bloqueado");
 
-    // tenta atualizar primeiro
-    const { data } =
-      await supabase
-        .from("db_usuarios_apps_permissoes")
-        .update({ tipo })
-        .eq("id_usuario", id_usuario)
-        .eq("sistema", sistema)
-        .select();
+      const { data } =
+        await supabase
+          .from("db_usuarios_apps_permissoes")
+          .select("id")
+          .eq("id_usuario", id_usuario)
+          .eq("sistema", sistema)
+          .maybeSingle();
 
-    // se não encontrou registro, cria
-    if(!data || data.length === 0){
+      if(data){
 
-      await supabase
-        .from("db_usuarios_apps_permissoes")
-        .insert({
-          id_usuario,
-          sistema,
-          tipo
-        });
+        await supabase
+          .from("db_usuarios_apps_permissoes")
+          .update({ tipo })
+          .eq("id_usuario", id_usuario)
+          .eq("sistema", sistema);
+
+      } else {
+
+        await supabase
+          .from("db_usuarios_apps_permissoes")
+          .insert({
+
+            id_usuario,
+            sistema,
+            tipo
+
+          });
+
+      }
 
     }
 
+    alert("Permissões salvas");
+
+    carregarDados();
+
   }
-
-  alert("Permissões salvas");
-
-  await carregarDados();
-
-}
 
   async function excluirUsuario(id_usuario:string){
 
@@ -181,16 +189,28 @@ export default function Usuarios({ setPagina }: Props) {
 
     }
 
-    // cria permissao padrão
-    await supabase
-      .from("db_usuarios_apps_permissoes")
-      .insert({
+    const permissoesPadrao = [
 
-        id_usuario:data.id,
-        sistema:"global",
-        tipo:"usuario"
+      { sistema:"global", tipo:"usuario" },
+      { sistema:"chaves", tipo:"bloqueado" },
+      { sistema:"proorc", tipo:"bloqueado" },
+      { sistema:"acomp_geo", tipo:"bloqueado" }
 
-      });
+    ];
+
+    for(const p of permissoesPadrao){
+
+      await supabase
+        .from("db_usuarios_apps_permissoes")
+        .insert({
+
+          id_usuario:data.id,
+          sistema:p.sistema,
+          tipo:p.tipo
+
+        });
+
+    }
 
     setNovoNome("");
     setNovaMatricula("");
