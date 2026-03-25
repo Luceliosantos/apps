@@ -3,9 +3,7 @@ import { Pagina } from "../App";
 type Props = {
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
   handleLogout: () => void;
-
   permissoes:any[];
-
   usuario: {
     id?: string;
     matricula: string;
@@ -20,15 +18,46 @@ export default function HomeMenu({
   permissoes
 }: Props) {
 
+  function temPermissao(
+    sistema:string,
+    tipos:string[]
+  ){
+
+    const p =
+      permissoes?.find(
+        x => x.sistema === sistema
+      );
+
+    if(!p) return false;
+
+    if(p.tipo === "admin") return true;
+
+    return tipos.includes(p.tipo);
+
+  }
+
+  const acessoChaves =
+    temPermissao(
+      "chaves",
+      ["leitura","gravacao","comissionador","cad_ch"]
+    );
+
+  const acessoGeo =
+    temPermissao(
+      "acomp_geo",
+      ["leitura"]
+    );
+
+  const acessoProorc =
+    temPermissao(
+      "proorc",
+      ["leitura"]
+    );
+
   const adminGlobal =
-    permissoes?.some(
-
-      p =>
-
-      p.sistema === "global" &&
-
-      p.tipo === "admin"
-
+    temPermissao(
+      "global",
+      ["admin"]
     );
 
   return (
@@ -40,7 +69,11 @@ export default function HomeMenu({
         <div style={styles.header}>
 
           <div>
-            <strong>{usuario.nome}</strong> | {usuario.matricula}
+            <strong>
+              {usuario.nome}
+            </strong>
+            {" | "}
+            {usuario.matricula}
           </div>
 
           <button
@@ -61,26 +94,38 @@ export default function HomeMenu({
 
         <div style={styles.grid}>
 
-          <button
-            style={styles.button}
-            onClick={() => setPagina("home")}
-          >
-            Cadastro de Chaves
-          </button>
+          {acessoChaves && (
 
-          <button
-            style={styles.button}
-            onClick={() => setPagina("geo")}
-          >
-            Acompanhamento GEO
-          </button>
+            <button
+              style={styles.button}
+              onClick={() => setPagina("home")}
+            >
+              Cadastro de Chaves
+            </button>
 
-          <button
-            style={styles.button}
-            onClick={() => setPagina("proorc")}
-          >
-            Proorc 2.0
-          </button>
+          )}
+
+          {acessoGeo && (
+
+            <button
+              style={styles.button}
+              onClick={() => setPagina("geo")}
+            >
+              Acompanhamento GEO
+            </button>
+
+          )}
+
+          {acessoProorc && (
+
+            <button
+              style={styles.button}
+              onClick={() => setPagina("proorc")}
+            >
+              Proorc 2.0
+            </button>
+
+          )}
 
           {adminGlobal && (
 
