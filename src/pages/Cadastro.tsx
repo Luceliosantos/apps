@@ -498,8 +498,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "space-between",
   },
 
-  headerUsuario: {},
-
   linhaUsuario: {
     fontSize: 22,
     fontWeight: 700,
@@ -563,6 +561,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 
   tabela: {
     width: "100%",
+    tableLayout:"auto",
     background: "rgba(255,255,255,0.06)",
     color: "white",
     borderCollapse:"collapse"
@@ -574,51 +573,50 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 
   thNumero: {
-    padding: 10,
+    padding: 8.5,
     border:"1px solid rgba(255,255,255,0.15)",
     textAlign:"center",
-    width:"1%"
+    whiteSpace:"nowrap"
   },
 
   thData: {
-    padding: 10,
+    padding: 8.5,
     border:"1px solid rgba(255,255,255,0.15)",
     textAlign:"center",
-    width:"1%"
+    whiteSpace:"nowrap"
   },
 
   thStatus: {
-    padding: 10,
+    padding: 8.5,
     border:"1px solid rgba(255,255,255,0.15)",
     textAlign:"center",
-    width:"1%"
+    whiteSpace:"nowrap"
   },
 
   tdNumero: {
-    padding: 10,
+    padding: 8.5,
     border:"1px solid rgba(255,255,255,0.15)",
     textAlign:"center",
     whiteSpace:"nowrap"
   },
 
   tdData: {
-    padding: 10,
+    padding: 8.5,
     border:"1px solid rgba(255,255,255,0.15)",
     textAlign:"center",
     whiteSpace:"nowrap"
   },
 
   tdStatus: {
-    padding: 10,
+    padding: 8.5,
     border:"1px solid rgba(255,255,255,0.15)",
-    textAlign:"center"
+    textAlign:"center",
+    whiteSpace:"nowrap"
   },
 
   linhaErro: {
     background: "rgba(255,0,0,0.15)",
   },
-
-  linhaOk: {},
 
   statusErro: {
     color: "#ff6b6b",
@@ -642,7 +640,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   invalidos: { color: "#ff6b6b" },
 
   button: {
-    padding: "13px 18px",
+    padding: "11px 18px",
     fontSize: 16,
     borderRadius: 10,
     border: "1px solid rgba(255,255,255,0.25)",
