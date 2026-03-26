@@ -179,92 +179,20 @@ export default function Consulta({
 
   }
 
-  function gerarExcel(){
+  function formatarData(valor:any){
 
-    const dadosFormatados =
-      dados.map(linha => {
+    if(!valor) return "-";
 
-        const novo:any = {};
-
-        Object.keys(linha)
-          .forEach(col => {
-
-            novo[col.toUpperCase()] =
-              linha[col] == null ||
-              linha[col] === ""
-                ? "-"
-                : linha[col];
-
-          });
-
-        return novo;
-
-      });
-
-    const worksheet =
-      XLSX.utils.json_to_sheet(
-        dadosFormatados
-      );
-
-    const workbook =
-      XLSX.utils.book_new();
-
-    XLSX.utils.book_append_sheet(
-      workbook,
-      worksheet,
-      "Consulta"
-    );
-
-    XLSX.writeFile(
-      workbook,
-      "consulta.xlsx"
-    );
-
-  }
-
-  function gerarPDF(){
-
-    if(dados.length === 0) return;
-
-    const dadosFormatados =
-      dados.map(linha => {
-
-        const novo:any = {};
-
-        Object.keys(linha)
-          .forEach(col => {
-
-            novo[col.toUpperCase()] =
-              linha[col] == null ||
-              linha[col] === ""
-                ? "-"
-                : linha[col];
-
-          });
-
-        return novo;
-
-      });
-
-    const doc =
-      new jsPDF();
-
-    autoTable(doc,{
-
-      head:[
-        Object.keys(
-          dadosFormatados[0]
-        )
-      ],
-
-      body:
-        dadosFormatados.map(obj =>
-          Object.values(obj)
-        ),
-
-    });
-
-    doc.save("consulta.pdf");
+    return new Date(valor)
+      .toLocaleString("pt-BR",{
+        day:"2-digit",
+        month:"2-digit",
+        year:"numeric",
+        hour:"2-digit",
+        minute:"2-digit",
+        second:"2-digit"
+      })
+      .replace(","," -");
 
   }
 
@@ -283,13 +211,9 @@ export default function Consulta({
     return {
 
       onMouseEnter:aplicarHover,
-
       onMouseLeave:removerHover,
-
       onMouseDown:aplicarClick,
-
       onMouseUp:removerClick,
-
       onMouseOut:removerClick
 
     };
@@ -317,24 +241,6 @@ export default function Consulta({
           </div>
 
           <div style={styles.headerButtons}>
-
-            <button
-              {...propsBotao()}
-              onClick={gerarPDF}
-              disabled={dados.length === 0}
-              style={styles.button}
-            >
-              Gerar pdf
-            </button>
-
-            <button
-              {...propsBotao()}
-              onClick={gerarExcel}
-              disabled={dados.length === 0}
-              style={styles.button}
-            >
-              Gerar xls
-            </button>
 
             <button
               {...propsBotao()}
@@ -380,9 +286,7 @@ export default function Consulta({
             <select
               value={tipoBusca}
               onChange={(e)=>
-                setTipoBusca(
-                  e.target.value
-                )
+                setTipoBusca(e.target.value)
               }
               style={styles.input}
             >
@@ -421,9 +325,7 @@ export default function Consulta({
               }
               value={valorBusca}
               onChange={(e)=>
-                setValorBusca(
-                  e.target.value
-                )
+                setValorBusca(e.target.value)
               }
               style={styles.input}
             />
@@ -466,9 +368,12 @@ export default function Consulta({
               <tr>
 
                 {dados[0] &&
-
                   Object
                     .keys(dados[0])
+                    .filter(col =>
+                      col !== "id" &&
+                      col !== "dt_disp"
+                    )
                     .map(coluna => (
 
                       <th
@@ -479,7 +384,6 @@ export default function Consulta({
                       </th>
 
                     ))
-
                 }
 
               </tr>
@@ -494,19 +398,24 @@ export default function Consulta({
                   <tr key={index}>
 
                     {Object
-                      .values(linha)
+                      .entries(linha)
+                      .filter(([col]) =>
+                        col !== "id" &&
+                        col !== "dt_disp"
+                      )
                       .map(
-                        (valor, i) => (
+                        ([col,valor], i) => (
 
                           <td
                             key={i}
                             style={styles.td}
                           >
                             {
-                              valor == null ||
-                              valor === ""
-                                ? "-"
-                                : String(valor)
+                              col === "dt_ass_db"
+                                ? formatarData(valor)
+                                : valor == null || valor === ""
+                                  ? "-"
+                                  : String(valor)
                             }
                           </td>
 
