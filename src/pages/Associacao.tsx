@@ -268,6 +268,8 @@ setFolha("");
 setPoste("");
 setCoordenada("");
 
+document.getElementById("campoFolha")?.focus();
+
 setLoading(false);
 
   }
@@ -353,13 +355,11 @@ setLoading(false);
             />
 
 
-            <input
-
-              style={styles.input}
-
-              placeholder="Folha"
-
-              value={folha}
+<input
+  id="campoFolha"
+  style={styles.input}
+  placeholder="Folha"
+  value={folha}
 
               onChange={(e)=>
 
