@@ -30,24 +30,15 @@ type Props = {
 export default function Cadastro({
 
   usuario,
-
   permissoes,
-
   setPagina,
-
   atualizarContagem,
 
 }: Props) {
 
-  function temPermissao(
-    sistema:string,
-    tipos:string[]
-  ){
+  function temPermissao(sistema:string, tipos:string[]){
 
-    const p =
-      permissoes.find(
-        x => x.sistema === sistema
-      );
+    const p = permissoes.find(x => x.sistema === sistema);
 
     if(!p) return false;
 
@@ -57,35 +48,24 @@ export default function Cadastro({
 
   }
 
-  if(
-    !temPermissao(
-      "chaves",
-      ["cad_ch"]
-    )
-  ){
+  if(!temPermissao("chaves",["cad_ch"])){
 
     setPagina("home");
-
     return null;
 
   }
 
   const [registros, setRegistros] = useState<Registro[]>([]);
-
   const [erroImportacao, setErroImportacao] = useState("");
-
   const [loading, setLoading] = useState(false);
 
   function dataHojeBR(){
-
     return new Date().toLocaleDateString("pt-BR");
-
   }
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
 
     const file = e.target.files?.[0];
-
     if (!file) return;
 
     const reader = new FileReader();
@@ -93,18 +73,13 @@ export default function Cadastro({
     reader.onload = (evt) => {
 
       const data = evt.target?.result;
-
       if (!data) return;
 
       const workbook = XLSX.read(data, { type: "binary" });
-
       const sheetName = workbook.SheetNames[0];
-
       const worksheet = workbook.Sheets[sheetName];
 
-      const json: any[][] = XLSX.utils.sheet_to_json(worksheet, {
-        header: 1,
-      });
+      const json: any[][] = XLSX.utils.sheet_to_json(worksheet,{ header: 1 });
 
       const novos: Registro[] = [];
 
@@ -115,25 +90,18 @@ export default function Cadastro({
         let erro = "";
 
         if (!/^\d{6}$/.test(numero)) {
-
           erro = "Número deve ter 6 dígitos numéricos";
-
         }
 
         novos.push({
-
           numero,
-
           data: dataHojeBR(),
-
           erro: erro || undefined,
-
         });
 
       }
 
       setRegistros(novos);
-
       setErroImportacao("");
 
     };
@@ -163,7 +131,6 @@ export default function Cadastro({
       if (data) {
 
         registrosAtualizados[i].erro = "Chave já existente no banco";
-
         possuiErro = true;
 
       }
@@ -174,10 +141,7 @@ export default function Cadastro({
 
     if (possuiErro) {
 
-      setErroImportacao(
-        "Existem registros inválidos ou duplicados. Corrija antes de cadastrar."
-      );
-
+      setErroImportacao("Existem registros inválidos ou duplicados.");
       return;
 
     }
@@ -186,469 +150,208 @@ export default function Cadastro({
 
     for (const r of registrosAtualizados) {
 
-      await supabase.from("db_chaves").insert([
-        {
-          numero: r.numero,
-
-          dt_disp: new Date().toISOString().split("T")[0],
-
-          usu_cad_db: usuario.matricula,
-        },
-      ]);
+      await supabase.from("db_chaves").insert([{
+        numero: r.numero,
+        dt_disp: new Date().toISOString().split("T")[0],
+        usu_cad_db: usuario.matricula,
+      }]);
 
     }
 
     alert("Chaves cadastradas com sucesso!");
 
     setRegistros([]);
-
     atualizarContagem();
-
     setLoading(false);
 
   }
 
   return (
 
-    <div style={styles.container}>
+<div style={styles.container}>
 
-      <div style={styles.electricParticles}></div>
+<div style={styles.overlay}>
 
-      <div style={styles.overlay}>
+<div style={styles.topBar}>
 
-        <div style={styles.topBar}>
+<div style={styles.linhaUsuario}>
+{usuario.matricula} - {usuario.nome}
+</div>
 
-          <div style={styles.headerUsuario}>
+<button
+style={styles.button}
+onClick={() => setPagina("home")}
+>
+Home
+</button>
 
-            <div style={styles.linhaUsuario}>
+</div>
 
-              {usuario.matricula} - {usuario.nome}
+<div style={styles.cardPrincipal}>
 
-            </div>
+<input
+type="file"
+accept=".xls,.xlsx"
+onChange={handleFile}
+style={{marginBottom:20}}
+/>
 
-          </div>
+{registros.length > 0 && (
 
-          <div style={styles.acoesUsuario}>
+<>
 
-            <button
-              style={styles.button}
-              onClick={() => setPagina("home")}
-            >
-              Home
-            </button>
+<div style={styles.validosInvalidos}>
 
-          </div>
+<b>{registros.length}</b> registros importados
 
-        </div>
+<span style={styles.validos}>
+{
+registros.filter(r=>!r.erro).length
+} válidos
+</span>
 
-        <div style={styles.mainContent}>
+<span>|</span>
 
-          <div style={styles.cardPrincipal}>
+<span style={styles.invalidos}>
+{
+registros.filter(r=>r.erro).length
+} com erro
+</span>
 
-            <div style={styles.uploadArea}>
+</div>
 
-              <input
-                type="file"
-                accept=".xls,.xlsx"
-                onChange={handleFile}
-                style={styles.inputFile}
-                id="file-upload"
-              />
+<div style={{textAlign:"center"}}>
 
-              <label htmlFor="file-upload" style={styles.labelUpload}>
+<button
+style={styles.button}
+onClick={handleCadastrar}
+>
+Cadastrar {
+registros.filter(r=>!r.erro).length
+} Chaves
+</button>
 
-                <div style={styles.uploadIcon}>📁</div>
+</div>
 
-                <div>
+<table style={styles.tabela}>
 
-                  <strong>Selecionar Arquivo Excel</strong>
+<thead>
 
-                  <p>Arraste ou clique para importar (.xls, .xlsx)</p>
+<tr>
 
-                </div>
+<th style={styles.th}>NÚMERO</th>
+<th style={styles.th}>DATA</th>
+<th style={styles.th}>STATUS</th>
 
-              </label>
+</tr>
 
-            </div>
+</thead>
 
-            {erroImportacao && (
+<tbody>
 
-              <div style={styles.alertaErro}>
+{registros.map((r,i)=>(
 
-                <span>⚠️ {erroImportacao}</span>
+<tr key={i}>
 
-              </div>
+<td style={styles.td}>{r.numero}</td>
+<td style={styles.td}>{r.data}</td>
 
-            )}
+<td style={styles.td}>
 
-            {registros.length > 0 && (
+{r.erro
+? <span style={styles.invalidos}>{r.erro}</span>
+: <span style={styles.validos}>OK</span>
+}
 
-              <>
+</td>
 
-                <div style={styles.caixaQuantidade}>
+</tr>
 
-                  <div style={styles.statsContent}>
+))}
 
-                    <div style={styles.statItem}>
+</tbody>
 
-                      <strong style={styles.statNumber}>
+</table>
 
-                        {registros.length}
+</>
 
-                      </strong>
+)}
 
-                      <span> registros importados</span>
+</div>
+</div>
+</div>
 
-                    </div>
-
-                    <div style={styles.validosInvalidos}>
-
-                      <span style={styles.validos}>
-                        {
-                          registros.filter(
-                            r => !r.erro
-                          ).length
-                        } válidos
-                      </span>
-
-                      <span style={styles.separador}>|</span>
-
-                      <span style={styles.invalidos}>
-                        {
-                          registros.filter(
-                            r => r.erro
-                          ).length
-                        } com erro
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                  <div style={styles.botaoContainer}>
-
-                    <button
-
-                      style={{
-
-                        ...styles.button,
-
-                        opacity:
-
-                          loading ||
-
-                          registros.filter(
-                            r => !r.erro
-                          ).length === 0
-
-                            ? 0.5
-                            : 1,
-
-                      }}
-
-                      onClick={handleCadastrar}
-
-                      disabled={
-
-                        loading ||
-
-                        registros.filter(
-                          r => !r.erro
-                        ).length === 0
-
-                      }
-
-                    >
-
-                      {
-
-                        loading
-                          ? "Cadastrando..."
-                          : `Cadastrar ${
-                              registros.filter(
-                                r => !r.erro
-                              ).length
-                            } Chaves`
-
-                      }
-
-                    </button>
-
-                  </div>
-
-                </div>
-
-                <div style={styles.tabelaContainer}>
-
-                  <table style={styles.tabela}>
-
-                    <thead style={styles.thead}>
-
-                      <tr>
-
-                        <th style={styles.thNumero}>Número</th>
-
-                        <th style={styles.thData}>Data</th>
-
-                        <th style={styles.thStatus}>Status</th>
-
-                      </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                      {registros.map((r, index) => (
-
-                        <tr
-                          key={index}
-                          style={
-                            r.erro
-                              ? styles.linhaErro
-                              : styles.linhaOk
-                          }
-                        >
-
-                          <td style={styles.tdNumero}>{r.numero}</td>
-
-                          <td style={styles.tdData}>{r.data}</td>
-
-                          <td style={styles.tdStatus}>
-
-                            {
-
-                              r.erro
-
-                                ? (
-                                  <span style={styles.statusErro}>
-                                    {r.erro}
-                                  </span>
-                                )
-
-                                : (
-                                  <span style={styles.statusOk}>
-                                    OK
-                                  </span>
-                                )
-
-                            }
-
-                          </td>
-
-                        </tr>
-
-                      ))}
-
-                    </tbody>
-
-                  </table>
-
-                </div>
-
-              </>
-
-            )}
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  );
+);
 
 }
 
-const styles: { [key: string]: React.CSSProperties } = {
+const styles:{[key:string]:React.CSSProperties}={
 
-  container: {
-    minHeight: "100vh",
-    backgroundImage: `
-      linear-gradient(rgba(10,31,68,0.55), rgba(10,31,68,0.75)),
-      url("https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg")
-    `,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-    backgroundAttachment: "fixed",
-    position: "relative",
-    overflow: "hidden",
-  },
+container:{
+minHeight:"100vh",
+backgroundImage:`
+linear-gradient(rgba(10,31,68,0.55), rgba(10,31,68,0.75)),
+url("https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg")
+`,
+backgroundSize:"cover",
+padding:40,
+color:"white"
+},
 
-  electricParticles: {
-    position: "absolute",
-    inset: 0,
-    pointerEvents: "none",
-  },
+overlay:{
+maxWidth:1100,
+margin:"auto"
+},
 
-  overlay: {
-    minHeight: "100vh",
-    padding: "40px 20px",
-    color: "white",
-    position: "relative",
-    zIndex: 2,
-  },
+topBar:{
+display:"flex",
+justifyContent:"space-between",
+marginBottom:20
+},
 
-  topBar: {
-    maxWidth: "1200px",
-    margin: "0 auto 60px",
-    display: "flex",
-    justifyContent: "space-between",
-  },
+cardPrincipal:{
+background:"rgba(255,255,255,0.06)",
+padding:30,
+borderRadius:20
+},
 
-  linhaUsuario: {
-    fontSize: 22,
-    fontWeight: 700,
-  },
+validosInvalidos:{
+display:"flex",
+gap:8,
+alignItems:"center",
+marginBottom:15
+},
 
-  mainContent: {
-    maxWidth: "1200px",
-    margin: "0 auto",
-  },
+validos:{color:"#00ff88"},
+invalidos:{color:"#ff6b6b"},
 
-  cardPrincipal: {
-    background: "rgba(255,255,255,0.06)",
-    backdropFilter: "blur(20px)",
-    borderRadius: "24px",
-    padding: "40px",
-  },
+tabela:{
+width:"auto",
+minWidth:"100%",
+borderCollapse:"collapse",
+background:"rgba(255,255,255,0.06)"
+},
 
-  inputFile: { display: "none" },
+th:{
+border:"1px solid rgba(255,255,255,0.15)",
+padding:8.5,
+textAlign:"center",
+textTransform:"uppercase"
+},
 
-  labelUpload: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    padding: "40px",
-    border: "2px dashed rgba(255,255,255,0.4)",
-    borderRadius: "20px",
-    cursor: "pointer",
-  },
+td:{
+border:"1px solid rgba(255,255,255,0.15)",
+padding:8.5,
+textAlign:"center"
+},
 
-  uploadIcon: {
-    fontSize: 48,
-  },
-
-  caixaQuantidade: {
-    marginTop: 20,
-  },
-
-  statsContent: {
-    marginBottom: 20,
-  },
-
-  validosInvalidos:{
-    display:"flex",
-    gap:8,
-    alignItems:"center",
-  },
-
-  separador:{
-    opacity:0.7
-  },
-
-  botaoContainer: {
-    display: "flex",
-    justifyContent: "center",
-  },
-
-  tabelaContainer: {
-    overflowX: "auto",
-    marginTop: 20,
-  },
-
-  tabela: {
-    width: "100%",
-    tableLayout:"auto",
-    background: "rgba(255,255,255,0.06)",
-    color: "white",
-    borderCollapse:"collapse"
-  },
-
-  thead: {
-    background: "#1e3c72",
-    color: "white",
-  },
-
-  thNumero: {
-    padding: 8.5,
-    border:"1px solid rgba(255,255,255,0.15)",
-    textAlign:"center",
-    whiteSpace:"nowrap"
-  },
-
-  thData: {
-    padding: 8.5,
-    border:"1px solid rgba(255,255,255,0.15)",
-    textAlign:"center",
-    whiteSpace:"nowrap"
-  },
-
-  thStatus: {
-    padding: 8.5,
-    border:"1px solid rgba(255,255,255,0.15)",
-    textAlign:"center",
-    whiteSpace:"nowrap"
-  },
-
-  tdNumero: {
-    padding: 8.5,
-    border:"1px solid rgba(255,255,255,0.15)",
-    textAlign:"center",
-    whiteSpace:"nowrap"
-  },
-
-  tdData: {
-    padding: 8.5,
-    border:"1px solid rgba(255,255,255,0.15)",
-    textAlign:"center",
-    whiteSpace:"nowrap"
-  },
-
-  tdStatus: {
-    padding: 8.5,
-    border:"1px solid rgba(255,255,255,0.15)",
-    textAlign:"center",
-    whiteSpace:"nowrap"
-  },
-
-  linhaErro: {
-    background: "rgba(255,0,0,0.15)",
-  },
-
-  statusErro: {
-    color: "#ff6b6b",
-  },
-
-  statusOk: {
-    color: "#00ff88",
-  },
-
-  alertaErro: {
-    marginTop: 20,
-    color: "#ff6b6b",
-  },
-
-  statNumber: {
-    fontSize: 28,
-  },
-
-  validos: { color: "#00ff88" },
-
-  invalidos: { color: "#ff6b6b" },
-
-  button: {
-    padding: "11px 18px",
-    fontSize: 16,
-    borderRadius: 10,
-    border: "1px solid rgba(255,255,255,0.25)",
-    backgroundColor: "rgba(255,255,255,0.12)",
-    color: "white",
-    cursor: "pointer",
-    backdropFilter: "blur(6px)",
-    transition: "all 0.3s ease",
-  },
+button:{
+padding:"11px 18px",
+borderRadius:8,
+border:"1px solid rgba(255,255,255,0.25)",
+background:"rgba(255,255,255,0.12)",
+color:"white",
+cursor:"pointer"
+}
 
 };
