@@ -84,6 +84,29 @@ export default function Consulta({
   carregarDisponiveis();
 
 },[]);
+
+const [usuarios, setUsuarios] = useState<any[]>([]);
+
+useEffect(() => {
+
+  async function carregarUsuarios(){
+
+    const { data } =
+      await supabase
+        .from("db_usuarios_apps")
+        .select("matricula,nome");
+
+    if(data){
+
+      setUsuarios(data);
+
+    }
+
+  }
+
+  carregarUsuarios();
+
+},[]);
   
   const botaoHabilitado =
     tipoBusca !== "" && valorBusca !== "";
@@ -328,6 +351,19 @@ export default function Consulta({
 
   }
 
+function obterNomeUsuario(matricula:any){
+
+  if(!matricula) return "-";
+
+  const u =
+    usuarios.find(
+      x => x.matricula == matricula
+    );
+
+  return u?.nome || matricula;
+
+}
+  
   return (
 
     <div style={styles.container}>
@@ -550,18 +586,25 @@ export default function Consulta({
                       .map(
                         ([col,valor], i) => (
 
-                          <td
-                            key={i}
-                            style={styles.td}
-                          >
-                            {
-                              col === "dt_ass_db"
-                                ? formatarData(valor)
-                                : valor == null || valor === ""
-                                  ? "-"
-                                  : String(valor)
-                            }
-                          </td>
+<td
+  key={i}
+  style={styles.td}
+>
+{
+  col === "usu_cad_db"
+    ? obterNomeUsuario(valor)
+  :
+  col === "usu_ass"
+    ? obterNomeUsuario(valor)
+  :
+  col === "dt_ass_db"
+    ? formatarData(valor)
+  :
+  valor == null || valor === ""
+    ? "-"
+    : String(valor)
+}
+</td>
 
                         )
                       )}
