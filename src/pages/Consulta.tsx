@@ -163,15 +163,20 @@ useEffect(() => {
         );
 
     }
-    else if(tipoBusca === "dt_ass_db"){
+else if(tipoBusca === "dt_ass_db"){
 
-      query =
-        query.eq(
-          "dt_ass_db",
-          valorBusca
-        );
+  const inicio =
+    `${valorBusca} 00:00:00`;
 
-    }
+  const fim =
+    `${valorBusca} 23:59:59`;
+
+  query =
+    query
+      .gte("dt_ass_db", inicio)
+      .lte("dt_ass_db", fim);
+
+}
     else{
 
       query =
@@ -474,12 +479,12 @@ function obterNomeUsuario(matricula:any){
               </option>
 
               <option value="usu_ass">
-                Projetista
-              </option>
+  Usuario associação
+</option>
 
-              <option value="dt_ass_db">
-                Data
-              </option>
+<option value="dt_ass_db">
+  Data associação
+</option>
 
             </select>
 
