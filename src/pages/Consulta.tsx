@@ -96,7 +96,14 @@ export default function Consulta({
     let query =
       supabase
         .from("db_chaves")
-        .select("*");
+        .select(`
+          id,
+          numero,
+          dt_cad_db,
+          db_usuarios_apps (
+            nome
+          )
+        `);
 
     if(tipoBusca === "ns"){
 
@@ -153,7 +160,14 @@ export default function Consulta({
     const { data } =
       await supabase
         .from("db_chaves")
-        .select("*")
+        .select(`
+          id,
+          numero,
+          dt_cad_db,
+          db_usuarios_apps (
+            nome
+          )
+        `)
         .not(
           "ns",
           "is",
@@ -169,7 +183,14 @@ export default function Consulta({
     const { data } =
       await supabase
         .from("db_chaves")
-        .select("*")
+        .select(`
+          id,
+          numero,
+          dt_cad_db,
+          db_usuarios_apps (
+            nome
+          )
+        `)
         .is(
           "ns",
           null
@@ -181,8 +202,34 @@ export default function Consulta({
 
   function gerarExcel(){
 
+    const dadosFormatados =
+      dados.map(x => ({
+
+        ID:x.id,
+
+        NUMERO:x.numero,
+
+        "DATA CADASTRO DB":
+          new Date(x.dt_cad_db)
+            .toLocaleString("pt-BR",{
+              day:"2-digit",
+              month:"2-digit",
+              year:"numeric",
+              hour:"2-digit",
+              minute:"2-digit",
+              second:"2-digit"
+            })
+            .replace(","," -"),
+
+        "USUARIO RESPONSAVEL P/ CADASTRO":
+          x.db_usuarios_apps?.nome || ""
+
+      }));
+
     const worksheet =
-      XLSX.utils.json_to_sheet(dados);
+      XLSX.utils.json_to_sheet(
+        dadosFormatados
+      );
 
     const workbook =
       XLSX.utils.book_new();
@@ -204,19 +251,45 @@ export default function Consulta({
 
     if(dados.length === 0) return;
 
+    const dadosFormatados =
+      dados.map(x => ({
+
+        ID:x.id,
+
+        NUMERO:x.numero,
+
+        "DATA CADASTRO DB":
+          new Date(x.dt_cad_db)
+            .toLocaleString("pt-BR",{
+              day:"2-digit",
+              month:"2-digit",
+              year:"numeric",
+              hour:"2-digit",
+              minute:"2-digit",
+              second:"2-digit"
+            })
+            .replace(","," -"),
+
+        "USUARIO RESPONSAVEL P/ CADASTRO":
+          x.db_usuarios_apps?.nome || ""
+
+      }));
+
     const doc =
       new jsPDF();
 
     autoTable(doc,{
 
       head:[
-        Object.keys(dados[0])
+        Object.keys(
+          dadosFormatados[0]
+        )
       ],
 
       body:
-        dados.map(obj =>
-          Object.values(obj)
-        ),
+        dadosFormatados.map(
+          Object.values
+        )
 
     });
 
@@ -421,22 +494,21 @@ export default function Consulta({
 
               <tr>
 
-                {dados[0] &&
+                <th style={styles.th}>
+                  ID
+                </th>
 
-                  Object
-                    .keys(dados[0])
-                    .map(coluna => (
+                <th style={styles.th}>
+                  NUMERO
+                </th>
 
-                      <th
-                        key={coluna}
-                        style={styles.th}
-                      >
-                        {coluna}
-                      </th>
+                <th style={styles.th}>
+                  DATA CADASTRO DB
+                </th>
 
-                    ))
-
-                }
+                <th style={styles.th}>
+                  USUARIO RESPONSAVEL P/ CADASTRO
+                </th>
 
               </tr>
 
@@ -444,45 +516,40 @@ export default function Consulta({
 
             <tbody>
 
-              {dados.map(
-                (linha, index) => (
+              {dados.map((linha, index) => (
 
-                  <tr key={index}>
+                <tr key={index}>
 
-                    {Object
-                      .values(linha)
-                      .map(
-                        (valor, i) => (
+                  <td style={styles.td}>
+                    {linha.id}
+                  </td>
 
-                          <td
-  key={i}
-  style={styles.td}
->
-  {
-    typeof valor === "string" &&
-    valor.includes("T") &&
-    !isNaN(Date.parse(valor))
-      ? new Date(valor)
-          .toLocaleString("pt-BR", {
-            day:"2-digit",
-            month:"2-digit",
-            year:"numeric",
-            hour:"2-digit",
-            minute:"2-digit",
-            second:"2-digit"
-          })
-          .replace(",", " -")
-      : String(valor)
-  }
-</td>
+                  <td style={styles.td}>
+                    {linha.numero}
+                  </td>
 
-                        )
-                      )}
+                  <td style={styles.td}>
+                    {
+                      new Date(linha.dt_cad_db)
+                        .toLocaleString("pt-BR",{
+                          day:"2-digit",
+                          month:"2-digit",
+                          year:"numeric",
+                          hour:"2-digit",
+                          minute:"2-digit",
+                          second:"2-digit"
+                        })
+                        .replace(","," -")
+                    }
+                  </td>
 
-                  </tr>
+                  <td style={styles.td}>
+                    {linha.db_usuarios_apps?.nome || ""}
+                  </td>
 
-                )
-              )}
+                </tr>
+
+              ))}
 
             </tbody>
 
