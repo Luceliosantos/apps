@@ -262,9 +262,13 @@ export default function Associacao({
 
     await buscarLista(nota);
 
-    setDestacarUltima(true);
+setDestacarUltima(true);
 
-    setLoading(false);
+setFolha("");
+setPoste("");
+setCoordenada("");
+
+setLoading(false);
 
   }
 
@@ -401,15 +405,25 @@ export default function Associacao({
 
               value={coordenada}
 
-              onChange={(e)=>
+onChange={(e)=>{
 
-                setCoordenada(
+  let v =
+    e.target.value
+      .replace(/\D/g,"")
+      .slice(0,13);
 
-                  e.target.value
+  if(v.length > 6){
 
-                )
+    v =
+      v.slice(0,6)
+      + ":"
+      + v.slice(6);
 
-              }
+  }
+
+  setCoordenada(v);
+
+}}
 
             />
 
