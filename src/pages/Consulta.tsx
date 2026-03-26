@@ -479,11 +479,11 @@ function obterNomeUsuario(matricula:any){
               </option>
 
               <option value="usu_ass">
-  Usuario associação
+  Matricula Usuario Associação
 </option>
 
 <option value="dt_ass_db">
-  Data associação
+  Data Associação
 </option>
 
             </select>
