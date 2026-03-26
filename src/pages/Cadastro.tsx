@@ -196,6 +196,12 @@ onChange={handleFile}
 style={{marginBottom:20}}
 />
 
+{erroImportacao && (
+<div style={styles.invalidos}>
+{erroImportacao}
+</div>
+)}
+
 {registros.length > 0 && (
 
 <>
@@ -223,12 +229,21 @@ registros.filter(r=>r.erro).length
 <div style={{textAlign:"center"}}>
 
 <button
-style={styles.button}
+style={{
+...styles.button,
+opacity: loading ? 0.6 : 1
+}}
 onClick={handleCadastrar}
+disabled={loading}
 >
-Cadastrar {
+
+{loading
+? "Cadastrando..."
+: `Cadastrar ${
 registros.filter(r=>!r.erro).length
-} Chaves
+} Chaves`
+}
+
 </button>
 
 </div>
