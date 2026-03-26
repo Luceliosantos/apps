@@ -154,11 +154,7 @@ export default function Consulta({
       await supabase
         .from("db_chaves")
         .select("*")
-        .not(
-          "ns",
-          "is",
-          null
-        );
+        .not("ns","is",null);
 
     if(data) setDados(data);
 
@@ -170,10 +166,7 @@ export default function Consulta({
       await supabase
         .from("db_chaves")
         .select("*")
-        .is(
-          "ns",
-          null
-        );
+        .is("ns",null);
 
     if(data) setDados(data);
 
@@ -193,6 +186,97 @@ export default function Consulta({
         second:"2-digit"
       })
       .replace(","," -");
+
+  }
+
+  function prepararDadosExportacao(){
+
+    return dados.map(linha => {
+
+      const novo:any = {};
+
+      Object.entries(linha)
+        .filter(([col]) =>
+          col !== "id" &&
+          col !== "dt_disp"
+        )
+        .forEach(([col,val]) => {
+
+          if(col === "dt_ass_db"){
+
+            novo[col.toUpperCase()] =
+              formatarData(val);
+
+          }
+          else{
+
+            novo[col.toUpperCase()] =
+              val == null || val === ""
+                ? "-"
+                : val;
+
+          }
+
+        });
+
+      return novo;
+
+    });
+
+  }
+
+  function gerarExcel(){
+
+    const dadosFormatados =
+      prepararDadosExportacao();
+
+    const worksheet =
+      XLSX.utils.json_to_sheet(
+        dadosFormatados
+      );
+
+    const workbook =
+      XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+      workbook,
+      worksheet,
+      "Consulta"
+    );
+
+    XLSX.writeFile(
+      workbook,
+      "consulta.xlsx"
+    );
+
+  }
+
+  function gerarPDF(){
+
+    if(dados.length === 0) return;
+
+    const dadosFormatados =
+      prepararDadosExportacao();
+
+    const doc =
+      new jsPDF();
+
+    autoTable(doc,{
+
+      head:[
+        Object.keys(
+          dadosFormatados[0]
+        )
+      ],
+
+      body:
+        dadosFormatados.map(
+          Object.values
+        ),
+
+    });
+
+    doc.save("consulta.pdf");
 
   }
 
@@ -241,6 +325,24 @@ export default function Consulta({
           </div>
 
           <div style={styles.headerButtons}>
+
+            <button
+              {...propsBotao()}
+              onClick={gerarPDF}
+              disabled={dados.length === 0}
+              style={styles.button}
+            >
+              Gerar pdf
+            </button>
+
+            <button
+              {...propsBotao()}
+              onClick={gerarExcel}
+              disabled={dados.length === 0}
+              style={styles.button}
+            >
+              Gerar xls
+            </button>
 
             <button
               {...propsBotao()}
