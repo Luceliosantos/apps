@@ -304,31 +304,21 @@ export default function Cadastro({
                     <div style={styles.validosInvalidos}>
 
                       <span style={styles.validos}>
-
                         {
-
                           registros.filter(
                             r => !r.erro
                           ).length
-
-                        }
-
-                        {" "}válidos
-
+                        } válidos
                       </span>
 
+                      <span style={styles.separador}>|</span>
+
                       <span style={styles.invalidos}>
-
                         {
-
                           registros.filter(
                             r => r.erro
                           ).length
-
-                        }
-
-                        {" "}com erro
-
+                        } com erro
                       </span>
 
                     </div>
@@ -471,7 +461,6 @@ export default function Cadastro({
 
 }
 
-
 const styles: { [key: string]: React.CSSProperties } = {
 
   container: {
@@ -552,6 +541,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginBottom: 20,
   },
 
+  validosInvalidos:{
+    display:"flex",
+    gap:8,
+    alignItems:"center",
+  },
+
+  separador:{
+    opacity:0.7
+  },
+
   botaoContainer: {
     display: "flex",
     justifyContent: "center",
@@ -564,8 +563,9 @@ const styles: { [key: string]: React.CSSProperties } = {
 
   tabela: {
     width: "100%",
-    background: "white",
-    color: "black",
+    background: "rgba(255,255,255,0.06)",
+    color: "white",
+    borderCollapse:"collapse"
   },
 
   thead: {
@@ -573,26 +573,59 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: "white",
   },
 
-  thNumero: { padding: 10 },
-  thData: { padding: 10 },
-  thStatus: { padding: 10 },
+  thNumero: {
+    padding: 10,
+    border:"1px solid rgba(255,255,255,0.15)",
+    textAlign:"center",
+    width:"1%"
+  },
 
-  tdNumero: { padding: 10 },
-  tdData: { padding: 10 },
-  tdStatus: { padding: 10 },
+  thData: {
+    padding: 10,
+    border:"1px solid rgba(255,255,255,0.15)",
+    textAlign:"center",
+    width:"1%"
+  },
+
+  thStatus: {
+    padding: 10,
+    border:"1px solid rgba(255,255,255,0.15)",
+    textAlign:"center",
+    width:"1%"
+  },
+
+  tdNumero: {
+    padding: 10,
+    border:"1px solid rgba(255,255,255,0.15)",
+    textAlign:"center",
+    whiteSpace:"nowrap"
+  },
+
+  tdData: {
+    padding: 10,
+    border:"1px solid rgba(255,255,255,0.15)",
+    textAlign:"center",
+    whiteSpace:"nowrap"
+  },
+
+  tdStatus: {
+    padding: 10,
+    border:"1px solid rgba(255,255,255,0.15)",
+    textAlign:"center"
+  },
 
   linhaErro: {
-    background: "#ffdede",
+    background: "rgba(255,0,0,0.15)",
   },
 
   linhaOk: {},
 
   statusErro: {
-    color: "red",
+    color: "#ff6b6b",
   },
 
   statusOk: {
-    color: "green",
+    color: "#00ff88",
   },
 
   alertaErro: {
@@ -609,7 +642,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   invalidos: { color: "#ff6b6b" },
 
   button: {
-    padding: 18,
+    padding: "13px 18px",
     fontSize: 16,
     borderRadius: 10,
     border: "1px solid rgba(255,255,255,0.25)",
