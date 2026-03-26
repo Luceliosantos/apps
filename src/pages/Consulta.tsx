@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../supabase";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
@@ -61,6 +61,32 @@ export default function Consulta({
   const [dados, setDados] = useState<Registro[]>([]);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+  
+    async function carregarDisponiveis(){
+  
+      const { data } =
+        await supabase
+          .from("db_chaves")
+          .select("*")
+          .is("ns",null);
+  
+      if(data){
+  
+        setDados(data);
+  
+        alert(
+          `${data.length} chaves disponíveis`
+        );
+  
+      }
+  
+    }
+  
+    carregarDisponiveis();
+  
+  },[]);
+  
   const botaoHabilitado =
     tipoBusca !== "" && valorBusca !== "";
 
