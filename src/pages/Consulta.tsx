@@ -60,32 +60,30 @@ export default function Consulta({
   const [valorBusca, setValorBusca] = useState("");
   const [dados, setDados] = useState<Registro[]>([]);
   const [loading, setLoading] = useState(false);
-
+  const [qtdDisponiveis, setQtdDisponiveis] = useState(0);
+  
   useEffect(() => {
-  
-    async function carregarDisponiveis(){
-  
-      const { data } =
-        await supabase
-          .from("db_chaves")
-          .select("*")
-          .is("ns",null);
-  
-      if(data){
-  
-        setDados(data);
-  
-        alert(
-          `${data.length} chaves disponíveis`
-        );
-  
-      }
-  
+
+  async function carregarDisponiveis(){
+
+    const { data } =
+      await supabase
+        .from("db_chaves")
+        .select("*")
+        .is("ns",null);
+
+    if(data){
+
+      setDados(data);
+      setQtdDisponiveis(data.length);
+
     }
-  
-    carregarDisponiveis();
-  
-  },[]);
+
+  }
+
+  carregarDisponiveis();
+
+},[]);
   
   const botaoHabilitado =
     tipoBusca !== "" && valorBusca !== "";
@@ -340,15 +338,19 @@ export default function Consulta({
 
           <div>
 
-            <strong>
-              {usuario.nome}
-            </strong>
+  <strong>
+    {usuario.nome}
+  </strong>
 
-            {" | "}
+  {" | "}
 
-            {usuario.matricula}
+  {usuario.matricula}
 
-          </div>
+  <div>
+    Chaves disponíveis: {qtdDisponiveis}
+  </div>
+
+</div>
 
           <div style={styles.headerButtons}>
 
