@@ -96,14 +96,7 @@ export default function Consulta({
     let query =
       supabase
         .from("db_chaves")
-        .select(`
-          id,
-          numero,
-          dt_cad_db,
-          db_usuarios_apps (
-            nome
-          )
-        `);
+        .select("*");
 
     if(tipoBusca === "ns"){
 
@@ -160,14 +153,7 @@ export default function Consulta({
     const { data } =
       await supabase
         .from("db_chaves")
-        .select(`
-          id,
-          numero,
-          dt_cad_db,
-          db_usuarios_apps (
-            nome
-          )
-        `)
+        .select("*")
         .not(
           "ns",
           "is",
@@ -183,14 +169,7 @@ export default function Consulta({
     const { data } =
       await supabase
         .from("db_chaves")
-        .select(`
-          id,
-          numero,
-          dt_cad_db,
-          db_usuarios_apps (
-            nome
-          )
-        `)
+        .select("*")
         .is(
           "ns",
           null
@@ -203,28 +182,24 @@ export default function Consulta({
   function gerarExcel(){
 
     const dadosFormatados =
-      dados.map(x => ({
+      dados.map(linha => {
 
-        ID:x.id,
+        const novo:any = {};
 
-        NUMERO:x.numero,
+        Object.keys(linha)
+          .forEach(col => {
 
-        "DATA CADASTRO DB":
-          new Date(x.dt_cad_db)
-            .toLocaleString("pt-BR",{
-              day:"2-digit",
-              month:"2-digit",
-              year:"numeric",
-              hour:"2-digit",
-              minute:"2-digit",
-              second:"2-digit"
-            })
-            .replace(","," -"),
+            novo[col.toUpperCase()] =
+              linha[col] == null ||
+              linha[col] === ""
+                ? "-"
+                : linha[col];
 
-        "USUARIO RESPONSAVEL P/ CADASTRO":
-          x.db_usuarios_apps?.nome || ""
+          });
 
-      }));
+        return novo;
+
+      });
 
     const worksheet =
       XLSX.utils.json_to_sheet(
@@ -252,28 +227,24 @@ export default function Consulta({
     if(dados.length === 0) return;
 
     const dadosFormatados =
-      dados.map(x => ({
+      dados.map(linha => {
 
-        ID:x.id,
+        const novo:any = {};
 
-        NUMERO:x.numero,
+        Object.keys(linha)
+          .forEach(col => {
 
-        "DATA CADASTRO DB":
-          new Date(x.dt_cad_db)
-            .toLocaleString("pt-BR",{
-              day:"2-digit",
-              month:"2-digit",
-              year:"numeric",
-              hour:"2-digit",
-              minute:"2-digit",
-              second:"2-digit"
-            })
-            .replace(","," -"),
+            novo[col.toUpperCase()] =
+              linha[col] == null ||
+              linha[col] === ""
+                ? "-"
+                : linha[col];
 
-        "USUARIO RESPONSAVEL P/ CADASTRO":
-          x.db_usuarios_apps?.nome || ""
+          });
 
-      }));
+        return novo;
+
+      });
 
     const doc =
       new jsPDF();
@@ -287,9 +258,9 @@ export default function Consulta({
       ],
 
       body:
-        dadosFormatados.map(
-          Object.values
-        )
+        dadosFormatados.map(obj =>
+          Object.values(obj)
+        ),
 
     });
 
@@ -494,21 +465,22 @@ export default function Consulta({
 
               <tr>
 
-                <th style={styles.th}>
-                  ID
-                </th>
+                {dados[0] &&
 
-                <th style={styles.th}>
-                  NUMERO
-                </th>
+                  Object
+                    .keys(dados[0])
+                    .map(coluna => (
 
-                <th style={styles.th}>
-                  DATA CADASTRO DB
-                </th>
+                      <th
+                        key={coluna}
+                        style={styles.th}
+                      >
+                        {coluna.toUpperCase()}
+                      </th>
 
-                <th style={styles.th}>
-                  USUARIO RESPONSAVEL P/ CADASTRO
-                </th>
+                    ))
+
+                }
 
               </tr>
 
@@ -516,40 +488,35 @@ export default function Consulta({
 
             <tbody>
 
-              {dados.map((linha, index) => (
+              {dados.map(
+                (linha, index) => (
 
-                <tr key={index}>
+                  <tr key={index}>
 
-                  <td style={styles.td}>
-                    {linha.id}
-                  </td>
+                    {Object
+                      .values(linha)
+                      .map(
+                        (valor, i) => (
 
-                  <td style={styles.td}>
-                    {linha.numero}
-                  </td>
+                          <td
+                            key={i}
+                            style={styles.td}
+                          >
+                            {
+                              valor == null ||
+                              valor === ""
+                                ? "-"
+                                : String(valor)
+                            }
+                          </td>
 
-                  <td style={styles.td}>
-                    {
-                      new Date(linha.dt_cad_db)
-                        .toLocaleString("pt-BR",{
-                          day:"2-digit",
-                          month:"2-digit",
-                          year:"numeric",
-                          hour:"2-digit",
-                          minute:"2-digit",
-                          second:"2-digit"
-                        })
-                        .replace(","," -")
-                    }
-                  </td>
+                        )
+                      )}
 
-                  <td style={styles.td}>
-                    {linha.db_usuarios_apps?.nome || ""}
-                  </td>
+                  </tr>
 
-                </tr>
-
-              ))}
+                )
+              )}
 
             </tbody>
 
