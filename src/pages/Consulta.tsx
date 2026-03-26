@@ -485,7 +485,7 @@ export default function Consulta({
             flh:"FOLHA",
             poste:"POSTE",
             coordenada:"COORDENADA",
-            usu_ass:"USARIO ASSOCIAÇÃO",
+            usu_ass:"USUARIO ASSOCIAÇÃO",
             dt_ass_db:"DATA ASSOCIAÇÃO"
 
           };
