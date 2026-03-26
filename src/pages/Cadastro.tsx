@@ -329,20 +329,23 @@ tabela:{
 width:"auto",
 minWidth:"100%",
 borderCollapse:"collapse",
-background:"rgba(255,255,255,0.06)"
+background:"rgba(255,255,255,0.06)",
+tableLayout:"auto"
 },
 
 th:{
 border:"1px solid rgba(255,255,255,0.15)",
 padding:8.5,
 textAlign:"center",
-textTransform:"uppercase"
+textTransform:"uppercase",
+whiteSpace:"nowrap"
 },
 
 td:{
 border:"1px solid rgba(255,255,255,0.15)",
 padding:8.5,
-textAlign:"center"
+textAlign:"center",
+whiteSpace:"nowrap"
 },
 
 button:{
