@@ -186,15 +186,23 @@ export default function Cadastro({
 
     for (const r of registrosAtualizados) {
 
-      await supabase.from("db_chaves").insert([
-        {
-          numero: r.numero,
+await supabase.from("db_chaves").insert([
+  {
+    numero: r.numero,
 
-          dt_disp: new Date().toISOString().split("T")[0],
+    dt_disp: new Date().toISOString(),
 
-          usu_cad_db: usuario.matricula,
-        },
-      ]);
+    usu_cad_db: usuario.matricula,
+
+    dt_ass_db: null,
+    usu_ass: null,
+    ns: null,
+    flh: null,
+    poste: null,
+    coord: null
+
+  },
+]);
 
     }
 
