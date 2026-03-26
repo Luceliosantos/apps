@@ -466,31 +466,45 @@ export default function Consulta({
           <table style={styles.table}>
 
             <thead>
+  <tr>
+    {dados[0] &&
+      Object
+        .keys(dados[0])
+        .filter(col =>
+          col !== "id" &&
+          col !== "dt_disp"
+        )
+        .map(coluna => {
 
-              <tr>
+          const nomesColunas:any = {
 
-                {dados[0] &&
-                  Object
-                    .keys(dados[0])
-                    .filter(col =>
-                      col !== "id" &&
-                      col !== "dt_disp"
-                    )
-                    .map(coluna => (
+            numero:"NUMERO",
+            dt_cad_db:"DATA CADASTRO",
+            usu_cad_db:"USUARIO CADASTRO",
+            ns:"NOTA",
+            flh:"FOLHA",
+            poste:"POSTE",
+            coordenada:"COORDENADA",
+            usu_ass:"USARIO ASSOCIAÇÃO",
+            dt_ass_db:"DATA ASSOCIAÇÃO"
 
-                      <th
-                        key={coluna}
-                        style={styles.th}
-                      >
-                        {coluna.toUpperCase()}
-                      </th>
+          };
 
-                    ))
-                }
+          return (
 
-              </tr>
+            <th
+              key={coluna}
+              style={styles.th}
+            >
+              {nomesColunas[coluna] || coluna.toUpperCase()}
+            </th>
 
-            </thead>
+          );
+
+        })
+    }
+  </tr>
+</thead>
 
             <tbody>
 
