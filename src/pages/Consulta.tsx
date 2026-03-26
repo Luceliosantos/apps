@@ -66,18 +66,13 @@ export default function Consulta({
 
   async function carregarDisponiveis(){
 
-    const { data } =
+    const { count } =
       await supabase
         .from("db_chaves")
-        .select("*")
-        .is("ns",null);
+        .select("*", { count: "exact", head: true })
+        .is("ns", null);
 
-    if(data){
-
-      setDados(data);
-      setQtdDisponiveis(data.length);
-
-    }
+    setQtdDisponiveis(count || 0);
 
   }
 
