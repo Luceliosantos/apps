@@ -3,10 +3,12 @@ import { supabase } from "../supabase";
 
 type Props = {
   permissoes: any[];
+  setPagina: (pagina: string) => void;
 };
 
 export default function CorrigirCadastro({
-  permissoes
+  permissoes,
+  setPagina
 }: Props) {
 
   const [busca, setBusca] = useState("");
@@ -21,7 +23,7 @@ export default function CorrigirCadastro({
 
     const p =
       permissoes.find(
-        x => x.sistema === sistema
+        (x) => x.sistema === sistema
       );
 
     if (!p) return false;
@@ -167,9 +169,32 @@ export default function CorrigirCadastro({
         }}
       >
 
-        <h2 style={{ marginBottom: "20px" }}>
-          Corrigir cadastro
-        </h2>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "20px"
+          }}
+        >
+
+          <h2>Corrigir cadastro</h2>
+
+          <button
+            onClick={() => setPagina("cadastroChaves")}
+            style={{
+              padding: "8px 16px",
+              borderRadius: "6px",
+              border: "none",
+              backgroundColor: "#c0392b",
+              color: "white",
+              cursor: "pointer"
+            }}
+          >
+            Home
+          </button>
+
+        </div>
 
 
         <div
@@ -214,7 +239,6 @@ export default function CorrigirCadastro({
 
         {loading && <p>Buscando...</p>}
 
-
         {!loading && lista.length === 0 && (
           <p>Nenhum registro encontrado</p>
         )}
@@ -253,7 +277,7 @@ export default function CorrigirCadastro({
 
             <tbody>
 
-              {lista.map(item => (
+              {lista.map((item) => (
 
                 <tr key={item.id}>
 
@@ -272,7 +296,7 @@ export default function CorrigirCadastro({
                   <td style={td}>
                     {item.data_associacao
                       ? new Date(item.data_associacao)
-                        .toLocaleString("pt-BR")
+                          .toLocaleString("pt-BR")
                       : ""
                     }
                   </td>
@@ -316,14 +340,14 @@ export default function CorrigirCadastro({
 }
 
 
-const th = {
+const th: React.CSSProperties = {
   padding: "10px",
   textAlign: "left",
   borderBottom: "1px solid #ddd"
 };
 
 
-const td = {
+const td: React.CSSProperties = {
   padding: "10px",
   borderBottom: "1px solid #eee"
 };
