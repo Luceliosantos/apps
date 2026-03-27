@@ -1,172 +1,122 @@
 import { useState } from "react";
-import { supabase } from "../supabase";
+import { supabase } from "../supabaseClient";
 import { Pagina } from "../App";
 
 type Props = {
-  permissoes: any[];
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
+  permissoes: any[];
 };
 
-export default function CorrigirCadastro({
-  permissoes,
-  setPagina
-}: Props) {
+type Registro = {
+  id: number;
+  numero: number;
+  ns: string;
+  flh: string;
+  poste: string;
+  coord: string;
+  usu_ass: string;
+  dt_ass_db: string;
+};
+
+export default function CorrigirCadastro({ setPagina, permissoes }: Props) {
 
   const [busca, setBusca] = useState("");
-  const [lista, setLista] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [dados, setDados] = useState<Registro[]>([]);
+  const [carregando, setCarregando] = useState(false);
 
+  async function pesquisar() {
 
-  function temPermissao(
-    sistema: string,
-    tipos: string[]
-  ){
+    try {
 
-    const p =
-      permissoes.find(
-        x => x.sistema === sistema
-      );
+      setCarregando(true);
 
-    if(!p) return false;
+      const numeroBusca = busca.replace(/\D/g, "");
 
-    if(p.tipo === "admin") return true;
+      const { data, error } = await supabase
+        .from("db_chaves")
+        .select("id, numero, ns, flh, poste, coord, usu_ass, dt_ass_db")
+        .or(`numero.eq.${numeroBusca},ns.eq.${numeroBusca}`)
+        .order("numero");
 
-    return tipos.includes(p.tipo);
+      if (error) throw error;
 
+      setDados(data || []);
+
+    } catch (err) {
+
+      alert("Erro ao buscar");
+
+    } finally {
+
+      setCarregando(false);
+
+    }
   }
 
+  async function removerAssociacao(id:number) {
 
-  const acessoPermitido =
+    try {
 
-    temPermissao("global", ["admin"])
+      const { error } = await supabase
+        .from("db_chaves")
+        .update({
+          ns: null,
+          flh: null,
+          poste: null,
+          coord: null,
+          usu_ass: null,
+          dt_ass_db: null
+        })
+        .eq("id", id);
 
-    ||
+      if (error) throw error;
 
-    (
-      temPermissao("global", ["usuario"])
-      &&
-      temPermissao("chaves", ["comissionador"])
-    );
+      pesquisar();
 
+    } catch {
 
-  async function pesquisar(){
-
-    if(!busca) return;
-
-    setLoading(true);
-
-    const valor = Number(busca);
-
-    if(isNaN(valor)){
-
-      setLista([]);
-
-      setLoading(false);
-
-      return;
+      alert("Erro ao remover associação");
 
     }
 
-
-    const rNota = await supabase
-      .from("db_chaves")
-      .select("*")
-      .eq("ns", valor);
-
-
-    if(rNota.data && rNota.data.length > 0){
-
-      setLista(rNota.data);
-
-      setLoading(false);
-
-      return;
-
-    }
-
-
-    const rNumero = await supabase
-      .from("db_chaves")
-      .select("*")
-      .eq("numero", valor);
-
-
-    setLista(rNumero.data || []);
-
-    setLoading(false);
-
   }
 
-
-  async function removerAssociacao(id:number){
-
-    const confirmar =
-      confirm("Deseja remover a associação desta chave?");
-
-    if(!confirmar) return;
-
-
-    await supabase
-      .from("db_chaves")
-      .update({
-
-        ns: null,
-        poste: null,
-        flh: null,
-        coord: null,
-        usu_ass: null,
-        dt_ass_db: null
-
-      })
-      .eq("id", id);
-
-
-    pesquisar();
-
-  }
-
-
-  if(!acessoPermitido)
-    return <div>Sem permissão</div>;
-
-
-  return(
+  return (
 
     <div className="pagina">
 
+      <div style={{ position:"absolute", top:20, right:20 }}>
+
+        <button
+          className="botaoVermelho"
+          onClick={() => setPagina("Consulta")}
+        >
+          Home
+        </button>
+
+      </div>
+
       <div className="caixa">
 
-        <div className="topo">
+        <h2 style={{ marginBottom:20 }}>
+          Corrigir cadastro
+        </h2>
 
-          <h2>
-            Corrigir cadastro
-          </h2>
-
-
-          <button
-            className="botaoHome"
-            onClick={()=>setPagina("home")}
-          >
-            Home
-          </button>
-
-        </div>
-
-
-        <div className="linhaBusca">
+        <div style={{
+          display:"flex",
+          gap:10,
+          marginBottom:20
+        }}>
 
           <input
-            className="inputPadrao"
-            placeholder="Digite número da chave ou nota"
+            className="inputGrande"
             value={busca}
             onChange={(e)=>setBusca(e.target.value)}
-            onKeyDown={(e)=>{
-              if(e.key==="Enter") pesquisar();
-            }}
+            placeholder="Digite número da chave ou nota"
           />
 
           <button
-            className="botaoPadrao"
+            className="botaoAzul"
             onClick={pesquisar}
           >
             Pesquisar
@@ -174,20 +124,15 @@ export default function CorrigirCadastro({
 
         </div>
 
-
-        {loading && <p>Buscando...</p>}
-
-
-        {!loading && lista.length === 0 && (
-
-          <p>
-            Nenhum registro encontrado
-          </p>
-
+        {carregando && (
+          <div>Buscando...</div>
         )}
 
+        {!carregando && dados.length === 0 && (
+          <div>Nenhum registro encontrado</div>
+        )}
 
-        {lista.length > 0 && (
+        {dados.length > 0 && (
 
           <table className="tabela">
 
@@ -196,86 +141,45 @@ export default function CorrigirCadastro({
               <tr>
 
                 <th>Chave</th>
-
                 <th>Nota</th>
-
                 <th>Poste</th>
-
                 <th>Folha</th>
-
                 <th>Coordenada</th>
-
                 <th>Usuário</th>
-
                 <th>Data Associação</th>
-
-                <th>Associação</th>
+                <th></th>
 
               </tr>
 
             </thead>
 
-
             <tbody>
 
-              {lista.map(item => (
+              {dados.map(item => (
 
                 <tr key={item.id}>
 
-                  <td>
-                    {item.numero}
-                  </td>
-
-
-                  <td>
-                    {item.ns}
-                  </td>
-
-
-                  <td>
-                    {item.poste}
-                  </td>
-
-
-                  <td>
-                    {item.flh}
-                  </td>
-
-
-                  <td>
-                    {item.coord}
-                  </td>
-
-
-                  <td>
-                    {item.usu_ass}
-                  </td>
-
+                  <td>{item.numero}</td>
+                  <td>{item.ns}</td>
+                  <td>{item.poste}</td>
+                  <td>{item.flh}</td>
+                  <td>{item.coord}</td>
+                  <td>{item.usu_ass}</td>
 
                   <td>
 
-                    {
-                      item.dt_ass_db
-                      ?
-
-                      new Date(item.dt_ass_db)
-                      .toLocaleString("pt-BR")
-
-                      :
-
-                      ""
+                    {item.dt_ass_db
+                      ? new Date(item.dt_ass_db).toLocaleString()
+                      : ""
                     }
 
                   </td>
 
-
                   <td>
 
                     <button
-                      className="botaoExcluir"
-                      onClick={()=>
-                        removerAssociacao(item.id)
-                      }
+                      className="botaoVermelho"
+                      onClick={()=>removerAssociacao(item.id)}
                     >
                       Remover
                     </button>
