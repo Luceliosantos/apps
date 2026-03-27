@@ -35,23 +35,14 @@ export default function CorrigirCadastro({
 
   const acessoPermitido =
 
-    temPermissao(
-      "global",
-      ["admin"]
-    )
+    temPermissao("global", ["admin"])
 
     ||
 
     (
-      temPermissao(
-        "global",
-        ["usuario"]
-      )
+      temPermissao("global", ["usuario"])
       &&
-      temPermissao(
-        "chaves",
-        ["comissionador"]
-      )
+      temPermissao("chaves", ["comissionador"])
     );
 
 
@@ -74,7 +65,6 @@ export default function CorrigirCadastro({
     }
 
 
-    // busca pela nota (ns)
     const rNota = await supabase
       .from("db_chaves")
       .select("*")
@@ -82,8 +72,6 @@ export default function CorrigirCadastro({
 
 
     if (rNota.error) {
-
-      console.log(rNota.error);
 
       alert("Erro ao buscar");
 
@@ -105,7 +93,6 @@ export default function CorrigirCadastro({
     }
 
 
-    // busca pela chave (numero)
     const rNumero = await supabase
       .from("db_chaves")
       .select("*")
@@ -113,8 +100,6 @@ export default function CorrigirCadastro({
 
 
     if (rNumero.error) {
-
-      console.log(rNumero.error);
 
       alert("Erro ao buscar");
 
@@ -134,14 +119,10 @@ export default function CorrigirCadastro({
 
   async function removerAssociacao(id: number) {
 
-    const confirmar = confirm(
-      "Deseja remover a associação desta chave?"
-    );
-
-    if (!confirmar) return;
+    if (!confirm("Remover associação da chave?")) return;
 
 
-    const { error } = await supabase
+    await supabase
       .from("db_chaves")
       .update({
         ns: null,
@@ -152,17 +133,6 @@ export default function CorrigirCadastro({
         data_associacao: null
       })
       .eq("id", id);
-
-
-    if (error) {
-
-      console.log(error);
-
-      alert("Erro ao remover associação");
-
-      return;
-
-    }
 
 
     pesquisar();
@@ -176,107 +146,184 @@ export default function CorrigirCadastro({
 
   return (
 
-    <div className="paginaPadrao">
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundImage: "url('/fundo.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        padding: "40px"
+      }}
+    >
 
-      <h2>Corrigir cadastro</h2>
+      <div
+        style={{
+          maxWidth: "1100px",
+          margin: "0 auto",
+          backgroundColor: "white",
+          borderRadius: "10px",
+          padding: "30px",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.2)"
+        }}
+      >
+
+        <h2 style={{ marginBottom: "20px" }}>
+          Corrigir cadastro
+        </h2>
 
 
-      <div className="barraBusca">
-
-        <input
-          placeholder="Digite número da chave ou nota"
-          value={busca}
-          onChange={(e) => setBusca(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") pesquisar();
+        <div
+          style={{
+            display: "flex",
+            gap: "10px",
+            marginBottom: "20px"
           }}
-        />
+        >
 
-        <button onClick={pesquisar}>
-          Pesquisar
-        </button>
+          <input
+            placeholder="Digite número da chave ou nota"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") pesquisar();
+            }}
+            style={{
+              flex: 1,
+              padding: "10px",
+              borderRadius: "6px",
+              border: "1px solid #ccc"
+            }}
+          />
 
-      </div>
+          <button
+            onClick={pesquisar}
+            style={{
+              padding: "10px 20px",
+              borderRadius: "6px",
+              border: "none",
+              backgroundColor: "#1f3b73",
+              color: "white",
+              cursor: "pointer"
+            }}
+          >
+            Pesquisar
+          </button>
 
-
-      {loading && <p>Buscando...</p>}
-
-
-      {!loading && lista.length === 0 && (
-        <p>Nenhum registro encontrado</p>
-      )}
-
-
-      {lista.length > 0 && (
-
-        <table>
-
-          <thead>
-
-            <tr>
-              <th>Chave</th>
-              <th>Nota</th>
-              <th>Poste</th>
-              <th>Folha</th>
-              <th>Coordenada</th>
-              <th>Usuário</th>
-              <th>Data Associação</th>
-              <th>Associação</th>
-            </tr>
-
-          </thead>
+        </div>
 
 
-          <tbody>
+        {loading && <p>Buscando...</p>}
 
-            {lista.map(item => (
 
-              <tr key={item.id}>
+        {!loading && lista.length === 0 && (
+          <p>Nenhum registro encontrado</p>
+        )}
 
-                <td>{item.numero}</td>
 
-                <td>{item.ns}</td>
+        {lista.length > 0 && (
 
-                <td>{item.poste}</td>
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse"
+            }}
+          >
 
-                <td>{item.folha}</td>
+            <thead>
 
-                <td>{item.coord}</td>
+              <tr
+                style={{
+                  backgroundColor: "#f3f3f3"
+                }}
+              >
 
-                <td>{item.usuario_associacao}</td>
-
-                <td>
-                  {item.data_associacao
-                    ? new Date(item.data_associacao)
-                      .toLocaleString("pt-BR")
-                    : ""
-                  }
-                </td>
-
-                <td>
-
-                  <button
-                    onClick={() =>
-                      removerAssociacao(item.id)
-                    }
-                  >
-                    Remover
-                  </button>
-
-                </td>
+                <th style={th}>Chave</th>
+                <th style={th}>Nota</th>
+                <th style={th}>Poste</th>
+                <th style={th}>Folha</th>
+                <th style={th}>Coordenada</th>
+                <th style={th}>Usuário</th>
+                <th style={th}>Data Associação</th>
+                <th style={th}>Associação</th>
 
               </tr>
 
-            ))}
+            </thead>
 
-          </tbody>
 
-        </table>
+            <tbody>
 
-      )}
+              {lista.map(item => (
+
+                <tr key={item.id}>
+
+                  <td style={td}>{item.numero}</td>
+
+                  <td style={td}>{item.ns}</td>
+
+                  <td style={td}>{item.poste}</td>
+
+                  <td style={td}>{item.folha}</td>
+
+                  <td style={td}>{item.coord}</td>
+
+                  <td style={td}>{item.usuario_associacao}</td>
+
+                  <td style={td}>
+                    {item.data_associacao
+                      ? new Date(item.data_associacao)
+                        .toLocaleString("pt-BR")
+                      : ""
+                    }
+                  </td>
+
+                  <td style={td}>
+
+                    <button
+                      onClick={() =>
+                        removerAssociacao(item.id)
+                      }
+                      style={{
+                        padding: "6px 12px",
+                        borderRadius: "6px",
+                        border: "none",
+                        backgroundColor: "#c0392b",
+                        color: "white",
+                        cursor: "pointer"
+                      }}
+                    >
+                      Remover
+                    </button>
+
+                  </td>
+
+                </tr>
+
+              ))}
+
+            </tbody>
+
+          </table>
+
+        )}
+
+      </div>
 
     </div>
 
   );
 
 }
+
+
+const th = {
+  padding: "10px",
+  textAlign: "left",
+  borderBottom: "1px solid #ddd"
+};
+
+
+const td = {
+  padding: "10px",
+  borderBottom: "1px solid #eee"
+};
