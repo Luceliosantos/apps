@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { supabase } from "../supabase";
+import { Pagina } from "../App";
 
 type Props = {
   permissoes: any[];
-  setPagina: (pagina: string) => void;
+  setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
 };
 
 export default function CorrigirCadastro({
