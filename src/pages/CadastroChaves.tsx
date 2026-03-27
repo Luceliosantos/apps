@@ -169,7 +169,7 @@ export default function CadastroChaves({
           {podeConsultar && (
 
 <button
-  onClick={() => setPagina("corrigirCadastro")}
+  onClick={()=>setPagina("corrigirCadastro")}
   className="botaoPadrao"
 >
   Corrigir cadastro
