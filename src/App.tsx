@@ -7,6 +7,7 @@ import Associacao from "./pages/Associacao";
 import Consulta from "./pages/Consulta";
 import HomeMenu from "./pages/HomeMenu";
 import Usuarios from "./pages/Usuarios";
+import CorrigirCadastro from "./pages/CorrigirCadastro";
 
 type Usuario = {
   id: string;
@@ -26,6 +27,7 @@ export type Pagina =
   | "proorc"
   | "usuarios"
   | "alterarSenha";
+  | "corrigirCadastro"
 
 export default function App() {
 
@@ -423,7 +425,17 @@ const { error } = await supabase
       );
 
     }
+if(pagina === "corrigirCadastro"){
 
+  return(
+
+    <CorrigirCadastro
+      usuario={usuario}
+    />
+
+  );
+
+}
     if(pagina === "geo"){
 
       return(
