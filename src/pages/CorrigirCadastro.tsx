@@ -20,16 +20,16 @@ export default function CorrigirCadastro({
   function temPermissao(
     sistema: string,
     tipos: string[]
-  ) {
+  ){
 
     const p =
       permissoes.find(
-        (x) => x.sistema === sistema
+        x => x.sistema === sistema
       );
 
-    if (!p) return false;
+    if(!p) return false;
 
-    if (p.tipo === "admin") return true;
+    if(p.tipo === "admin") return true;
 
     return tipos.includes(p.tipo);
 
@@ -49,15 +49,15 @@ export default function CorrigirCadastro({
     );
 
 
-  async function pesquisar() {
+  async function pesquisar(){
 
-    if (!busca) return;
+    if(!busca) return;
 
     setLoading(true);
 
     const valor = Number(busca);
 
-    if (isNaN(valor)) {
+    if(isNaN(valor)){
 
       setLista([]);
 
@@ -74,7 +74,7 @@ export default function CorrigirCadastro({
       .eq("ns", valor);
 
 
-    if (rNota.data && rNota.data.length > 0) {
+    if(rNota.data && rNota.data.length > 0){
 
       setLista(rNota.data);
 
@@ -98,9 +98,12 @@ export default function CorrigirCadastro({
   }
 
 
-  async function removerAssociacao(id: number) {
+  async function removerAssociacao(id:number){
 
-    if (!confirm("Remover associação da chave?")) return;
+    const confirmar =
+      confirm("Deseja remover a associação desta chave?");
+
+    if(!confirmar) return;
 
 
     await supabase
@@ -123,17 +126,18 @@ export default function CorrigirCadastro({
   }
 
 
-  if (!acessoPermitido)
+  if(!acessoPermitido)
     return <div>Sem permissão</div>;
 
 
-  return (
+  return(
 
     <div
       style={{
         minHeight: "100vh",
         backgroundImage: "url('/fundo.jpg')",
         backgroundSize: "cover",
+        backgroundPosition: "center",
         padding: "40px"
       }}
     >
@@ -144,28 +148,34 @@ export default function CorrigirCadastro({
           margin: "0 auto",
           backgroundColor: "white",
           borderRadius: "10px",
-          padding: "30px"
+          padding: "30px",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.2)"
         }}
       >
 
         <div
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "20px"
+            display:"flex",
+            justifyContent:"space-between",
+            alignItems:"center",
+            marginBottom:"20px"
           }}
         >
 
-          <h2>Corrigir cadastro</h2>
+          <h2>
+            Corrigir cadastro
+          </h2>
+
 
           <button
-            onClick={() => setPagina("home")}
+            onClick={()=>setPagina("home")}
             style={{
-              backgroundColor: "#c0392b",
-              color: "white",
-              border: "none",
-              padding: "8px 15px",
-              borderRadius: "6px"
+              padding:"8px 16px",
+              borderRadius:"6px",
+              border:"none",
+              backgroundColor:"#c0392b",
+              color:"white",
+              cursor:"pointer"
             }}
           >
             Home
@@ -176,32 +186,36 @@ export default function CorrigirCadastro({
 
         <div
           style={{
-            display: "flex",
-            gap: "10px",
-            marginBottom: "20px"
+            display:"flex",
+            gap:"10px",
+            marginBottom:"20px"
           }}
         >
 
           <input
+            placeholder="Digite número da chave ou nota"
             value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-            placeholder="Digite chave ou nota"
+            onChange={(e)=>setBusca(e.target.value)}
+            onKeyDown={(e)=>{
+              if(e.key==="Enter") pesquisar();
+            }}
             style={{
-              flex: 1,
-              padding: "10px",
-              borderRadius: "6px",
-              border: "1px solid #ccc"
+              flex:1,
+              padding:"10px",
+              borderRadius:"6px",
+              border:"1px solid #ccc"
             }}
           />
 
           <button
             onClick={pesquisar}
             style={{
-              backgroundColor: "#1f3b73",
-              color: "white",
-              border: "none",
-              padding: "10px 20px",
-              borderRadius: "6px"
+              padding:"10px 20px",
+              borderRadius:"6px",
+              border:"none",
+              backgroundColor:"#1f3b73",
+              color:"white",
+              cursor:"pointer"
             }}
           >
             Pesquisar
@@ -213,22 +227,47 @@ export default function CorrigirCadastro({
         {loading && <p>Buscando...</p>}
 
 
+        {!loading && lista.length === 0 && (
+
+          <p>
+            Nenhum registro encontrado
+          </p>
+
+        )}
+
+
         {lista.length > 0 && (
 
-          <table style={{ width: "100%" }}>
+          <table
+            style={{
+              width:"100%",
+              borderCollapse:"collapse"
+            }}
+          >
 
             <thead>
 
-              <tr>
+              <tr
+                style={{
+                  backgroundColor:"#f3f3f3"
+                }}
+              >
 
-                <th>Chave</th>
-                <th>Nota</th>
-                <th>Poste</th>
-                <th>Folha</th>
-                <th>Coordenada</th>
-                <th>Usuário</th>
-                <th>Data Associação</th>
-                <th>Associação</th>
+                <th style={th}>Chave</th>
+
+                <th style={th}>Nota</th>
+
+                <th style={th}>Poste</th>
+
+                <th style={th}>Folha</th>
+
+                <th style={th}>Coordenada</th>
+
+                <th style={th}>Usuário</th>
+
+                <th style={th}>Data Associação</th>
+
+                <th style={th}>Associação</th>
 
               </tr>
 
@@ -237,41 +276,70 @@ export default function CorrigirCadastro({
 
             <tbody>
 
-              {lista.map((item) => (
+              {lista.map(item => (
 
                 <tr key={item.id}>
 
-                  <td>{item.numero}</td>
-
-                  <td>{item.ns}</td>
-
-                  <td>{item.poste}</td>
-
-                  <td>{item.flh}</td>
-
-                  <td>{item.coord}</td>
-
-                  <td>{item.usu_ass}</td>
-
-                  <td>
-                    {item.dt_ass_db
-                      ? new Date(item.dt_ass_db)
-                          .toLocaleString("pt-BR")
-                      : ""}
+                  <td style={td}>
+                    {item.numero}
                   </td>
 
-                  <td>
+
+                  <td style={td}>
+                    {item.ns}
+                  </td>
+
+
+                  <td style={td}>
+                    {item.poste}
+                  </td>
+
+
+                  <td style={td}>
+                    {item.flh}
+                  </td>
+
+
+                  <td style={td}>
+                    {item.coord}
+                  </td>
+
+
+                  <td style={td}>
+                    {item.usu_ass}
+                  </td>
+
+
+                  <td style={td}>
+
+                    {
+                      item.dt_ass_db
+                      ?
+
+                      new Date(item.dt_ass_db)
+                      .toLocaleString("pt-BR")
+
+                      :
+
+                      ""
+                    }
+
+                  </td>
+
+
+                  <td style={td}>
 
                     <button
-                      onClick={() =>
+                      onClick={()=>
                         removerAssociacao(item.id)
                       }
                       style={{
-                        backgroundColor: "#c0392b",
-                        color: "white",
-                        border: "none",
-                        padding: "6px 12px",
-                        borderRadius: "6px"
+                        padding:"6px 12px",
+                        borderRadius:"6px",
+                        border:"none",
+                        backgroundColor:"#c0392b",
+                        color:"white",
+                        cursor:"pointer"
                       }}
                     >
                       Remover
@@ -296,3 +364,20 @@ export default function CorrigirCadastro({
   );
 
 }
+
+
+const th:React.CSSProperties={
+
+  padding:"10px",
+  textAlign:"left",
+  borderBottom:"1px solid #ddd"
+
+};
+
+
+const td:React.CSSProperties={
+
+  padding:"10px",
+  borderBottom:"1px solid #eee"
+
+};
