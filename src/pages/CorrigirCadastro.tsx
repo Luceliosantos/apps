@@ -1,185 +1,346 @@
 import { useState } from "react";
-import { supabase } from "../supabaseClient";
+import { supabase } from "../supabase";
 import { Pagina } from "../App";
 
 type Props = {
-  setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
   permissoes: any[];
+  setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
 };
 
-type Registro = {
-  id: number;
-  numero: number;
-  ns: string;
-  flh: string;
-  poste: string;
-  coord: string;
-  usu_ass: string;
-  dt_ass_db: string;
-};
-
-export default function CorrigirCadastro({ setPagina, permissoes }: Props) {
+export default function CorrigirCadastro({
+  permissoes,
+  setPagina
+}: Props) {
 
   const [busca, setBusca] = useState("");
-  const [dados, setDados] = useState<Registro[]>([]);
-  const [carregando, setCarregando] = useState(false);
+  const [lista, setLista] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  async function pesquisar() {
 
-    try {
+  function temPermissao(
+    sistema: string,
+    tipos: string[]
+  ){
 
-      setCarregando(true);
+    const p =
+      permissoes.find(
+        x => x.sistema === sistema
+      );
 
-      const numeroBusca = busca.replace(/\D/g, "");
+    if(!p) return false;
 
-      const { data, error } = await supabase
-        .from("db_chaves")
-        .select("id, numero, ns, flh, poste, coord, usu_ass, dt_ass_db")
-        .or(`numero.eq.${numeroBusca},ns.eq.${numeroBusca}`)
-        .order("numero");
+    if(p.tipo === "admin") return true;
 
-      if (error) throw error;
-
-      setDados(data || []);
-
-    } catch (err) {
-
-      alert("Erro ao buscar");
-
-    } finally {
-
-      setCarregando(false);
-
-    }
-  }
-
-  async function removerAssociacao(id:number) {
-
-    try {
-
-      const { error } = await supabase
-        .from("db_chaves")
-        .update({
-          ns: null,
-          flh: null,
-          poste: null,
-          coord: null,
-          usu_ass: null,
-          dt_ass_db: null
-        })
-        .eq("id", id);
-
-      if (error) throw error;
-
-      pesquisar();
-
-    } catch {
-
-      alert("Erro ao remover associação");
-
-    }
+    return tipos.includes(p.tipo);
 
   }
 
-  return (
 
-    <div className="pagina">
+  const acessoPermitido =
 
-      <div style={{ position:"absolute", top:20, right:20 }}>
+    temPermissao("global", ["admin"])
 
-        <button
-          className="botaoVermelho"
-          onClick={() => setPagina("Consulta")}
+    ||
+
+    (
+      temPermissao("global", ["usuario"])
+      &&
+      temPermissao("chaves", ["comissionador"])
+    );
+
+
+  async function pesquisar(){
+
+    if(!busca) return;
+
+    setLoading(true);
+
+    const valor = Number(busca);
+
+    if(isNaN(valor)){
+
+      setLista([]);
+
+      setLoading(false);
+
+      return;
+
+    }
+
+
+    const rNota = await supabase
+      .from("db_chaves")
+      .select("*")
+      .eq("ns", valor);
+
+
+    if(rNota.data && rNota.data.length > 0){
+
+      setLista(rNota.data);
+
+      setLoading(false);
+
+      return;
+
+    }
+
+
+    const rNumero = await supabase
+      .from("db_chaves")
+      .select("*")
+      .eq("numero", valor);
+
+
+    setLista(rNumero.data || []);
+
+    setLoading(false);
+
+  }
+
+
+  async function removerAssociacao(id:number){
+
+    const confirmar =
+      confirm("Deseja remover a associação desta chave?");
+
+    if(!confirmar) return;
+
+
+    await supabase
+      .from("db_chaves")
+      .update({
+
+        ns: null,
+        poste: null,
+        flh: null,
+        coord: null,
+        usu_ass: null,
+        dt_ass_db: null
+
+      })
+      .eq("id", id);
+
+
+    pesquisar();
+
+  }
+
+
+  if(!acessoPermitido)
+    return <div>Sem permissão</div>;
+
+
+  return(
+
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundImage: "url('/fundo.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        padding: "40px"
+      }}
+    >
+
+      <div
+        style={{
+          maxWidth: "1100px",
+          margin: "0 auto",
+          backgroundColor: "white",
+          borderRadius: "10px",
+          padding: "30px",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.2)"
+        }}
+      >
+
+        <div
+          style={{
+            display:"flex",
+            justifyContent:"space-between",
+            alignItems:"center",
+            marginBottom:"20px"
+          }}
         >
-          Home
-        </button>
 
-      </div>
+          <h2>
+            Corrigir cadastro
+          </h2>
 
-      <div className="caixa">
 
-        <h2 style={{ marginBottom:20 }}>
-          Corrigir cadastro
-        </h2>
+          <button
+            onClick={()=>setPagina("home")}
+            style={{
+              padding:"8px 16px",
+              borderRadius:"6px",
+              border:"none",
+              backgroundColor:"#c0392b",
+              color:"white",
+              cursor:"pointer"
+            }}
+          >
+            Home
+          </button>
 
-        <div style={{
-          display:"flex",
-          gap:10,
-          marginBottom:20
-        }}>
+        </div>
+
+
+        <div
+          style={{
+            display:"flex",
+            gap:"10px",
+            marginBottom:"20px"
+          }}
+        >
 
           <input
-            className="inputGrande"
+            placeholder="Digite número da chave ou nota"
             value={busca}
             onChange={(e)=>setBusca(e.target.value)}
-            placeholder="Digite número da chave ou nota"
+            onKeyDown={(e)=>{
+              if(e.key==="Enter") pesquisar();
+            }}
+            style={{
+              flex:1,
+              padding:"10px",
+              borderRadius:"6px",
+              border:"1px solid #ccc"
+            }}
           />
 
           <button
-            className="botaoAzul"
             onClick={pesquisar}
+            style={{
+              padding:"10px 20px",
+              borderRadius:"6px",
+              border:"none",
+              backgroundColor:"#1f3b73",
+              color:"white",
+              cursor:"pointer"
+            }}
           >
             Pesquisar
           </button>
 
         </div>
 
-        {carregando && (
-          <div>Buscando...</div>
+
+        {loading && <p>Buscando...</p>}
+
+
+        {!loading && lista.length === 0 && (
+
+          <p>
+            Nenhum registro encontrado
+          </p>
+
         )}
 
-        {!carregando && dados.length === 0 && (
-          <div>Nenhum registro encontrado</div>
-        )}
 
-        {dados.length > 0 && (
+        {lista.length > 0 && (
 
-          <table className="tabela">
+          <table
+            style={{
+              width:"100%",
+              borderCollapse:"collapse"
+            }}
+          >
 
             <thead>
 
-              <tr>
+              <tr
+                style={{
+                  backgroundColor:"#f3f3f3"
+                }}
+              >
 
-                <th>Chave</th>
-                <th>Nota</th>
-                <th>Poste</th>
-                <th>Folha</th>
-                <th>Coordenada</th>
-                <th>Usuário</th>
-                <th>Data Associação</th>
-                <th></th>
+                <th style={th}>Chave</th>
+
+                <th style={th}>Nota</th>
+
+                <th style={th}>Poste</th>
+
+                <th style={th}>Folha</th>
+
+                <th style={th}>Coordenada</th>
+
+                <th style={th}>Usuário</th>
+
+                <th style={th}>Data Associação</th>
+
+                <th style={th}>Associação</th>
 
               </tr>
 
             </thead>
 
+
             <tbody>
 
-              {dados.map(item => (
+              {lista.map(item => (
 
                 <tr key={item.id}>
 
-                  <td>{item.numero}</td>
-                  <td>{item.ns}</td>
-                  <td>{item.poste}</td>
-                  <td>{item.flh}</td>
-                  <td>{item.coord}</td>
-                  <td>{item.usu_ass}</td>
+                  <td style={td}>
+                    {item.numero}
+                  </td>
 
-                  <td>
 
-                    {item.dt_ass_db
-                      ? new Date(item.dt_ass_db).toLocaleString()
-                      : ""
+                  <td style={td}>
+                    {item.ns}
+                  </td>
+
+
+                  <td style={td}>
+                    {item.poste}
+                  </td>
+
+
+                  <td style={td}>
+                    {item.flh}
+                  </td>
+
+
+                  <td style={td}>
+                    {item.coord}
+                  </td>
+
+
+                  <td style={td}>
+                    {item.usu_ass}
+                  </td>
+
+
+                  <td style={td}>
+
+                    {
+                      item.dt_ass_db
+                      ?
+
+                      new Date(item.dt_ass_db)
+                      .toLocaleString("pt-BR")
+
+                      :
+
+                      ""
                     }
 
                   </td>
 
-                  <td>
+
+                  <td style={td}>
 
                     <button
-                      className="botaoVermelho"
-                      onClick={()=>removerAssociacao(item.id)}
+                      onClick={()=>
+                        removerAssociacao(item.id)
+                      }
+                      style={{
+                        padding:"6px 12px",
+                        borderRadius:"6px",
+                        border:"none",
+                        backgroundColor:"#c0392b",
+                        color:"white",
+                        cursor:"pointer"
+                      }}
                     >
                       Remover
                     </button>
@@ -203,3 +364,20 @@ export default function CorrigirCadastro({ setPagina, permissoes }: Props) {
   );
 
 }
+
+
+const th:React.CSSProperties={
+
+  padding:"10px",
+  textAlign:"left",
+  borderBottom:"1px solid #ddd"
+
+};
+
+
+const td:React.CSSProperties={
+
+  padding:"10px",
+  borderBottom:"1px solid #eee"
+
+};
