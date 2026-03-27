@@ -2,13 +2,11 @@ import { useState } from "react";
 import { supabase } from "../supabase";
 
 type Props = {
-  permissoes:any[];
-  setPagina?: any;
+  permissoes: any[];
 };
 
 export default function CorrigirCadastro({
-  permissoes,
-  setPagina
+  permissoes
 }: Props) {
 
   const [busca, setBusca] = useState("");
@@ -17,18 +15,18 @@ export default function CorrigirCadastro({
 
 
   function temPermissao(
-    sistema:string,
-    tipos:string[]
-  ){
+    sistema: string,
+    tipos: string[]
+  ) {
 
     const p =
       permissoes.find(
         x => x.sistema === sistema
       );
 
-    if(!p) return false;
+    if (!p) return false;
 
-    if(p.tipo === "admin") return true;
+    if (p.tipo === "admin") return true;
 
     return tipos.includes(p.tipo);
 
@@ -57,129 +55,134 @@ export default function CorrigirCadastro({
     );
 
 
-async function pesquisar() {
+  async function pesquisar() {
 
-  if (!busca) return;
+    if (!busca) return;
 
-  setLoading(true);
+    setLoading(true);
 
-  const valor = Number(busca);
+    const valor = Number(busca);
 
-  if(isNaN(valor)){
+    if (isNaN(valor)) {
 
-    setLista([]);
+      setLista([]);
 
-    setLoading(false);
-
-    return;
-
-  }
-
-
-  // busca pela nota
-  const rNota = await supabase
-    .from("db_chaves")
-    .select(`
-      id,
-      numero,
-      ns,
-      postes,
-      folha,
-      coordenada,
-      usuario_associacao,
-      data_associacao
-    `)
-    .eq("ns", valor)
-    .not("ns","is",null);
-
-
-  if(rNota.error){
-
-    console.log(rNota.error);
-
-    alert("Erro ao buscar");
-
-    setLoading(false);
-
-    return;
-
-  }
-
-
-  if(rNota.data && rNota.data.length){
-
-    setLista(rNota.data);
-
-    setLoading(false);
-
-    return;
-
-  }
-
-
-  // busca pela chave
-  const rNumero = await supabase
-    .from("db_chaves")
-    .select(`
-      id,
-      numero,
-      ns,
-      postes,
-      folha,
-      coordenada,
-      usuario_associacao,
-      data_associacao
-    `)
-    .eq("numero", valor)
-    .not("ns","is",null);
-
-
-  if(rNumero.error){
-
-    console.log(rNumero.error);
-
-    alert("Erro ao buscar");
-
-    setLoading(false);
-
-    return;
-
-  }
-
-
-  setLista(rNumero.data || []);
-
-  setLoading(false);
-
-}
-
-
-  async function removerAssociacao(id:number) {
-
-    if(!confirm("Remover associação desta chave?"))
-      return;
-
-    const { error } = await supabase
-      .from("db_chaves")
-      .update({
-
-        ns:null,
-        postes:null,
-        folha:null,
-        coordenada:null,
-        usuario_associacao:null,
-        data_associacao:null
-
-      })
-      .eq("id",id);
-
-    if(error){
-
-      alert("Erro ao remover");
+      setLoading(false);
 
       return;
 
     }
+
+
+    let resultado: any[] = [];
+
+
+    const rNota = await supabase
+      .from("db_chaves")
+      .select(`
+        id,
+        numero,
+        ns,
+        poste,
+        folha,
+        coord,
+        usuario_associacao,
+        data_associacao
+      `)
+      .eq("ns", valor);
+
+
+    if (rNota.error) {
+
+      console.log(rNota.error);
+
+      alert("Erro ao buscar");
+
+      setLoading(false);
+
+      return;
+
+    }
+
+
+    if (rNota.data?.length) {
+
+      resultado = rNota.data;
+
+    }
+    else {
+
+      const rNumero = await supabase
+        .from("db_chaves")
+        .select(`
+          id,
+          numero,
+          ns,
+          poste,
+          folha,
+          coord,
+          usuario_associacao,
+          data_associacao
+        `)
+        .eq("numero", valor);
+
+
+      if (rNumero.error) {
+
+        console.log(rNumero.error);
+
+        alert("Erro ao buscar");
+
+        setLoading(false);
+
+        return;
+
+      }
+
+      resultado = rNumero.data || [];
+
+    }
+
+
+    setLista(resultado);
+
+    setLoading(false);
+
+  }
+
+
+  async function removerAssociacao(id: number) {
+
+    const confirmar = confirm(
+      "Deseja remover a associação desta chave?"
+    );
+
+    if (!confirmar) return;
+
+
+    const { error } = await supabase
+      .from("db_chaves")
+      .update({
+        ns: null,
+        poste: null,
+        folha: null,
+        coord: null,
+        usuario_associacao: null,
+        data_associacao: null
+      })
+      .eq("id", id);
+
+
+    if (error) {
+
+      console.log(error);
+
+      alert("Erro ao remover associação");
+
+      return;
+
+    }
+
 
     pesquisar();
 
@@ -190,291 +193,109 @@ async function pesquisar() {
     return <div>Sem permissão</div>;
 
 
-  return(
+  return (
 
-    <div style={styles.container}>
+    <div className="paginaPadrao">
 
-      <div style={styles.overlay}>
-
-        <div style={styles.card}>
-
-          <h2 style={styles.title}>
-            Corrigir cadastro
-          </h2>
+      <h2>Corrigir cadastro</h2>
 
 
-          <div style={styles.buscaArea}>
+      <div className="barraBusca">
 
-            <input
-              style={styles.input}
-              placeholder="Digite nº da chave ou nº da nota"
-              value={busca}
-              onChange={(e)=>setBusca(e.target.value)}
-              onKeyDown={(e)=>{
-                if(e.key==="Enter") pesquisar();
-              }}
-            />
+        <input
+          placeholder="Digite número da chave ou nota"
+          value={busca}
+          onChange={(e) => setBusca(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") pesquisar();
+          }}
+        />
 
-
-            <button
-              style={styles.botao}
-              onClick={pesquisar}
-            >
-              Pesquisar
-            </button>
-
-
-            {setPagina && (
-
-              <button
-                style={styles.botao}
-                onClick={()=>setPagina("home")}
-              >
-                Voltar
-              </button>
-
-            )}
-
-          </div>
-
-
-
-          {loading && (
-            <p style={styles.info}>
-              Buscando...
-            </p>
-          )}
-
-
-
-          {!loading && lista.length === 0 && (
-
-            <p style={styles.info}>
-              Nenhum registro encontrado
-            </p>
-
-          )}
-
-
-
-          {lista.length > 0 && (
-
-            <table style={styles.tabela}>
-
-              <thead>
-
-                <tr>
-
-                  <th>Chave</th>
-
-                  <th>Nota</th>
-
-                  <th>Postes</th>
-
-                  <th>Folha</th>
-
-                  <th>Coordenada</th>
-
-                  <th>Usuário</th>
-
-                  <th>Data</th>
-
-                  <th>Associação</th>
-
-                </tr>
-
-              </thead>
-
-
-
-              <tbody>
-
-                {lista.map(item => (
-
-                  <tr key={item.id}>
-
-                    <td>{item.numero}</td>
-
-                    <td>{item.ns}</td>
-
-                    <td>{item.postes}</td>
-
-                    <td>{item.folha}</td>
-
-                    <td>{item.coordenada}</td>
-
-                    <td>{item.usuario_associacao}</td>
-
-                    <td>
-
-                      {item.data_associacao
-                        ? new Date(item.data_associacao)
-                          .toLocaleString("pt-BR")
-                        : ""
-                      }
-
-                    </td>
-
-
-                    <td>
-
-                      <button
-                        style={styles.botaoRemover}
-                        onClick={()=>removerAssociacao(item.id)}
-                      >
-                        Remover
-                      </button>
-
-                    </td>
-
-                  </tr>
-
-                ))}
-
-              </tbody>
-
-            </table>
-
-          )}
-
-        </div>
+        <button onClick={pesquisar}>
+          Pesquisar
+        </button>
 
       </div>
+
+
+      {loading && <p>Buscando...</p>}
+
+
+      {!loading && lista.length === 0 && (
+        <p>Nenhum registro encontrado</p>
+      )}
+
+
+      {lista.length > 0 && (
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Chave</th>
+              <th>Nota</th>
+              <th>Poste</th>
+              <th>Folha</th>
+              <th>Coordenada</th>
+              <th>Usuário</th>
+              <th>Data Associação</th>
+              <th>Associação</th>
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            {lista.map(item => (
+
+              <tr key={item.id}>
+
+                <td>{item.numero}</td>
+
+                <td>{item.ns}</td>
+
+                <td>{item.poste}</td>
+
+                <td>{item.folha}</td>
+
+                <td>{item.coord}</td>
+
+                <td>{item.usuario_associacao}</td>
+
+                <td>
+                  {item.data_associacao
+                    ? new Date(item.data_associacao)
+                      .toLocaleString("pt-BR")
+                    : ""
+                  }
+                </td>
+
+                <td>
+
+                  <button
+                    onClick={() =>
+                      removerAssociacao(item.id)
+                    }
+                  >
+                    Remover
+                  </button>
+
+                </td>
+
+              </tr>
+
+            ))}
+
+          </tbody>
+
+        </table>
+
+      )}
 
     </div>
 
   );
 
 }
-
-
-
-const styles:{[key:string]:React.CSSProperties}={
-
-
-  container:{
-
-    minHeight:"100vh",
-
-    backgroundImage:
-
-      "url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')",
-
-    backgroundSize:"cover",
-
-    backgroundPosition:"center",
-
-    backgroundRepeat:"no-repeat"
-
-  },
-
-
-  overlay:{
-
-    minHeight:"100vh",
-
-    background:"rgba(0,0,0,0.6)",
-
-    padding:40
-
-  },
-
-
-  card:{
-
-    background:"rgba(255,255,255,0.95)",
-
-    borderRadius:12,
-
-    padding:30,
-
-    maxWidth:1100,
-
-    margin:"0 auto"
-
-  },
-
-
-  title:{
-
-    marginTop:0,
-
-    marginBottom:20
-
-  },
-
-
-  buscaArea:{
-
-    display:"flex",
-
-    gap:10,
-
-    marginBottom:20
-
-  },
-
-
-  input:{
-
-    flex:1,
-
-    padding:12,
-
-    borderRadius:8,
-
-    border:"1px solid #ccc"
-
-  },
-
-
-  botao:{
-
-    padding:"10px 18px",
-
-    borderRadius:8,
-
-    border:"none",
-
-    background:"#1e3c72",
-
-    color:"white",
-
-    cursor:"pointer"
-
-  },
-
-
-  botaoRemover:{
-
-    padding:"6px 14px",
-
-    borderRadius:6,
-
-    border:"none",
-
-    background:"#c0392b",
-
-    color:"white",
-
-    cursor:"pointer"
-
-  },
-
-
-  tabela:{
-
-    width:"100%",
-
-    borderCollapse:"collapse"
-
-  },
-
-
-  info:{
-
-    marginTop:10
-
-  }
-
-};
