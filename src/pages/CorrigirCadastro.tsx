@@ -3,19 +3,59 @@ import { supabase } from "../supabase";
 
 type Props = {
   usuario: any;
+  permissoes:any[];
 };
 
-export default function CorrigirCadastro({ usuario }: Props) {
+export default function CorrigirCadastro({
+  usuario,
+  permissoes
+}: Props) {
 
   const [busca, setBusca] = useState("");
   const [lista, setLista] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // permissões
-  const temPermissao =
-    usuario?.perfil === "Admin" ||
-    usuario?.chaves === "comissionador" ||
-    usuario?.geral === "usuario";
+
+  function temPermissao(
+    sistema:string,
+    tipos:string[]
+  ){
+
+    const p =
+      permissoes.find(
+        x => x.sistema === sistema
+      );
+
+    if(!p) return false;
+
+    if(p.tipo === "admin") return true;
+
+    return tipos.includes(p.tipo);
+
+  }
+
+
+  const acessoPermitido =
+
+    temPermissao(
+      "global",
+      ["admin"]
+    )
+
+    ||
+
+    (
+      temPermissao(
+        "global",
+        ["usuario"]
+      )
+      &&
+      temPermissao(
+        "chaves",
+        ["comissionador"]
+      )
+    );
+
 
   async function pesquisar() {
 
@@ -79,7 +119,7 @@ export default function CorrigirCadastro({ usuario }: Props) {
     pesquisar();
   }
 
-  if (!temPermissao)
+  if (!acessoPermitido)
     return <div>Sem permissão</div>;
 
   return (
