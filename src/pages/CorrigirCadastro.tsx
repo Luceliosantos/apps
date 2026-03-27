@@ -2,12 +2,10 @@ import { useState } from "react";
 import { supabase } from "../supabase";
 
 type Props = {
-  usuario: any;
   permissoes:any[];
 };
 
 export default function CorrigirCadastro({
-  usuario,
   permissoes
 }: Props) {
 
