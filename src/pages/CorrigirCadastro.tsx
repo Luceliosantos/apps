@@ -57,7 +57,7 @@ export default function CorrigirCadastro({
     );
 
 
- async function pesquisar() {
+async function pesquisar() {
 
   if (!busca) return;
 
@@ -75,7 +75,12 @@ export default function CorrigirCadastro({
 
   }
 
-  const { data, error } = await supabase
+
+  let resultado:any[] = [];
+
+
+  // busca por numero da chave
+  const rNumero = await supabase
     .from("db_chaves")
     .select(`
       id,
@@ -87,21 +92,37 @@ export default function CorrigirCadastro({
       usuario_associacao,
       data_associacao
     `)
-    .or(`numero.eq.${valor},ns.eq.${valor}`);
+    .eq("numero", valor);
 
-  if(error){
 
-    console.log(error);
+  if(rNumero.data?.length){
 
-    alert("Erro ao buscar");
+    resultado = rNumero.data;
 
-    setLoading(false);
+  }
+  else{
 
-    return;
+    // busca por nota
+    const rNota = await supabase
+      .from("db_chaves")
+      .select(`
+        id,
+        numero,
+        ns,
+        postes,
+        folha,
+        coordenada,
+        usuario_associacao,
+        data_associacao
+      `)
+      .eq("ns", valor);
+
+    resultado = rNota.data || [];
 
   }
 
-  setLista(data || []);
+
+  setLista(resultado);
 
   setLoading(false);
 
