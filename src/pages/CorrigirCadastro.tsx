@@ -11,7 +11,7 @@ export default function CorrigirCadastro({ usuario }: Props) {
   const [lista, setLista] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // verifica permissão
+  // permissões
   const temPermissao =
     usuario?.perfil === "Admin" ||
     usuario?.chaves === "comissionador" ||
@@ -25,23 +25,38 @@ export default function CorrigirCadastro({ usuario }: Props) {
 
     const { data, error } = await supabase
       .from("db_chaves")
-      .select("*")
-      .or(`nota.eq.${busca},chave.eq.${busca}`)
-      .order("data_associacao", { ascending: false });
+      .select(`
+        id,
+        numero,
+        nota,
+        postes,
+        folha,
+        coordenada,
+        usuario_associacao,
+        data_associacao
+      `)
+      .or(`nota.eq.${busca},numero.eq.${busca}`)
+      .not("nota","is",null)
+      .order("data_associacao",{ ascending:false });
 
     if (error) {
       console.error(error);
-      alert("Erro ao buscar");
+      alert("Erro ao buscar registros");
+      setLoading(false);
+      return;
     }
 
     setLista(data || []);
     setLoading(false);
   }
 
-  async function removerAssociacao(id: string) {
+  async function removerAssociacao(id:number) {
 
-    if (!confirm("Deseja remover a associação desta chave?"))
-      return;
+    const confirmar = confirm(
+      "Deseja remover a associação desta chave?"
+    );
+
+    if (!confirmar) return;
 
     const { error } = await supabase
       .from("db_chaves")
@@ -56,6 +71,7 @@ export default function CorrigirCadastro({ usuario }: Props) {
       .eq("id", id);
 
     if (error) {
+      console.error(error);
       alert("Erro ao remover associação");
       return;
     }
@@ -75,10 +91,12 @@ export default function CorrigirCadastro({ usuario }: Props) {
       <div className="barraBusca">
 
         <input
-          placeholder="Pesquisar por chave ou nota"
+          placeholder="Digite número da chave ou nota"
           value={busca}
-          onChange={(e) => setBusca(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && pesquisar()}
+          onChange={(e)=>setBusca(e.target.value)}
+          onKeyDown={(e)=>{
+            if(e.key==="Enter") pesquisar();
+          }}
         />
 
         <button onClick={pesquisar}>
@@ -89,60 +107,75 @@ export default function CorrigirCadastro({ usuario }: Props) {
 
       {loading && <p>Buscando...</p>}
 
-      <table>
+      {!loading && lista.length === 0 && (
+        <p>Nenhum registro encontrado</p>
+      )}
 
-        <thead>
-          <tr>
-            <th>Chave</th>
-            <th>Nota</th>
-            <th>Postes</th>
-            <th>Folha</th>
-            <th>Coordenada</th>
-            <th>Usuário</th>
-            <th>Data Associação</th>
-            <th>Associação</th>
-          </tr>
-        </thead>
+      {lista.length > 0 && (
 
-        <tbody>
+        <table>
 
-          {lista.map(item => (
-
-            <tr key={item.id}>
-
-              <td>{item.chave}</td>
-              <td>{item.nota}</td>
-              <td>{item.postes}</td>
-              <td>{item.folha}</td>
-              <td>{item.coordenada}</td>
-              <td>{item.usuario_associacao}</td>
-
-              <td>
-                {item.data_associacao
-                  ? new Date(item.data_associacao)
-                    .toLocaleString("pt-BR")
-                  : ""}
-              </td>
-
-              <td>
-
-                <button
-                  className="botaoRemover"
-                  onClick={() => removerAssociacao(item.id)}
-                >
-                  Remover
-                </button>
-
-              </td>
-
+          <thead>
+            <tr>
+              <th>Chave</th>
+              <th>Nota</th>
+              <th>Postes</th>
+              <th>Folha</th>
+              <th>Coordenada</th>
+              <th>Usuário</th>
+              <th>Data Associação</th>
+              <th>Associação</th>
             </tr>
+          </thead>
 
-          ))}
+          <tbody>
 
-        </tbody>
+            {lista.map(item => (
 
-      </table>
+              <tr key={item.id}>
+
+                <td>{item.numero}</td>
+
+                <td>{item.nota}</td>
+
+                <td>{item.postes}</td>
+
+                <td>{item.folha}</td>
+
+                <td>{item.coordenada}</td>
+
+                <td>{item.usuario_associacao}</td>
+
+                <td>
+                  {item.data_associacao
+                    ? new Date(item.data_associacao)
+                      .toLocaleString("pt-BR")
+                    : ""
+                  }
+                </td>
+
+                <td>
+
+                  <button
+                    className="botaoRemover"
+                    onClick={() => removerAssociacao(item.id)}
+                  >
+                    Remover
+                  </button>
+
+                </td>
+
+              </tr>
+
+            ))}
+
+          </tbody>
+
+        </table>
+
+      )}
 
     </div>
+
   );
 }
