@@ -74,21 +74,10 @@ export default function CorrigirCadastro({
     }
 
 
-    let resultado: any[] = [];
-
-
+    // busca pela nota (ns)
     const rNota = await supabase
       .from("db_chaves")
-      .select(`
-        id,
-        numero,
-        ns,
-        poste,
-        folha,
-        coord,
-        usuario_associacao,
-        data_associacao
-      `)
+      .select("*")
       .eq("ns", valor);
 
 
@@ -105,46 +94,38 @@ export default function CorrigirCadastro({
     }
 
 
-    if (rNota.data?.length) {
+    if (rNota.data && rNota.data.length > 0) {
 
-      resultado = rNota.data;
+      setLista(rNota.data);
 
-    }
-    else {
+      setLoading(false);
 
-      const rNumero = await supabase
-        .from("db_chaves")
-        .select(`
-          id,
-          numero,
-          ns,
-          poste,
-          folha,
-          coord,
-          usuario_associacao,
-          data_associacao
-        `)
-        .eq("numero", valor);
-
-
-      if (rNumero.error) {
-
-        console.log(rNumero.error);
-
-        alert("Erro ao buscar");
-
-        setLoading(false);
-
-        return;
-
-      }
-
-      resultado = rNumero.data || [];
+      return;
 
     }
 
 
-    setLista(resultado);
+    // busca pela chave (numero)
+    const rNumero = await supabase
+      .from("db_chaves")
+      .select("*")
+      .eq("numero", valor);
+
+
+    if (rNumero.error) {
+
+      console.log(rNumero.error);
+
+      alert("Erro ao buscar");
+
+      setLoading(false);
+
+      return;
+
+    }
+
+
+    setLista(rNumero.data || []);
 
     setLoading(false);
 
