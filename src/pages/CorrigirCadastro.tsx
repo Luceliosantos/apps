@@ -74,17 +74,6 @@ export default function CorrigirCadastro({
       .eq("ns", valor);
 
 
-    if (rNota.error) {
-
-      alert("Erro ao buscar");
-
-      setLoading(false);
-
-      return;
-
-    }
-
-
     if (rNota.data && rNota.data.length > 0) {
 
       setLista(rNota.data);
@@ -102,17 +91,6 @@ export default function CorrigirCadastro({
       .eq("numero", valor);
 
 
-    if (rNumero.error) {
-
-      alert("Erro ao buscar");
-
-      setLoading(false);
-
-      return;
-
-    }
-
-
     setLista(rNumero.data || []);
 
     setLoading(false);
@@ -128,12 +106,14 @@ export default function CorrigirCadastro({
     await supabase
       .from("db_chaves")
       .update({
+
         ns: null,
         poste: null,
-        folha: null,
+        flh: null,
         coord: null,
-        usuario_associacao: null,
-        data_associacao: null
+        usu_ass: null,
+        dt_ass_db: null
+
       })
       .eq("id", id);
 
@@ -154,7 +134,6 @@ export default function CorrigirCadastro({
         minHeight: "100vh",
         backgroundImage: "url('/fundo.jpg')",
         backgroundSize: "cover",
-        backgroundPosition: "center",
         padding: "40px"
       }}
     >
@@ -165,8 +144,7 @@ export default function CorrigirCadastro({
           margin: "0 auto",
           backgroundColor: "white",
           borderRadius: "10px",
-          padding: "30px",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.2)"
+          padding: "30px"
         }}
       >
 
@@ -174,7 +152,6 @@ export default function CorrigirCadastro({
           style={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center",
             marginBottom: "20px"
           }}
         >
@@ -184,12 +161,11 @@ export default function CorrigirCadastro({
           <button
             onClick={() => setPagina("home")}
             style={{
-              padding: "8px 16px",
-              borderRadius: "6px",
-              border: "none",
               backgroundColor: "#c0392b",
               color: "white",
-              cursor: "pointer"
+              border: "none",
+              padding: "8px 15px",
+              borderRadius: "6px"
             }}
           >
             Home
@@ -207,12 +183,9 @@ export default function CorrigirCadastro({
         >
 
           <input
-            placeholder="Digite número da chave ou nota"
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") pesquisar();
-            }}
+            placeholder="Digite chave ou nota"
             style={{
               flex: 1,
               padding: "10px",
@@ -224,12 +197,11 @@ export default function CorrigirCadastro({
           <button
             onClick={pesquisar}
             style={{
-              padding: "10px 20px",
-              borderRadius: "6px",
-              border: "none",
               backgroundColor: "#1f3b73",
               color: "white",
-              cursor: "pointer"
+              border: "none",
+              padding: "10px 20px",
+              borderRadius: "6px"
             }}
           >
             Pesquisar
@@ -240,36 +212,23 @@ export default function CorrigirCadastro({
 
         {loading && <p>Buscando...</p>}
 
-        {!loading && lista.length === 0 && (
-          <p>Nenhum registro encontrado</p>
-        )}
-
 
         {lista.length > 0 && (
 
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse"
-            }}
-          >
+          <table style={{ width: "100%" }}>
 
             <thead>
 
-              <tr
-                style={{
-                  backgroundColor: "#f3f3f3"
-                }}
-              >
+              <tr>
 
-                <th style={th}>Chave</th>
-                <th style={th}>Nota</th>
-                <th style={th}>Poste</th>
-                <th style={th}>Folha</th>
-                <th style={th}>Coordenada</th>
-                <th style={th}>Usuário</th>
-                <th style={th}>Data Associação</th>
-                <th style={th}>Associação</th>
+                <th>Chave</th>
+                <th>Nota</th>
+                <th>Poste</th>
+                <th>Folha</th>
+                <th>Coordenada</th>
+                <th>Usuário</th>
+                <th>Data Associação</th>
+                <th>Associação</th>
 
               </tr>
 
@@ -282,39 +241,37 @@ export default function CorrigirCadastro({
 
                 <tr key={item.id}>
 
-                  <td style={td}>{item.numero}</td>
+                  <td>{item.numero}</td>
 
-                  <td style={td}>{item.ns}</td>
+                  <td>{item.ns}</td>
 
-                  <td style={td}>{item.poste}</td>
+                  <td>{item.poste}</td>
 
-                  <td style={td}>{item.folha}</td>
+                  <td>{item.flh}</td>
 
-                  <td style={td}>{item.coord}</td>
+                  <td>{item.coord}</td>
 
-                  <td style={td}>{item.usuario_associacao}</td>
+                  <td>{item.usu_ass}</td>
 
-                  <td style={td}>
-                    {item.data_associacao
-                      ? new Date(item.data_associacao)
+                  <td>
+                    {item.dt_ass_db
+                      ? new Date(item.dt_ass_db)
                           .toLocaleString("pt-BR")
-                      : ""
-                    }
+                      : ""}
                   </td>
 
-                  <td style={td}>
+                  <td>
 
                     <button
                       onClick={() =>
                         removerAssociacao(item.id)
                       }
                       style={{
-                        padding: "6px 12px",
-                        borderRadius: "6px",
-                        border: "none",
                         backgroundColor: "#c0392b",
                         color: "white",
-                        cursor: "pointer"
+                        border: "none",
+                        padding: "6px 12px",
+                        borderRadius: "6px"
                       }}
                     >
                       Remover
@@ -339,16 +296,3 @@ export default function CorrigirCadastro({
   );
 
 }
-
-
-const th: React.CSSProperties = {
-  padding: "10px",
-  textAlign: "left",
-  borderBottom: "1px solid #ddd"
-};
-
-
-const td: React.CSSProperties = {
-  padding: "10px",
-  borderBottom: "1px solid #eee"
-};
