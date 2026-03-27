@@ -76,7 +76,8 @@ async function pesquisar() {
   }
 
 
-  const { data, error } = await supabase
+  // busca pela nota
+  const rNota = await supabase
     .from("db_chaves")
     .select(`
       id,
@@ -88,12 +89,13 @@ async function pesquisar() {
       usuario_associacao,
       data_associacao
     `)
-    .eq("ns", valor);
+    .eq("ns", valor)
+    .not("ns","is",null);
 
 
-  if(error){
+  if(rNota.error){
 
-    console.log(error);
+    console.log(rNota.error);
 
     alert("Erro ao buscar");
 
@@ -104,9 +106,9 @@ async function pesquisar() {
   }
 
 
-  if(data && data.length){
+  if(rNota.data && rNota.data.length){
 
-    setLista(data);
+    setLista(rNota.data);
 
     setLoading(false);
 
@@ -115,7 +117,8 @@ async function pesquisar() {
   }
 
 
-  const r2 = await supabase
+  // busca pela chave
+  const rNumero = await supabase
     .from("db_chaves")
     .select(`
       id,
@@ -127,12 +130,13 @@ async function pesquisar() {
       usuario_associacao,
       data_associacao
     `)
-    .eq("numero", valor);
+    .eq("numero", valor)
+    .not("ns","is",null);
 
 
-  if(r2.error){
+  if(rNumero.error){
 
-    console.log(r2.error);
+    console.log(rNumero.error);
 
     alert("Erro ao buscar");
 
@@ -143,7 +147,7 @@ async function pesquisar() {
   }
 
 
-  setLista(r2.data || []);
+  setLista(rNumero.data || []);
 
   setLoading(false);
 
