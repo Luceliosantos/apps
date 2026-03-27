@@ -59,87 +59,43 @@ export default function CorrigirCadastro({
 
   async function pesquisar() {
 
-    if (!busca) return;
+  if (!busca) return;
 
-    setLoading(true);
+  setLoading(true);
 
-    const valor = busca.trim();
+  const termo = busca.trim();
 
-    let data:any[] | null = null;
+  const { data, error } = await supabase
+    .from("db_chaves")
+    .select(`
+      id,
+      numero,
+      ns,
+      postes,
+      folha,
+      coordenada,
+      usuario_associacao,
+      data_associacao
+    `)
+    .or(`numero::text.ilike.%${termo}%,ns::text.ilike.%${termo}%`);
 
+  if(error){
 
-    // busca por numero da chave
-    const numero = Number(valor);
+    console.log(error);
 
-    if(!isNaN(numero)){
-
-      const r1 = await supabase
-        .from("db_chaves")
-        .select(`
-          id,
-          numero,
-          ns,
-          postes,
-          folha,
-          coordenada,
-          usuario_associacao,
-          data_associacao
-        `)
-        .eq("numero", numero);
-
-      if(!r1.error && r1.data?.length){
-
-        data = r1.data;
-
-      }
-
-    }
-
-
-    // busca por nota se não encontrou chave
-    if(!data){
-
-      const nota = Number(valor);
-
-      if(!isNaN(nota)){
-
-        const r2 = await supabase
-          .from("db_chaves")
-          .select(`
-            id,
-            numero,
-            ns,
-            postes,
-            folha,
-            coordenada,
-            usuario_associacao,
-            data_associacao
-          `)
-          .eq("ns", nota);
-
-        if(!r2.error){
-
-          data = r2.data;
-
-        }
-
-      }
-
-    }
-
-
-    if(!data){
-
-      data = [];
-
-    }
-
-
-    setLista(data);
+    alert("Erro ao buscar");
 
     setLoading(false);
 
+    return;
+
   }
+
+  setLista(data || []);
+
+  setLoading(false);
+
+}
 
 
   async function removerAssociacao(id:number) {
