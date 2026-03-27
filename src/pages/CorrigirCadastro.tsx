@@ -182,7 +182,7 @@ export default function CorrigirCadastro({
           <h2>Corrigir cadastro</h2>
 
           <button
-            onClick={() => setPagina("cadastroChaves")}
+            onClick={() => setPagina("CadastroChaves")}
             style={{
               padding: "8px 16px",
               borderRadius: "6px",
