@@ -430,7 +430,6 @@ if(pagina === "corrigirCadastro"){
   return(
 
     <CorrigirCadastro
-      usuario={usuario}
       permissoes={permissoes}
     />
 
