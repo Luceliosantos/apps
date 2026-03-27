@@ -431,6 +431,7 @@ if(pagina === "corrigirCadastro"){
 
     <CorrigirCadastro
       permissoes={permissoes}
+      setPagina={setPagina}
     />
 
   );
