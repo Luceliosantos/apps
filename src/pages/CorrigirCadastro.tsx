@@ -76,11 +76,46 @@ async function pesquisar() {
   }
 
 
-  let resultado:any[] = [];
+  const { data, error } = await supabase
+    .from("db_chaves")
+    .select(`
+      id,
+      numero,
+      ns,
+      postes,
+      folha,
+      coordenada,
+      usuario_associacao,
+      data_associacao
+    `)
+    .eq("ns", valor);
 
 
-  // busca por numero da chave
-  const rNumero = await supabase
+  if(error){
+
+    console.log(error);
+
+    alert("Erro ao buscar");
+
+    setLoading(false);
+
+    return;
+
+  }
+
+
+  if(data && data.length){
+
+    setLista(data);
+
+    setLoading(false);
+
+    return;
+
+  }
+
+
+  const r2 = await supabase
     .from("db_chaves")
     .select(`
       id,
@@ -95,34 +130,20 @@ async function pesquisar() {
     .eq("numero", valor);
 
 
-  if(rNumero.data?.length){
+  if(r2.error){
 
-    resultado = rNumero.data;
+    console.log(r2.error);
 
-  }
-  else{
+    alert("Erro ao buscar");
 
-    // busca por nota
-    const rNota = await supabase
-      .from("db_chaves")
-      .select(`
-        id,
-        numero,
-        ns,
-        postes,
-        folha,
-        coordenada,
-        usuario_associacao,
-        data_associacao
-      `)
-      .eq("ns", valor);
+    setLoading(false);
 
-    resultado = rNota.data || [];
+    return;
 
   }
 
 
-  setLista(resultado);
+  setLista(r2.data || []);
 
   setLoading(false);
 
