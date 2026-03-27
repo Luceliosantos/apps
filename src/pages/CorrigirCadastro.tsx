@@ -132,35 +132,11 @@ export default function CorrigirCadastro({
 
   return(
 
-    <div
-      style={{
-        minHeight: "100vh",
-        backgroundImage: "url('/fundo.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        padding: "40px"
-      }}
-    >
+    <div className="pagina">
 
-      <div
-        style={{
-          maxWidth: "1100px",
-          margin: "0 auto",
-          backgroundColor: "white",
-          borderRadius: "10px",
-          padding: "30px",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.2)"
-        }}
-      >
+      <div className="caixa">
 
-        <div
-          style={{
-            display:"flex",
-            justifyContent:"space-between",
-            alignItems:"center",
-            marginBottom:"20px"
-          }}
-        >
+        <div className="topo">
 
           <h2>
             Corrigir cadastro
@@ -168,15 +144,8 @@ export default function CorrigirCadastro({
 
 
           <button
+            className="botaoHome"
             onClick={()=>setPagina("home")}
-            style={{
-              padding:"8px 16px",
-              borderRadius:"6px",
-              border:"none",
-              backgroundColor:"#c0392b",
-              color:"white",
-              cursor:"pointer"
-            }}
           >
             Home
           </button>
@@ -184,39 +153,21 @@ export default function CorrigirCadastro({
         </div>
 
 
-        <div
-          style={{
-            display:"flex",
-            gap:"10px",
-            marginBottom:"20px"
-          }}
-        >
+        <div className="linhaBusca">
 
           <input
+            className="inputPadrao"
             placeholder="Digite número da chave ou nota"
             value={busca}
             onChange={(e)=>setBusca(e.target.value)}
             onKeyDown={(e)=>{
               if(e.key==="Enter") pesquisar();
             }}
-            style={{
-              flex:1,
-              padding:"10px",
-              borderRadius:"6px",
-              border:"1px solid #ccc"
-            }}
           />
 
           <button
+            className="botaoPadrao"
             onClick={pesquisar}
-            style={{
-              padding:"10px 20px",
-              borderRadius:"6px",
-              border:"none",
-              backgroundColor:"#1f3b73",
-              color:"white",
-              cursor:"pointer"
-            }}
           >
             Pesquisar
           </button>
@@ -238,36 +189,27 @@ export default function CorrigirCadastro({
 
         {lista.length > 0 && (
 
-          <table
-            style={{
-              width:"100%",
-              borderCollapse:"collapse"
-            }}
-          >
+          <table className="tabela">
 
             <thead>
 
-              <tr
-                style={{
-                  backgroundColor:"#f3f3f3"
-                }}
-              >
+              <tr>
 
-                <th style={th}>Chave</th>
+                <th>Chave</th>
 
-                <th style={th}>Nota</th>
+                <th>Nota</th>
 
-                <th style={th}>Poste</th>
+                <th>Poste</th>
 
-                <th style={th}>Folha</th>
+                <th>Folha</th>
 
-                <th style={th}>Coordenada</th>
+                <th>Coordenada</th>
 
-                <th style={th}>Usuário</th>
+                <th>Usuário</th>
 
-                <th style={th}>Data Associação</th>
+                <th>Data Associação</th>
 
-                <th style={th}>Associação</th>
+                <th>Associação</th>
 
               </tr>
 
@@ -280,37 +222,37 @@ export default function CorrigirCadastro({
 
                 <tr key={item.id}>
 
-                  <td style={td}>
+                  <td>
                     {item.numero}
                   </td>
 
 
-                  <td style={td}>
+                  <td>
                     {item.ns}
                   </td>
 
 
-                  <td style={td}>
+                  <td>
                     {item.poste}
                   </td>
 
 
-                  <td style={td}>
+                  <td>
                     {item.flh}
                   </td>
 
 
-                  <td style={td}>
+                  <td>
                     {item.coord}
                   </td>
 
 
-                  <td style={td}>
+                  <td>
                     {item.usu_ass}
                   </td>
 
 
-                  <td style={td}>
+                  <td>
 
                     {
                       item.dt_ass_db
@@ -327,20 +269,13 @@ export default function CorrigirCadastro({
                   </td>
 
 
-                  <td style={td}>
+                  <td>
 
                     <button
+                      className="botaoExcluir"
                       onClick={()=>
                         removerAssociacao(item.id)
                       }
-                      style={{
-                        padding:"6px 12px",
-                        borderRadius:"6px",
-                        border:"none",
-                        backgroundColor:"#c0392b",
-                        color:"white",
-                        cursor:"pointer"
-                      }}
                     >
                       Remover
                     </button>
@@ -364,20 +299,3 @@ export default function CorrigirCadastro({
   );
 
 }
-
-
-const th:React.CSSProperties={
-
-  padding:"10px",
-  textAlign:"left",
-  borderBottom:"1px solid #ddd"
-
-};
-
-
-const td:React.CSSProperties={
-
-  padding:"10px",
-  borderBottom:"1px solid #eee"
-
-};
