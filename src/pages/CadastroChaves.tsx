@@ -166,29 +166,27 @@ export default function CadastroChaves({
           )}
 
 
-          {podeConsultar && (
+{podeConsultar && (
 
-<button
-  onClick={()=>setPagina("corrigirCadastro")}
-  className="botaoPadrao"
->
-  Corrigir cadastro
-</button>
+  <>
+  
+    <button
+      style={styles.button}
+      onClick={()=>setPagina("corrigirCadastro")}
+    >
+      Corrigir cadastro
+    </button>
 
+    <button
+      style={styles.button}
+      onClick={() => setPagina("consulta")}
+    >
+      Consulta
+    </button>
 
+  </>
 
-
-      
-            <button
-              style={styles.button}
-              onClick={() => setPagina("consulta")}
-            >
-
-              Consulta
-
-            </button>
-
-          )}
+)}
 
 
           {podeAssociar && (
