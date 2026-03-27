@@ -63,21 +63,21 @@ export default function CorrigirCadastro({
 
     setLoading(true);
 
-    const termo = busca.trim();
+    const termoNumero = Number(busca.trim());
 
     const { data, error } = await supabase
       .from("db_chaves")
       .select(`
         id,
         numero,
-        nota,
+        ns,
         postes,
         folha,
         coordenada,
         usuario_associacao,
         data_associacao
       `)
-      .or(`numero.eq.${termo},nota.eq.${termo}`)
+      .or(`numero.eq.${termoNumero},ns.eq.${termoNumero}`)
       .order("numero",{ ascending:true });
 
     if (error) {
@@ -106,7 +106,7 @@ export default function CorrigirCadastro({
       .from("db_chaves")
       .update({
 
-        nota:null,
+        ns:null,
         postes:null,
         folha:null,
         coordenada:null,
@@ -238,7 +238,7 @@ export default function CorrigirCadastro({
 
                     <td>{item.numero}</td>
 
-                    <td>{item.nota}</td>
+                    <td>{item.ns}</td>
 
                     <td>{item.postes}</td>
 
