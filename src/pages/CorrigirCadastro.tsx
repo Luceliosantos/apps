@@ -57,13 +57,23 @@ export default function CorrigirCadastro({
     );
 
 
-  async function pesquisar() {
+ async function pesquisar() {
 
   if (!busca) return;
 
   setLoading(true);
 
-  const termo = busca.trim();
+  const valor = Number(busca);
+
+  if(isNaN(valor)){
+
+    setLista([]);
+
+    setLoading(false);
+
+    return;
+
+  }
 
   const { data, error } = await supabase
     .from("db_chaves")
@@ -77,7 +87,7 @@ export default function CorrigirCadastro({
       usuario_associacao,
       data_associacao
     `)
-    .or(`numero::text.ilike.%${termo}%,ns::text.ilike.%${termo}%`);
+    .or(`numero.eq.${valor},ns.eq.${valor}`);
 
   if(error){
 
