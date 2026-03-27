@@ -26,8 +26,8 @@ export type Pagina =
   | "geo"
   | "proorc"
   | "usuarios"
-  | "alterarSenha";
-  | "corrigirCadastro"
+  | "alterarSenha"
+  | "corrigirCadastro";
 
 export default function App() {
 
