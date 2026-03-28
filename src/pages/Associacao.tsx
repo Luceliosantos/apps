@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { supabase } from "../supabase";
 import { Pagina } from "../App";
 import { useState, useEffect } from "react";
@@ -109,7 +108,8 @@ export default function Associacao({
   const [lista, setLista] = useState<Registro[]>([]);
 
   const [destacarUltima, setDestacarUltima] = useState(false);
-
+  
+  const [qtdDisponiveis, setQtdDisponiveis] = useState(0);
 
   const notaValida =
     /^[1-9][0-9]{9}$/.test(nota);
