@@ -198,9 +198,11 @@ const styles: { [key:string]: React.CSSProperties } = {
     transition:"all 0.3s ease"
   },
 
-  logoutButton:{
-    border:"1px solid rgba(255,0,0,0.6)",
-    backgroundColor:"rgba(192,57,43,0.45)"
-  }
+logoutButton:{
+  border:"1px solid rgba(255,0,0,0.6)",
+  backgroundColor:"rgba(192,57,43,0.45)",
+  padding:14,
+  width:"160%"
+}
 
 };
