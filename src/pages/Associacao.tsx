@@ -1,6 +1,25 @@
 import { useState } from "react";
 import { supabase } from "../supabase";
 import { Pagina } from "../App";
+import { useState, useEffect } from "react";
+
+useEffect(() => {
+
+  async function carregarDisponiveis(){
+
+    const { count } =
+      await supabase
+        .from("db_chaves")
+        .select("*", { count:"exact", head:true })
+        .is("ns", null);
+
+    setQtdDisponiveis(count || 0);
+
+  }
+
+  carregarDisponiveis();
+
+},[]);
 
 type Props = {
   usuario: {
@@ -284,15 +303,21 @@ setLoading(false);
 
         <div style={styles.topBar}>
 
-          <strong>
+<div>
 
-            {usuario.nome}
+  <strong>
+    {usuario.nome?.toUpperCase()}
+  </strong>
 
-            {" | "}
+  {" | "}
 
-            {usuario.matricula}
+  {usuario.matricula?.toUpperCase()}
 
-          </strong>
+  <div>
+    Chaves disponíveis: {qtdDisponiveis}
+  </div>
+
+</div>
 
 
           <button
@@ -315,8 +340,9 @@ setLoading(false);
 
           <div style={styles.card}>
 
-            <h2>Associar Chave</h2>
-
+            <h2 style={{ marginBottom:15 }}>
+              Associar Chave
+            </h2>
 
             <input
 
