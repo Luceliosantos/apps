@@ -17,7 +17,7 @@ type Props = {
   handleLogout: () => void;
 };
 
-export default function CadastroChaves({
+export default function ControleChaves({
 
   usuario,
 
