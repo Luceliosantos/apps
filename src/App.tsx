@@ -426,16 +426,13 @@ const { error } = await supabase
 
     }
 if(pagina === "corrigirCadastro"){
-
   return(
-
     <CorrigirCadastro
       permissoes={permissoes}
       setPagina={setPagina}
+      atualizarContagem={atualizarContagem}
     />
-
   );
-
 }
     if(pagina === "geo"){
 
