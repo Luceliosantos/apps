@@ -692,24 +692,16 @@ const styles:{[key:string]:React.CSSProperties} = {
 
 
   button:{
-
-    padding:18,
-
-    fontSize:16,
-
-    borderRadius:10,
-
-    border:"1px solid rgba(255,255,255,0.25)",
-
-    backgroundColor:"rgba(255,255,255,0.12)",
-
-    color:"white",
-
-    cursor:"pointer",
-
-    backdropFilter:"blur(6px)"
-
-  },
+  padding:"8px 12px",
+  height:"32px",
+  fontSize:14,
+  borderRadius:8,
+  border:"1px solid rgba(255,255,255,0.35)",
+  backgroundColor:"rgba(255,255,255,0.15)",
+  color:"white",
+  cursor:"pointer",
+  boxShadow:"0 2px 4px rgba(0,0,0,0.3)"
+},
 
 
   table:{
