@@ -99,16 +99,16 @@ export default function CadastroChaves({
         <div style={styles.header}>
 
           <div>
-            <strong>Chaves disponíveis:</strong>
+            <strong>CHAVES DISPONÍVEIS:</strong>
             {" "}
             {chavesDisponiveis}
           </div>
           <div>
             <strong>
-              {usuario.matricula}
+              {usuario.matricula?.toUpperCase()}
             </strong>
             {" | "}
-              {usuario.nome}
+              {usuario.nome?.toUpperCase()}
           </div>
         </div>
 
