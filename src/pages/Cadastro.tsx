@@ -230,7 +230,7 @@ await supabase.from("db_chaves").insert([
 
             <div style={styles.linhaUsuario}>
 
-              {usuario.matricula} - {usuario.nome}
+              {usuario.matricula?.toUpperCase()} - {usuario.nome?.toUpperCase()}
 
             </div>
 
@@ -242,7 +242,7 @@ await supabase.from("db_chaves").insert([
               style={styles.button}
               onClick={() => setPagina("home")}
             >
-              Home
+              Voltar
             </button>
 
           </div>
