@@ -74,10 +74,10 @@ export default function HomeMenu({
 
           <div>
             <strong>
-              {usuario.nome}
+              {usuario.matricula?.toUpperCase()}
             </strong>
             {" | "}
-            {usuario.matricula}
+              {usuario.nome?.toUpperCase()}
           </div>
 
           <button
