@@ -11,7 +11,7 @@ type Props = {
   };
 };
 
-export default function HomeMenu({
+export default function Home({
   setPagina,
   handleLogout,
   usuario,
