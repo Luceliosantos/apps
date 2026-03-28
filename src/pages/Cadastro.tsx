@@ -114,10 +114,10 @@ export default function Cadastro({
 
         let erro = "";
 
-        if (!/^\d{6}$/.test(numero)) {
-
-          erro = "Número deve ter 6 dígitos numéricos";
-
+        if (!/^[1-9]\d{5}$/.test(numero)) {
+        
+          erro = "Número deve ter 6 dígitos e não pode iniciar com 0";
+        
         }
 
         novos.push({
