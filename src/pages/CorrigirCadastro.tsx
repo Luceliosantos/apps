@@ -277,7 +277,7 @@ export default function CorrigirCadastro({
                     }
                     style={botaoAcao}
                   >
-                    Remover
+                    Remover Associação
                   </button>
 
                   </td>
