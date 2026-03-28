@@ -228,10 +228,20 @@ await supabase.from("db_chaves").insert([
 
           <div style={styles.headerUsuario}>
 
-            <div style={styles.linhaUsuario}>
-
-              {usuario.matricula?.toUpperCase()} - {usuario.nome?.toUpperCase()}
-
+            <div>
+            
+              <strong>
+                {usuario.nome?.toUpperCase()}
+              </strong>
+            
+              {" | "}
+            
+              {usuario.matricula?.toUpperCase()}
+            
+              <div>
+                Chaves disponíveis: {chavesDisponiveis}
+              </div>
+            
             </div>
 
           </div>
@@ -506,10 +516,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "space-between",
   },
 
-  linhaUsuario: {
-    fontSize: 18,
-    fontWeight: 500,
-  },
+linhaUsuario: {
+  fontSize: 16,
+  fontWeight: 400,
+},
 
   mainContent: {
     maxWidth: "1200px",
