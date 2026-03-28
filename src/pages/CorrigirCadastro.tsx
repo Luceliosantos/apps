@@ -272,13 +272,13 @@ export default function CorrigirCadastro({
                   <td style={td}>
 
                     <button
-                      onClick={()=>
-                        removerAssociacao(item.id)
-                      }
-                      style={botaoConsulta}
-                    >
-                      Remover
-                    </button>
+                    onClick={()=>
+                      removerAssociacao(item.id)
+                    }
+                    style={botaoAcao}
+                  >
+                    Remover
+                  </button>
 
                   </td>
 
@@ -305,9 +305,18 @@ export default function CorrigirCadastro({
 const container:React.CSSProperties={
 
   minHeight:"100vh",
-  backgroundImage:"url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg/377c7a2b-edfd-dd1e-c8a6-91d79dc31a39?version=1.0&t=1726774318701')",
+
+  backgroundImage:`
+    linear-gradient(
+      rgba(0,0,0,0.55),
+      rgba(0,0,0,0.55)
+    ),
+    url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg/377c7a2b-edfd-dd1e-c8a6-91d79dc31a39?version=1.0&t=1726774318701')
+  `,
+
   backgroundSize:"cover",
   backgroundPosition:"center",
+
   padding:"40px"
 
 };
@@ -322,6 +331,18 @@ const box:React.CSSProperties={
   borderRadius:"14px",
   padding:"30px",
   border:"1px solid rgba(255,255,255,0.25)"
+
+};
+
+const botaoAcao:React.CSSProperties={
+
+  padding:"8px 18px",
+  borderRadius:"10px",
+  border:"1px solid rgba(192,57,43,0.6)",
+  background:"rgba(192,57,43,0.85)",
+  color:"white",
+  cursor:"pointer",
+  fontWeight:"600"
 
 };
 
