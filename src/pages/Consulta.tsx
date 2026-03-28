@@ -426,7 +426,7 @@ function obterNomeUsuario(matricula:any){
                 setPagina("home")
               }
             >
-              Home
+              Voltar
             </button>
 
           </div>
