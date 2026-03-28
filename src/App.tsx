@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 
-import CadastroChaves from "./pages/CadastroChaves";
+import ControleChaves from "./pages/ControleChaves";
 import Cadastro from "./pages/Cadastro";
 import Associacao from "./pages/Associacao";
 import Consulta from "./pages/Consulta";
@@ -478,7 +478,7 @@ if(pagina === "corrigirCadastro"){
 
     return(
 
-      <CadastroChaves
+       <ControleChaves
         usuario={usuario}
         permissoes={permissoes}
         chavesDisponiveis={chavesDisponiveis}
