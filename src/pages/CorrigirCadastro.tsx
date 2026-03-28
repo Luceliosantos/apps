@@ -147,37 +147,18 @@ export default function CorrigirCadastro({
   return(
 
     <div
-      style={{
-        minHeight:"100vh",
-        backgroundImage:"url('/subestacao.jpg')",
-        backgroundSize:"cover",
-        backgroundPosition:"center",
-        padding:"40px"
-      }}
+      style={container}
     >
 
       <div
-        style={{
-          maxWidth:"1200px",
-          margin:"0 auto",
-          background:"rgba(255,255,255,0.08)",
-          backdropFilter:"blur(6px)",
-          borderRadius:"14px",
-          padding:"30px",
-          border:"1px solid rgba(255,255,255,0.25)"
-        }}
+        style={box}
       >
 
         <div
-          style={{
-            display:"flex",
-            justifyContent:"space-between",
-            alignItems:"center",
-            marginBottom:"5px"
-          }}
+          style={topo}
         >
 
-          <h2 style={{color:"white"}}>
+          <h2 style={titulo}>
             Corrigir cadastro
           </h2>
 
@@ -192,27 +173,13 @@ export default function CorrigirCadastro({
         </div>
 
 
-        <div
-          style={{
-            color:"white",
-            fontSize:"18px",
-            marginBottom:"25px",
-            textAlign:"left"
-          }}
-        >
+        <div style={quantidade}>
           {quantidadeDisponivel} chaves disponíveis
         </div>
 
 
 
-        <div
-          style={{
-            display:"flex",
-            gap:"10px",
-            marginBottom:"25px",
-            justifyContent:"flex-start"
-          }}
-        >
+        <div style={linhaBusca}>
 
           <input
             placeholder="Digite número da chave ou nota"
@@ -252,16 +219,7 @@ export default function CorrigirCadastro({
 
         {lista.length > 0 && (
 
-          <table
-            style={{
-              width:"100%",
-              borderCollapse:"collapse",
-              textAlign:"center",
-              backgroundColor:"white",
-              borderRadius:"10px",
-              overflow:"hidden"
-            }}
-          >
+          <table style={tabela}>
 
             <thead>
 
@@ -344,6 +302,67 @@ export default function CorrigirCadastro({
 
 
 
+const container:React.CSSProperties={
+
+  minHeight:"100vh",
+  backgroundImage:"url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg/377c7a2b-edfd-dd1e-c8a6-91d79dc31a39?version=1.0&t=1726774318701')",
+  backgroundSize:"cover",
+  backgroundPosition:"center",
+  padding:"40px"
+
+};
+
+
+const box:React.CSSProperties={
+
+  maxWidth:"1200px",
+  margin:"0 auto",
+  background:"rgba(255,255,255,0.08)",
+  backdropFilter:"blur(6px)",
+  borderRadius:"14px",
+  padding:"30px",
+  border:"1px solid rgba(255,255,255,0.25)"
+
+};
+
+
+const topo:React.CSSProperties={
+
+  display:"flex",
+  justifyContent:"space-between",
+  alignItems:"center",
+  marginBottom:"5px"
+
+};
+
+
+const titulo:React.CSSProperties={
+
+  color:"white"
+
+};
+
+
+const quantidade:React.CSSProperties={
+
+  color:"white",
+  fontSize:"18px",
+  marginBottom:"25px",
+  textAlign:"left"
+
+};
+
+
+const linhaBusca:React.CSSProperties={
+
+  display:"flex",
+  gap:"10px",
+  marginBottom:"25px",
+  justifyContent:"flex-start"
+
+};
+
+
 const inputConsulta:React.CSSProperties={
 
   width:"20%",
@@ -367,6 +386,18 @@ const botaoConsulta:React.CSSProperties={
   color:"white",
   cursor:"pointer",
   backdropFilter:"blur(2px)"
+
+};
+
+
+const tabela:React.CSSProperties={
+
+  width:"100%",
+  borderCollapse:"collapse",
+  textAlign:"center",
+  backgroundColor:"white",
+  borderRadius:"10px",
+  overflow:"hidden"
 
 };
 
