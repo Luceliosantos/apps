@@ -108,7 +108,7 @@ export default function Cadastro({
 
       const novos: Registro[] = [];
 
-      for (let i = 1; i < json.length; i++) {
+      for (let i = 0; i < json.length; i++) {
 
         const numero = String(json[i][0] ?? "").trim();
 
