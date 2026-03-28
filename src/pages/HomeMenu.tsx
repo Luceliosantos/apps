@@ -201,8 +201,8 @@ const styles: { [key:string]: React.CSSProperties } = {
 logoutButton:{
   border:"1px solid rgba(255,0,0,0.6)",
   backgroundColor:"rgba(192,57,43,0.45)",
-  padding:14,
-  width:"160%"
+  padding:"10px 22px",  // altura 80% e largura levemente maior
+  minWidth:120          // aumenta largura sem estourar layout
 }
 
 };
