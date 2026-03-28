@@ -306,12 +306,12 @@ setLoading(false);
 <div>
 
   <strong>
-    {usuario.nome?.toUpperCase()}
+    {usuario.matricula?.toUpperCase()}
   </strong>
 
   {" | "}
 
-  {usuario.matricula?.toUpperCase()}
+  {usuario.nome?.toUpperCase()}
 
   <div>
     Chaves disponíveis: {qtdDisponiveis}
@@ -328,7 +328,7 @@ setLoading(false);
 
           >
 
-            Home
+            Voltar
 
           </button>
 
