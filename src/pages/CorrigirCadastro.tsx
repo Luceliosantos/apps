@@ -78,9 +78,7 @@ export default function CorrigirCadastro({
     if(isNaN(valor)){
 
       setLista([]);
-
       setLoading(false);
-
       return;
 
     }
@@ -95,9 +93,7 @@ export default function CorrigirCadastro({
     if(rNota.data && rNota.data.length > 0){
 
       setLista(rNota.data);
-
       setLoading(false);
-
       return;
 
     }
@@ -110,7 +106,6 @@ export default function CorrigirCadastro({
 
 
     setLista(rNumero.data || []);
-
     setLoading(false);
 
   }
@@ -154,7 +149,7 @@ export default function CorrigirCadastro({
     <div
       style={{
         minHeight:"100vh",
-        backgroundImage:"url('/fundo.jpg')",
+        backgroundImage:"url('/subestacao.jpg')",
         backgroundSize:"cover",
         backgroundPosition:"center",
         padding:"40px"
@@ -163,12 +158,13 @@ export default function CorrigirCadastro({
 
       <div
         style={{
-          maxWidth:"1100px",
+          maxWidth:"1200px",
           margin:"0 auto",
-          backgroundColor:"rgba(255,255,255,0.95)",
-          borderRadius:"12px",
+          background:"rgba(255,255,255,0.08)",
+          backdropFilter:"blur(6px)",
+          borderRadius:"14px",
           padding:"30px",
-          boxShadow:"0 6px 25px rgba(0,0,0,0.25)"
+          border:"1px solid rgba(255,255,255,0.25)"
         }}
       >
 
@@ -177,18 +173,18 @@ export default function CorrigirCadastro({
             display:"flex",
             justifyContent:"space-between",
             alignItems:"center",
-            marginBottom:"10px"
+            marginBottom:"5px"
           }}
         >
 
-          <h2>
+          <h2 style={{color:"white"}}>
             Corrigir cadastro
           </h2>
 
 
           <button
             onClick={()=>setPagina("home")}
-            style={botaoPadrao}
+            style={botaoConsulta}
           >
             Voltar
           </button>
@@ -198,10 +194,10 @@ export default function CorrigirCadastro({
 
         <div
           style={{
+            color:"white",
             fontSize:"18px",
             marginBottom:"25px",
-            textAlign:"center",
-            fontWeight:"500"
+            textAlign:"left"
           }}
         >
           {quantidadeDisponivel} chaves disponíveis
@@ -213,7 +209,8 @@ export default function CorrigirCadastro({
           style={{
             display:"flex",
             gap:"10px",
-            marginBottom:"20px"
+            marginBottom:"25px",
+            justifyContent:"flex-start"
           }}
         >
 
@@ -224,12 +221,12 @@ export default function CorrigirCadastro({
             onKeyDown={(e)=>{
               if(e.key==="Enter") pesquisar();
             }}
-            style={inputPadrao}
+            style={inputConsulta}
           />
 
           <button
             onClick={pesquisar}
-            style={botaoPadrao}
+            style={botaoConsulta}
           >
             Pesquisar
           </button>
@@ -237,16 +234,16 @@ export default function CorrigirCadastro({
         </div>
 
 
-        {loading && <p>Buscando...</p>}
+        {loading && (
+          <p style={{color:"white"}}>
+            Buscando...
+          </p>
+        )}
 
 
         {!loading && lista.length === 0 && (
 
-          <p
-            style={{
-              textAlign:"center"
-            }}
-          >
+          <p style={{color:"white"}}>
             Nenhum registro encontrado
           </p>
 
@@ -259,7 +256,10 @@ export default function CorrigirCadastro({
             style={{
               width:"100%",
               borderCollapse:"collapse",
-              textAlign:"center"
+              textAlign:"center",
+              backgroundColor:"white",
+              borderRadius:"10px",
+              overflow:"hidden"
             }}
           >
 
@@ -268,19 +268,12 @@ export default function CorrigirCadastro({
               <tr>
 
                 <th style={th}>CHAVE</th>
-
                 <th style={th}>NOTA</th>
-
                 <th style={th}>POSTE</th>
-
                 <th style={th}>FOLHA</th>
-
                 <th style={th}>COORDENADA</th>
-
                 <th style={th}>USUÁRIO</th>
-
                 <th style={th}>DATA ASSOCIAÇÃO</th>
-
                 <th style={th}>AÇÃO</th>
 
               </tr>
@@ -294,35 +287,12 @@ export default function CorrigirCadastro({
 
                 <tr key={item.id}>
 
-                  <td style={td}>
-                    {item.numero}
-                  </td>
-
-
-                  <td style={td}>
-                    {item.ns}
-                  </td>
-
-
-                  <td style={td}>
-                    {item.poste}
-                  </td>
-
-
-                  <td style={td}>
-                    {item.flh}
-                  </td>
-
-
-                  <td style={td}>
-                    {item.coord}
-                  </td>
-
-
-                  <td style={td}>
-                    {item.usu_ass}
-                  </td>
-
+                  <td style={td}>{item.numero}</td>
+                  <td style={td}>{item.ns}</td>
+                  <td style={td}>{item.poste}</td>
+                  <td style={td}>{item.flh}</td>
+                  <td style={td}>{item.coord}</td>
+                  <td style={td}>{item.usu_ass}</td>
 
                   <td style={td}>
 
@@ -347,7 +317,7 @@ export default function CorrigirCadastro({
                       onClick={()=>
                         removerAssociacao(item.id)
                       }
-                      style={botaoPadrao}
+                      style={botaoConsulta}
                     >
                       Remover
                     </button>
@@ -374,35 +344,38 @@ export default function CorrigirCadastro({
 
 
 
-const botaoPadrao:React.CSSProperties={
+const inputConsulta:React.CSSProperties={
 
-  padding:"10px 18px",
+  width:"20%",
+  minWidth:"180px",
+  padding:"10px",
   borderRadius:"8px",
-  border:"none",
-  backgroundColor:"#1f3b73",
+  border:"1px solid rgba(255,255,255,0.4)",
+  background:"rgba(255,255,255,0.15)",
   color:"white",
-  cursor:"pointer",
-  fontWeight:"600"
+  outline:"none"
 
 };
 
 
-const inputPadrao:React.CSSProperties={
+const botaoConsulta:React.CSSProperties={
 
-  flex:1,
-  padding:"10px",
-  borderRadius:"8px",
-  border:"1px solid #ccc",
-  textAlign:"center"
+  padding:"8px 18px",
+  borderRadius:"10px",
+  border:"1px solid rgba(255,255,255,0.4)",
+  background:"rgba(255,255,255,0.15)",
+  color:"white",
+  cursor:"pointer",
+  backdropFilter:"blur(2px)"
 
 };
 
 
 const th:React.CSSProperties={
 
-  padding:"10px",
-  border:"1px solid #dcdcdc",
-  backgroundColor:"#f1f1f1",
+  padding:"12px",
+  border:"1px solid #ddd",
+  backgroundColor:"#f4f4f4",
   fontWeight:"700"
 
 };
