@@ -33,6 +33,8 @@ export default function Cadastro({
 
   permissoes,
 
+  chavesDisponiveis,
+
   setPagina,
 
   atualizarContagem,
