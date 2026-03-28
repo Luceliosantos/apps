@@ -5,6 +5,7 @@ import { Pagina } from "../App";
 type Props = {
   permissoes: any[];
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
+  atualizarContagem: () => Promise<void>;
 };
 
 export default function CorrigirCadastro({
@@ -161,23 +162,20 @@ export default function CorrigirCadastro({
           <h2 style={titulo}>
             Corrigir cadastro
           </h2>
-
-
           <button
-            onClick={()=>setPagina("home")}
+            onClick={async ()=>{
+              await atualizarContagem();
+              setPagina("home");
+            }}
             style={botaoConsulta}
           >
             Voltar
           </button>
-
         </div>
-
 
         <div style={quantidade}>
           {quantidadeDisponivel} chaves disponíveis
         </div>
-
-
 
         <div style={linhaBusca}>
 
