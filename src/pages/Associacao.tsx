@@ -2,24 +2,6 @@ import { supabase } from "../supabase";
 import { Pagina } from "../App";
 import { useState, useEffect } from "react";
 
-useEffect(() => {
-
-  async function carregarDisponiveis(){
-
-    const { count } =
-      await supabase
-        .from("db_chaves")
-        .select("*", { count:"exact", head:true })
-        .is("ns", null);
-
-    setQtdDisponiveis(count || 0);
-
-  }
-
-  carregarDisponiveis();
-
-},[]);
-
 type Props = {
   usuario: {
     matricula: string;
@@ -111,6 +93,24 @@ export default function Associacao({
   
   const [qtdDisponiveis, setQtdDisponiveis] = useState(0);
 
+useEffect(() => {
+
+  async function carregarDisponiveis(){
+
+    const { count } =
+      await supabase
+        .from("db_chaves")
+        .select("*", { count:"exact", head:true })
+        .is("ns", null);
+
+    setQtdDisponiveis(count || 0);
+
+  }
+
+  carregarDisponiveis();
+
+},[]);
+  
   const notaValida =
     /^[1-9][0-9]{9}$/.test(nota);
 
