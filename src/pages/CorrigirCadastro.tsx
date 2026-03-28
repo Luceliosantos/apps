@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../supabase";
 import { Pagina } from "../App";
 
@@ -15,6 +15,7 @@ export default function CorrigirCadastro({
   const [busca, setBusca] = useState("");
   const [lista, setLista] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [quantidadeDisponivel, setQuantidadeDisponivel] = useState(0);
 
 
   function temPermissao(
@@ -47,6 +48,23 @@ export default function CorrigirCadastro({
       &&
       temPermissao("chaves", ["comissionador"])
     );
+
+
+  useEffect(()=>{
+    carregarQuantidadeDisponivel();
+  },[]);
+
+
+  async function carregarQuantidadeDisponivel(){
+
+    const r = await supabase
+      .from("db_chaves")
+      .select("*", { count:"exact", head:true })
+      .is("ns", null);
+
+    setQuantidadeDisponivel(r.count || 0);
+
+  }
 
 
   async function pesquisar(){
@@ -122,6 +140,7 @@ export default function CorrigirCadastro({
 
 
     pesquisar();
+    carregarQuantidadeDisponivel();
 
   }
 
@@ -134,22 +153,22 @@ export default function CorrigirCadastro({
 
     <div
       style={{
-        minHeight: "100vh",
-        backgroundImage: "url('/fundo.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        padding: "40px"
+        minHeight:"100vh",
+        backgroundImage:"url('/fundo.jpg')",
+        backgroundSize:"cover",
+        backgroundPosition:"center",
+        padding:"40px"
       }}
     >
 
       <div
         style={{
-          maxWidth: "1100px",
-          margin: "0 auto",
-          backgroundColor: "white",
-          borderRadius: "10px",
-          padding: "30px",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.2)"
+          maxWidth:"1100px",
+          margin:"0 auto",
+          backgroundColor:"rgba(255,255,255,0.95)",
+          borderRadius:"12px",
+          padding:"30px",
+          boxShadow:"0 6px 25px rgba(0,0,0,0.25)"
         }}
       >
 
@@ -158,7 +177,7 @@ export default function CorrigirCadastro({
             display:"flex",
             justifyContent:"space-between",
             alignItems:"center",
-            marginBottom:"20px"
+            marginBottom:"10px"
           }}
         >
 
@@ -169,19 +188,25 @@ export default function CorrigirCadastro({
 
           <button
             onClick={()=>setPagina("home")}
-            style={{
-              padding:"8px 16px",
-              borderRadius:"6px",
-              border:"none",
-              backgroundColor:"#c0392b",
-              color:"white",
-              cursor:"pointer"
-            }}
+            style={botaoPadrao}
           >
-            Home
+            Voltar
           </button>
 
         </div>
+
+
+        <div
+          style={{
+            fontSize:"18px",
+            marginBottom:"25px",
+            textAlign:"center",
+            fontWeight:"500"
+          }}
+        >
+          {quantidadeDisponivel} chaves disponíveis
+        </div>
+
 
 
         <div
@@ -199,24 +224,12 @@ export default function CorrigirCadastro({
             onKeyDown={(e)=>{
               if(e.key==="Enter") pesquisar();
             }}
-            style={{
-              flex:1,
-              padding:"10px",
-              borderRadius:"6px",
-              border:"1px solid #ccc"
-            }}
+            style={inputPadrao}
           />
 
           <button
             onClick={pesquisar}
-            style={{
-              padding:"10px 20px",
-              borderRadius:"6px",
-              border:"none",
-              backgroundColor:"#1f3b73",
-              color:"white",
-              cursor:"pointer"
-            }}
+            style={botaoPadrao}
           >
             Pesquisar
           </button>
@@ -229,7 +242,11 @@ export default function CorrigirCadastro({
 
         {!loading && lista.length === 0 && (
 
-          <p>
+          <p
+            style={{
+              textAlign:"center"
+            }}
+          >
             Nenhum registro encontrado
           </p>
 
@@ -241,33 +258,30 @@ export default function CorrigirCadastro({
           <table
             style={{
               width:"100%",
-              borderCollapse:"collapse"
+              borderCollapse:"collapse",
+              textAlign:"center"
             }}
           >
 
             <thead>
 
-              <tr
-                style={{
-                  backgroundColor:"#f3f3f3"
-                }}
-              >
+              <tr>
 
-                <th style={th}>Chave</th>
+                <th style={th}>CHAVE</th>
 
-                <th style={th}>Nota</th>
+                <th style={th}>NOTA</th>
 
-                <th style={th}>Poste</th>
+                <th style={th}>POSTE</th>
 
-                <th style={th}>Folha</th>
+                <th style={th}>FOLHA</th>
 
-                <th style={th}>Coordenada</th>
+                <th style={th}>COORDENADA</th>
 
-                <th style={th}>Usuário</th>
+                <th style={th}>USUÁRIO</th>
 
-                <th style={th}>Data Associação</th>
+                <th style={th}>DATA ASSOCIAÇÃO</th>
 
-                <th style={th}>Associação</th>
+                <th style={th}>AÇÃO</th>
 
               </tr>
 
@@ -333,14 +347,7 @@ export default function CorrigirCadastro({
                       onClick={()=>
                         removerAssociacao(item.id)
                       }
-                      style={{
-                        padding:"6px 12px",
-                        borderRadius:"6px",
-                        border:"none",
-                        backgroundColor:"#c0392b",
-                        color:"white",
-                        cursor:"pointer"
-                      }}
+                      style={botaoPadrao}
                     >
                       Remover
                     </button>
@@ -366,11 +373,37 @@ export default function CorrigirCadastro({
 }
 
 
+
+const botaoPadrao:React.CSSProperties={
+
+  padding:"10px 18px",
+  borderRadius:"8px",
+  border:"none",
+  backgroundColor:"#1f3b73",
+  color:"white",
+  cursor:"pointer",
+  fontWeight:"600"
+
+};
+
+
+const inputPadrao:React.CSSProperties={
+
+  flex:1,
+  padding:"10px",
+  borderRadius:"8px",
+  border:"1px solid #ccc",
+  textAlign:"center"
+
+};
+
+
 const th:React.CSSProperties={
 
   padding:"10px",
-  textAlign:"left",
-  borderBottom:"1px solid #ddd"
+  border:"1px solid #dcdcdc",
+  backgroundColor:"#f1f1f1",
+  fontWeight:"700"
 
 };
 
@@ -378,6 +411,6 @@ const th:React.CSSProperties={
 const td:React.CSSProperties={
 
   padding:"10px",
-  borderBottom:"1px solid #eee"
+  border:"1px solid #e5e5e5"
 
 };
