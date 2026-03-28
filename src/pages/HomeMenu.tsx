@@ -200,8 +200,7 @@ const styles: { [key:string]: React.CSSProperties } = {
 
   logoutButton:{
     border:"1px solid rgba(255,0,0,0.6)",
-    backgroundColor:"rgba(192,57,43,0.45)",
-    height:"80%"
+    backgroundColor:"rgba(192,57,43,0.45)"
   }
 
 };
