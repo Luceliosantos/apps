@@ -5,7 +5,7 @@ import ControleChaves from "./pages/ControleChaves";
 import Cadastro from "./pages/Cadastro";
 import Associacao from "./pages/Associacao";
 import Consulta from "./pages/Consulta";
-import HomeMenu from "./pages/Home";
+import Home from "./pages/Home";
 import Usuarios from "./pages/Usuarios";
 import CorrigirCadastro from "./pages/CorrigirCadastro";
 
