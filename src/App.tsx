@@ -5,7 +5,7 @@ import CadastroChaves from "./pages/CadastroChaves";
 import Cadastro from "./pages/Cadastro";
 import Associacao from "./pages/Associacao";
 import Consulta from "./pages/Consulta";
-import HomeMenu from "./pages/HomeMenu";
+import HomeMenu from "./pages/Home";
 import Usuarios from "./pages/Usuarios";
 import CorrigirCadastro from "./pages/CorrigirCadastro";
 
@@ -278,7 +278,7 @@ const { error } = await supabase
 
       return(
 
-        <HomeMenu
+        <Home
           usuario={usuario}
           permissoes={permissoes}
           setPagina={setPagina}
