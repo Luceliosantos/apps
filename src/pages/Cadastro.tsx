@@ -507,7 +507,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 
   linhaUsuario: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 500,
   },
 
