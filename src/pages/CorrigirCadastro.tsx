@@ -10,7 +10,8 @@ type Props = {
 
 export default function CorrigirCadastro({
   permissoes,
-  setPagina
+  setPagina,
+  atualizarContagem
 }: Props) {
 
   const [busca, setBusca] = useState("");
