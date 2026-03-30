@@ -7,12 +7,13 @@ type Props = {
 };
 
 type LinhaResumo = {
+
   nota:string
   base_cr:number
   m609:string
   m614:string
   m625:string
-  obs:string
+
 };
 
 export default function AcompGeo({ setPagina }: Props){
@@ -28,63 +29,47 @@ export default function AcompGeo({ setPagina }: Props){
 
   async function carregarRegional(regional:string):Promise<LinhaResumo[]>{
 
-  const { data,error } = await supabase
-    .from("db_acomp_geo")
-    .select("nota,base_cr,medida,status_med,obs")
-    .eq("regional",regional);
+    const { data,error } = await supabase
+      .from("db_acomp_geo")
+      .select("nota,base_cr,medida,status_med")
+      .eq("regional",regional);
 
-  if(error || !data){
+    if(error || !data){
 
-    console.log(error);
-    return [];
+      console.log(error);
+      return [];
+
+    }
+
+    const mapa:Record<string,LinhaResumo> = {};
+
+    data.forEach((r:any)=>{
+
+      if(!mapa[r.nota]){
+
+        mapa[r.nota] = {
+
+          nota:r.nota,
+          base_cr:Number(r.base_cr) || 0,
+          m609:"",
+          m614:"",
+          m625:""
+
+        };
+
+      }
+
+      if(r.medida==="0609") mapa[r.nota].m609=r.status_med;
+      if(r.medida==="0614") mapa[r.nota].m614=r.status_med;
+      if(r.medida==="0625") mapa[r.nota].m625=r.status_med;
+
+    });
+
+    return Object.values(mapa)
+      .sort((a,b)=>b.base_cr-a.base_cr)
+      .slice(0,10);
 
   }
-
-  const mapa:Record<string,LinhaResumo> = {};
-
-  data.forEach((r:any)=>{
-
-    if(!mapa[r.nota]){
-
-      mapa[r.nota] = {
-
-        nota:r.nota,
-        base_cr:Number(r.base_cr) || 0,
-        m609:"",
-        m614:"",
-        m625:"",
-        obs:""
-
-      };
-
-    }
-
-    // guarda status das medidas
-    if(r.medida==="0609") mapa[r.nota].m609=r.status_med;
-    if(r.medida==="0614") mapa[r.nota].m614=r.status_med;
-    if(r.medida==="0625") mapa[r.nota].m625=r.status_med;
-
-    // obs somente se houver PEND
-    if(
-      (r.medida==="0609" ||
-       r.medida==="0614" ||
-       r.medida==="0625")
-      &&
-      r.status_med?.includes("PEND")
-    ){
-
-      mapa[r.nota].obs=r.obs;
-
-    }
-
-  });
-
-  // ordena por maior base_cr
-  return Object.values(mapa)
-    .sort((a,b)=>b.base_cr-a.base_cr)
-    .slice(0,10);
-
-}
 
 
 
@@ -139,10 +124,10 @@ export default function AcompGeo({ setPagina }: Props){
             <tr>
 
               <th>NOTA</th>
-              <th>609</th>
-              <th>614</th>
-              <th>625</th>
-              <th>OBSERVAÇÃO</th>
+
+              <th style={styles.colMed}>609</th>
+              <th style={styles.colMed}>614</th>
+              <th style={styles.colMed}>625</th>
 
             </tr>
 
@@ -154,11 +139,21 @@ export default function AcompGeo({ setPagina }: Props){
 
               <tr key={i}>
 
-                <td style={styles.td}>{l.nota}</td>
-                <td style={styles.td}>{l.m609}</td>
-                <td style={styles.td}>{l.m614}</td>
-                <td style={styles.td}>{l.m625}</td>
-                <td style={styles.td}>{l.obs}</td>
+                <td style={styles.tdNota}>
+                  {l.nota}
+                </td>
+
+                <td style={styles.tdMed}>
+                  {l.m609}
+                </td>
+
+                <td style={styles.tdMed}>
+                  {l.m614}
+                </td>
+
+                <td style={styles.tdMed}>
+                  {l.m625}
+                </td>
 
               </tr>
 
@@ -260,9 +255,17 @@ export default function AcompGeo({ setPagina }: Props){
 
                 <tr key={r.id}>
 
-                  <td style={styles.td}>{r.regional}</td>
-                  <td style={styles.td}>{r.nota}</td>
-                  <td style={styles.td}>{r.modalidade}</td>
+                  <td style={styles.td}>
+                    {r.regional}
+                  </td>
+
+                  <td style={styles.td}>
+                    {r.nota}
+                  </td>
+
+                  <td style={styles.td}>
+                    {r.modalidade}
+                  </td>
 
                   <td style={styles.td}>
 
@@ -276,12 +279,29 @@ export default function AcompGeo({ setPagina }: Props){
 
                   </td>
 
-                  <td style={styles.td}>{r.medida}</td>
-                  <td style={styles.td}>{r.linha_med}</td>
-                  <td style={styles.td}>{r.status_med}</td>
-                  <td style={styles.td}>{r.obs}</td>
-                  <td style={styles.td}>{r.resp_geral}</td>
-                  <td style={styles.td}>{r.data_email}</td>
+                  <td style={styles.td}>
+                    {r.medida}
+                  </td>
+
+                  <td style={styles.td}>
+                    {r.linha_med}
+                  </td>
+
+                  <td style={styles.td}>
+                    {r.status_med}
+                  </td>
+
+                  <td style={styles.td}>
+                    {r.obs}
+                  </td>
+
+                  <td style={styles.td}>
+                    {r.resp_geral}
+                  </td>
+
+                  <td style={styles.td}>
+                    {r.data_email}
+                  </td>
 
                 </tr>
 
@@ -331,29 +351,28 @@ const styles:{[key:string]:React.CSSProperties}={
   grid:{
     display:"flex",
     justifyContent:"center",
+    alignItems:"flex-start",
     gap:30,
     marginBottom:40,
-    flexWrap:"wrap"
+    flexWrap:"nowrap"
   },
 
   card:{
     background:"rgba(255,255,255,0.08)",
-    padding:20,
+    padding:18,
     borderRadius:10,
     border:"1px solid rgba(255,255,255,0.25)",
-    backdropFilter:"blur(6px)",
-    minWidth:320
+    backdropFilter:"blur(6px)"
   },
 
   cardTitle:{
     textAlign:"center",
-    marginBottom:12,
+    marginBottom:10,
     fontWeight:600,
     fontSize:14
   },
 
   table:{
-    width:"100%",
     borderCollapse:"collapse",
     fontSize:13
   },
@@ -362,6 +381,23 @@ const styles:{[key:string]:React.CSSProperties}={
     border:"1px solid rgba(255,255,255,0.25)",
     padding:"6px 10px",
     whiteSpace:"nowrap"
+  },
+
+  tdNota:{
+    border:"1px solid rgba(255,255,255,0.25)",
+    padding:"6px 14px",
+    whiteSpace:"nowrap"
+  },
+
+  tdMed:{
+    border:"1px solid rgba(255,255,255,0.25)",
+    padding:"6px",
+    textAlign:"center",
+    width:65
+  },
+
+  colMed:{
+    width:65
   },
 
   buscaArea:{
