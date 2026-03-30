@@ -77,6 +77,17 @@ export default function ControleChaves({
       ["leitura","gravacao","comissionador","cad_ch"]
     );
 
+  const podeCorrigirCadastro =
+
+  temPermissao("global", ["admin"])
+
+  ||
+
+  (
+    temPermissao("global", ["usuario"])
+    &&
+    temPermissao("chaves", ["comissionador"])
+  );
 
   // segurança extra
   if(!acessoModulo){
@@ -150,25 +161,25 @@ export default function ControleChaves({
           )}
 
 
+{podeCorrigirCadastro && (
+
+  <button
+    style={styles.button}
+    onClick={()=>setPagina("corrigirCadastro")}
+  >
+    Corrigir cadastro
+  </button>
+
+)}
+
 {podeConsultar && (
 
-  <>
-  
-    <button
-      style={styles.button}
-      onClick={()=>setPagina("corrigirCadastro")}
-    >
-      Corrigir cadastro
-    </button>
-
-    <button
-      style={styles.button}
-      onClick={() => setPagina("consulta")}
-    >
-      Consulta
-    </button>
-
-  </>
+  <button
+    style={styles.button}
+    onClick={() => setPagina("consulta")}
+  >
+    Consulta
+  </button>
 
 )}
 
