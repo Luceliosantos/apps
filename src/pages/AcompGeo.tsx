@@ -25,13 +25,62 @@ export default function AcompGeo({ setPagina }: Props){
   const [resultadoBusca,setResultadoBusca] = useState<any[]>([]);
 
 
-  async function carregarListas(){
 
-  setListaMC(await carregarRegional("NE/MC"));
-  setListaPR(await carregarRegional("NE/PR"));
-  setListaSL(await carregarRegional("CE/SL"));
+  async function carregarRegional(regional:string):Promise<LinhaResumo[]>{
 
-}
+    const { data,error } = await supabase
+      .from("db_acomp_geo")
+      .select("*")
+      .eq("regional",regional)
+      .order("base_cr",{ascending:false});
+
+    if(error || !data){
+
+      console.log(error);
+      return [];
+
+    }
+
+    const mapa:Record<string,LinhaResumo> = {};
+
+    data.forEach((r:any)=>{
+
+      if(!mapa[r.nota]){
+
+        mapa[r.nota] = {
+
+          nota:r.nota,
+          base_cr:Number(r.base_cr) || 0,
+          m609:"",
+          m614:"",
+          m625:"",
+          obs:""
+
+        };
+
+      }
+
+      if(r.medida==="0609") mapa[r.nota].m609=r.status_med;
+      if(r.medida==="0614") mapa[r.nota].m614=r.status_med;
+      if(r.medida==="0625") mapa[r.nota].m625=r.status_med;
+
+      if(
+        (r.medida==="0609" ||
+         r.medida==="0614" ||
+         r.medida==="0625")
+        &&
+        r.status_med?.includes("PEND")
+      ){
+
+        mapa[r.nota].obs=r.obs;
+
+      }
+
+    });
+
+    return Object.values(mapa);
+
+  }
 
 
 
@@ -210,14 +259,19 @@ export default function AcompGeo({ setPagina }: Props){
                   <td style={styles.td}>{r.regional}</td>
                   <td style={styles.td}>{r.nota}</td>
                   <td style={styles.td}>{r.modalidade}</td>
+
                   <td style={styles.td}>
 
                     {Number(r.base_cr).toLocaleString(
                       "pt-BR",
-                      {style:"currency",currency:"BRL"}
+                      {
+                        style:"currency",
+                        currency:"BRL"
+                      }
                     )}
 
                   </td>
+
                   <td style={styles.td}>{r.medida}</td>
                   <td style={styles.td}>{r.linha_med}</td>
                   <td style={styles.td}>{r.status_med}</td>
