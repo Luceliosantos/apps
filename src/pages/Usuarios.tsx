@@ -100,7 +100,6 @@ export default function Usuarios({ setPagina }: Props) {
       let tipo =
         permissoes[String(id_usuario)]?.[sistema];
 
-      // regra padrão
       if(!tipo){
 
         tipo =
@@ -181,8 +180,8 @@ export default function Usuarios({ setPagina }: Props) {
         .insert({
 
           nome:novoNome,
-          matricula:novaMatricula,
-          senha:novaMatricula,
+          matricula:novaMatricula.toLowerCase(),
+          senha:novaMatricula.toLowerCase(),
           trocar_senha:true
 
         })
@@ -196,7 +195,6 @@ export default function Usuarios({ setPagina }: Props) {
 
     }
 
-    // permissões padrão
     const permissoesPadrao = [
 
       { sistema:"global", tipo:"usuario" },
@@ -262,7 +260,7 @@ export default function Usuarios({ setPagina }: Props) {
             <input
               placeholder="Matrícula"
               value={novaMatricula}
-              onChange={e => setNovaMatricula(e.target.value)}
+              onChange={e => setNovaMatricula(e.target.value.toLowerCase())}
               style={styles.input}
             />
 
