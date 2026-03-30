@@ -165,6 +165,22 @@ export default function Usuarios({ setPagina }: Props) {
 
   }
 
+  async function resetarSenha(id_usuario:string, matricula:string){
+
+    if(!confirm("Resetar senha para a matrícula do usuário?")) return;
+
+    await supabase
+      .from("db_usuarios_apps")
+      .update({
+        senha: matricula.toLowerCase(),
+        trocar_senha: true
+      })
+      .eq("id", id_usuario);
+
+    alert("Senha resetada");
+
+  }
+
   async function cadastrarUsuario(){
 
     if(!novoNome || !novaMatricula){
@@ -290,6 +306,7 @@ export default function Usuarios({ setPagina }: Props) {
 
               <th style={styles.th}>Salvar</th>
               <th style={styles.th}>Excluir</th>
+              <th style={styles.th}>Senha</th>
 
             </tr>
 
@@ -374,6 +391,17 @@ export default function Usuarios({ setPagina }: Props) {
                     onClick={() => excluirUsuario(u.id)}
                   >
                     Excluir
+                  </button>
+
+                </td>
+
+                <td style={styles.td}>
+
+                  <button
+                    style={styles.resetButton}
+                    onClick={() => resetarSenha(u.id, u.matricula)}
+                  >
+                    Resetar
                   </button>
 
                 </td>
@@ -472,6 +500,15 @@ const styles:{[key:string]:React.CSSProperties} = {
     borderRadius:8,
     border:"1px solid #c0392b",
     background:"#c0392b",
+    color:"white",
+    cursor:"pointer"
+  },
+
+  resetButton:{
+    padding:"8px 14px",
+    borderRadius:8,
+    border:"1px solid #e67e22",
+    background:"#e67e22",
     color:"white",
     cursor:"pointer"
   }
