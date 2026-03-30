@@ -25,63 +25,13 @@ export default function AcompGeo({ setPagina }: Props){
   const [resultadoBusca,setResultadoBusca] = useState<any[]>([]);
 
 
-  async function carregarRegional(regional:string){
+  async function carregarListas(){
 
-    const { data,error } = await supabase
-      .from("db_acomp_geo")
-      .select("*")
-      .eq("regional",regional)
-      .order("base_cr",{ascending:false});
+  setListaMC(await carregarRegional("NE/MC"));
+  setListaPR(await carregarRegional("NE/PR"));
+  setListaSL(await carregarRegional("CE/SL"));
 
-    if(error){
-
-      console.log(error);
-      return [];
-
-    }
-
-    const mapa:any = {};
-
-    data?.forEach(r=>{
-
-      if(!mapa[r.nota]){
-
-        mapa[r.nota] = {
-
-          nota:r.nota,
-          base_cr:Number(r.base_cr) || 0,
-          m609:"",
-          m614:"",
-          m625:"",
-          obs:""
-
-        };
-
-      }
-
-      if(r.medida==="0609") mapa[r.nota].m609=r.status_med;
-      if(r.medida==="0614") mapa[r.nota].m614=r.status_med;
-      if(r.medida==="0625") mapa[r.nota].m625=r.status_med;
-
-      if(
-        (r.medida==="0609" ||
-         r.medida==="0614" ||
-         r.medida==="0625")
-        &&
-        r.status_med?.includes("PEND")
-      ){
-
-        mapa[r.nota].obs=r.obs;
-
-      }
-
-    });
-
-    return Object.values(mapa)
-      .sort((a:any,b:any)=>b.base_cr-a.base_cr)
-      .slice(0,10);
-
-  }
+}
 
 
 
