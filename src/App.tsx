@@ -105,7 +105,7 @@ export default function App() {
 const { data, error } = await supabase
   .from("db_usuarios_apps")
   .select("id, matricula, nome, trocar_senha")
-  .eq("matricula", matricula)
+  .eq("matricula", matricula.toLowerCase())
   .eq("senha", senha)
   .single();
 
@@ -220,10 +220,6 @@ const { error } = await supabase
 
   }
 
-  // ============================
-  // USUÁRIO LOGADO
-  // ============================
-
   if(usuario){
 
     if(pagina === "alterarSenha"){
@@ -290,7 +286,6 @@ const { error } = await supabase
 
     }
 
-    // acesso ao módulo chaves
     if(
       pagina === "home"
       &&
@@ -426,6 +421,7 @@ const { error } = await supabase
       );
 
     }
+
 if(pagina === "corrigirCadastro"){
   return(
     <CorrigirCadastro
@@ -435,17 +431,19 @@ if(pagina === "corrigirCadastro"){
     />
   );
 }
+
     if(pagina === "geo"){
 
-  return(
+      return(
 
-    <AcompGeo
-      setPagina={setPagina}
-    />
+        <AcompGeo
+          setPagina={setPagina}
+        />
 
-  );
+      );
 
-}
+    }
+
     if(pagina === "proorc"){
 
       return(
@@ -481,10 +479,6 @@ if(pagina === "corrigirCadastro"){
 
   }
 
-  // ============================
-  // LOGIN
-  // ============================
-
   return(
 
     <div style={styles.loginContainer}>
@@ -500,7 +494,7 @@ if(pagina === "corrigirCadastro"){
           placeholder="Matrícula"
           style={styles.input}
           value={matricula}
-          onChange={(e)=>setMatricula(e.target.value)}
+          onChange={(e)=>setMatricula(e.target.value.toLowerCase())}
         />
 
         <input
