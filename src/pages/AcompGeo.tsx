@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { supabase } from "../supabase";
 import { Pagina } from "../App";
 
@@ -13,31 +13,29 @@ type LinhaResumo = {
   m609:string
   m614:string
   m625:string
+  obs:string
 
 };
 
 export default function AcompGeo({ setPagina }: Props){
 
-  const [listaMC,setListaMC] = useState<LinhaResumo[]>([]);
-  const [listaPR,setListaPR] = useState<LinhaResumo[]>([]);
-  const [listaSL,setListaSL] = useState<LinhaResumo[]>([]);
-
+  const [lista,setLista] = useState<LinhaResumo[]>([]);
   const [buscaNota,setBuscaNota] = useState("");
   const [resultadoBusca,setResultadoBusca] = useState<any[]>([]);
 
 
 
-  async function carregarRegional(regional:string):Promise<LinhaResumo[]>{
+  async function carregarRegional(regional:string){
 
     const { data,error } = await supabase
       .from("db_acomp_geo")
-      .select("nota,base_cr,medida,status_med")
+      .select("nota,base_cr,medida,status_med,obs")
       .eq("regional",regional);
 
     if(error || !data){
 
       console.log(error);
-      return [];
+      return;
 
     }
 
@@ -53,7 +51,8 @@ export default function AcompGeo({ setPagina }: Props){
           base_cr:Number(r.base_cr) || 0,
           m609:"",
           m614:"",
-          m625:""
+          m625:"",
+          obs:r.obs || ""
 
         };
 
@@ -65,19 +64,20 @@ export default function AcompGeo({ setPagina }: Props){
 
     });
 
-    return Object.values(mapa)
-      .sort((a,b)=>b.base_cr-a.base_cr)
-      .slice(0,10);
+    const top10 =
+      Object.values(mapa)
+        .sort((a,b)=>b.base_cr-a.base_cr)
+        .slice(0,10);
+
+    setLista(top10);
 
   }
 
 
 
-  async function carregarListas(){
+  function limparTabela(){
 
-    setListaMC(await carregarRegional("NE/MC"));
-    setListaPR(await carregarRegional("NE/PR"));
-    setListaSL(await carregarRegional("CE/SL"));
+    setLista([]);
 
   }
 
@@ -98,79 +98,6 @@ export default function AcompGeo({ setPagina }: Props){
 
 
 
-  useEffect(()=>{
-
-    carregarListas();
-
-  },[]);
-
-
-
-
-  function tabela(lista:LinhaResumo[],titulo:string){
-
-    return(
-
-      <div style={styles.card}>
-
-        <div style={styles.cardTitle}>
-          {titulo}
-        </div>
-
-        <table style={styles.table}>
-
-          <thead>
-
-            <tr>
-
-              <th>NOTA</th>
-
-              <th style={styles.colMed}>609</th>
-              <th style={styles.colMed}>614</th>
-              <th style={styles.colMed}>625</th>
-
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            {lista.map((l,i)=>(
-
-              <tr key={i}>
-
-                <td style={styles.tdNota}>
-                  {l.nota}
-                </td>
-
-                <td style={styles.tdMed}>
-                  {l.m609}
-                </td>
-
-                <td style={styles.tdMed}>
-                  {l.m614}
-                </td>
-
-                <td style={styles.tdMed}>
-                  {l.m625}
-                </td>
-
-              </tr>
-
-            ))}
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    );
-
-  }
-
-
-
   return(
 
     <div style={styles.container}>
@@ -181,9 +108,45 @@ export default function AcompGeo({ setPagina }: Props){
 
         <div style={styles.header}>
 
-          <h1>
-            Acompanhamento GEO
-          </h1>
+
+
+          <div style={styles.botoesRegionais}>
+
+            <button
+              style={styles.button}
+              onClick={()=>carregarRegional("NE/MC")}
+            >
+              NE/MC
+            </button>
+
+
+            <button
+              style={styles.button}
+              onClick={()=>carregarRegional("NE/PR")}
+            >
+              NE/PR
+            </button>
+
+
+            <button
+              style={styles.button}
+              onClick={()=>carregarRegional("CE/SL")}
+            >
+              CE/SL
+            </button>
+
+
+            <button
+              style={styles.buttonLimpar}
+              onClick={limparTabela}
+            >
+              Limpar
+            </button>
+
+
+          </div>
+
+
 
           <button
             style={styles.button}
@@ -192,15 +155,114 @@ export default function AcompGeo({ setPagina }: Props){
             Voltar
           </button>
 
+
+
         </div>
 
 
 
-        <div style={styles.grid}>
+        <div style={styles.areaTabela}>
 
-          {tabela(listaMC,"NE/MC")}
-          {tabela(listaPR,"NE/PR")}
-          {tabela(listaSL,"CE/SL")}
+
+
+          {lista.length>0 && (
+
+            <div style={styles.card}>
+
+              <table style={styles.table}>
+
+                <thead>
+
+                  <tr>
+
+                    <th>NOTA</th>
+                    <th>BASE_CR</th>
+
+                    <th style={styles.colMed}>
+                      609
+                    </th>
+
+                    <th style={styles.colMed}>
+                      614
+                    </th>
+
+                    <th style={styles.colMed}>
+                      625
+                    </th>
+
+                    <th>OBS</th>
+
+                  </tr>
+
+                </thead>
+
+
+
+                <tbody>
+
+                  {lista.map((l,i)=>(
+
+                    <tr key={i}>
+
+                      <td style={styles.tdNota}>
+                        {l.nota}
+                      </td>
+
+
+
+                      <td style={styles.td}>
+
+                        {l.base_cr.toLocaleString(
+                          "pt-BR",
+                          {
+                            style:"currency",
+                            currency:"BRL"
+                          }
+                        )}
+
+                      </td>
+
+
+
+                      <td style={styles.tdMed}>
+                        {l.m609}
+                      </td>
+
+
+
+                      <td style={styles.tdMed}>
+                        {l.m614}
+                      </td>
+
+
+
+                      <td style={styles.tdMed}>
+                        {l.m625}
+                      </td>
+
+
+
+                      <td style={styles.td}>
+                        {l.obs}
+                      </td>
+
+
+
+                    </tr>
+
+                  ))}
+
+                </tbody>
+
+
+
+              </table>
+
+            </div>
+
+          )}
+
+
 
         </div>
 
@@ -215,12 +277,15 @@ export default function AcompGeo({ setPagina }: Props){
             onChange={(e)=>setBuscaNota(e.target.value)}
           />
 
+
           <button
             style={styles.button}
             onClick={buscarNota}
           >
             Buscar
           </button>
+
+
 
         </div>
 
@@ -249,6 +314,8 @@ export default function AcompGeo({ setPagina }: Props){
 
             </thead>
 
+
+
             <tbody>
 
               {resultadoBusca.map(r=>(
@@ -259,13 +326,19 @@ export default function AcompGeo({ setPagina }: Props){
                     {r.regional}
                   </td>
 
+
+
                   <td style={styles.td}>
                     {r.nota}
                   </td>
 
+
+
                   <td style={styles.td}>
                     {r.modalidade}
                   </td>
+
+
 
                   <td style={styles.td}>
 
@@ -279,35 +352,51 @@ export default function AcompGeo({ setPagina }: Props){
 
                   </td>
 
+
+
                   <td style={styles.td}>
                     {r.medida}
                   </td>
+
+
 
                   <td style={styles.td}>
                     {r.linha_med}
                   </td>
 
+
+
                   <td style={styles.td}>
                     {r.status_med}
                   </td>
+
+
 
                   <td style={styles.td}>
                     {r.obs}
                   </td>
 
+
+
                   <td style={styles.td}>
                     {r.resp_geral}
                   </td>
 
+
+
                   <td style={styles.td}>
                     {r.data_email}
                   </td>
+
+
 
                 </tr>
 
               ))}
 
             </tbody>
+
+
 
           </table>
 
@@ -328,98 +417,162 @@ export default function AcompGeo({ setPagina }: Props){
 const styles:{[key:string]:React.CSSProperties}={
 
   container:{
+
     minHeight:"100vh",
+
     backgroundImage:
       "url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')",
+
     backgroundSize:"cover",
     backgroundPosition:"center"
+
   },
 
+
+
   overlay:{
+
     background:"rgba(0,0,0,0.65)",
     minHeight:"100vh",
     padding:40,
     color:"white"
+
   },
+
+
 
   header:{
+
     display:"flex",
     justifyContent:"space-between",
-    marginBottom:30
+    marginBottom:30,
+    alignItems:"center"
+
   },
 
-  grid:{
+
+
+  botoesRegionais:{
+
+    display:"flex",
+    gap:10
+
+  },
+
+
+
+  areaTabela:{
+
     display:"flex",
     justifyContent:"center",
-    alignItems:"flex-start",
-    gap:30,
-    marginBottom:40,
-    flexWrap:"nowrap"
+    marginBottom:30
+
   },
 
+
+
   card:{
+
     background:"rgba(255,255,255,0.08)",
     padding:18,
     borderRadius:10,
     border:"1px solid rgba(255,255,255,0.25)",
     backdropFilter:"blur(6px)"
+
   },
 
-  cardTitle:{
-    textAlign:"center",
-    marginBottom:10,
-    fontWeight:600,
-    fontSize:14
-  },
+
 
   table:{
+
     borderCollapse:"collapse",
     fontSize:13
+
   },
 
+
+
   td:{
+
     border:"1px solid rgba(255,255,255,0.25)",
     padding:"6px 10px",
     whiteSpace:"nowrap"
+
   },
+
+
 
   tdNota:{
+
     border:"1px solid rgba(255,255,255,0.25)",
-    padding:"6px 14px",
-    whiteSpace:"nowrap"
+    padding:"6px 14px"
+
   },
+
+
 
   tdMed:{
+
     border:"1px solid rgba(255,255,255,0.25)",
     padding:"6px",
-    textAlign:"center",
-    width:65
+    width:70,
+    textAlign:"center"
+
   },
+
+
 
   colMed:{
-    width:65
+
+    width:70
+
   },
 
+
+
   buscaArea:{
+
     display:"flex",
     justifyContent:"center",
     gap:10,
     marginBottom:30
+
   },
 
+
+
   input:{
+
     padding:8,
     borderRadius:6,
     border:"1px solid #ccc"
+
   },
 
+
+
   button:{
-    padding:"10px 22px",
+
+    padding:"10px 18px",
     borderRadius:8,
     border:"1px solid rgba(255,255,255,0.3)",
     backgroundColor:"rgba(255,255,255,0.15)",
     color:"white",
     cursor:"pointer"
+
+  },
+
+
+
+  buttonLimpar:{
+
+    padding:"10px 18px",
+    borderRadius:8,
+    border:"1px solid rgba(255,255,255,0.3)",
+    backgroundColor:"rgba(192,57,43,0.5)",
+    color:"white",
+    cursor:"pointer"
+
   }
 
 };
