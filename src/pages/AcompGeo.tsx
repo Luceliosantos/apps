@@ -7,14 +7,12 @@ type Props = {
 };
 
 type LinhaResumo = {
-
   nota:string
   base_cr:number
   m609:string
   m614:string
   m625:string
   obs:string
-
 };
 
 export default function AcompGeo({ setPagina }: Props){
@@ -22,7 +20,6 @@ export default function AcompGeo({ setPagina }: Props){
   const [lista,setLista] = useState<LinhaResumo[]>([]);
   const [buscaNota,setBuscaNota] = useState("");
   const [resultadoBusca,setResultadoBusca] = useState<any[]>([]);
-
 
 
   async function carregarRegional(regional:string){
@@ -52,15 +49,21 @@ export default function AcompGeo({ setPagina }: Props){
           m609:"",
           m614:"",
           m625:"",
-          obs:r.obs || ""
+          obs:""
 
         };
 
       }
 
-      if(r.medida==="0609") mapa[r.nota].m609=r.status_med;
-      if(r.medida==="0614") mapa[r.nota].m614=r.status_med;
-      if(r.medida==="0625") mapa[r.nota].m625=r.status_med;
+      if(r.medida==="0609") mapa[r.nota].m609=r.status_med || "";
+      if(r.medida==="0614") mapa[r.nota].m614=r.status_med || "";
+      if(r.medida==="0625") mapa[r.nota].m625=r.status_med || "";
+
+      if(r.obs && !mapa[r.nota].obs){
+
+        mapa[r.nota].obs=r.obs;
+
+      }
 
     });
 
@@ -74,13 +77,11 @@ export default function AcompGeo({ setPagina }: Props){
   }
 
 
-
   function limparTabela(){
 
     setLista([]);
 
   }
-
 
 
   async function buscarNota(){
@@ -177,19 +178,9 @@ export default function AcompGeo({ setPagina }: Props){
 
                     <th>NOTA</th>
                     <th>BASE_CR</th>
-
-                    <th style={styles.colMed}>
-                      609
-                    </th>
-
-                    <th style={styles.colMed}>
-                      614
-                    </th>
-
-                    <th style={styles.colMed}>
-                      625
-                    </th>
-
+                    <th>609</th>
+                    <th>614</th>
+                    <th>625</th>
                     <th>OBS</th>
 
                   </tr>
@@ -322,21 +313,9 @@ export default function AcompGeo({ setPagina }: Props){
 
                 <tr key={r.id}>
 
-                  <td style={styles.td}>
-                    {r.regional}
-                  </td>
-
-
-
-                  <td style={styles.td}>
-                    {r.nota}
-                  </td>
-
-
-
-                  <td style={styles.td}>
-                    {r.modalidade}
-                  </td>
+                  <td style={styles.td}>{r.regional}</td>
+                  <td style={styles.td}>{r.nota}</td>
+                  <td style={styles.td}>{r.modalidade}</td>
 
 
 
@@ -354,41 +333,12 @@ export default function AcompGeo({ setPagina }: Props){
 
 
 
-                  <td style={styles.td}>
-                    {r.medida}
-                  </td>
-
-
-
-                  <td style={styles.td}>
-                    {r.linha_med}
-                  </td>
-
-
-
-                  <td style={styles.td}>
-                    {r.status_med}
-                  </td>
-
-
-
-                  <td style={styles.td}>
-                    {r.obs}
-                  </td>
-
-
-
-                  <td style={styles.td}>
-                    {r.resp_geral}
-                  </td>
-
-
-
-                  <td style={styles.td}>
-                    {r.data_email}
-                  </td>
-
-
+                  <td style={styles.td}>{r.medida}</td>
+                  <td style={styles.td}>{r.linha_med}</td>
+                  <td style={styles.td}>{r.status_med}</td>
+                  <td style={styles.td}>{r.obs}</td>
+                  <td style={styles.td}>{r.resp_geral}</td>
+                  <td style={styles.td}>{r.data_email}</td>
 
                 </tr>
 
@@ -417,162 +367,128 @@ export default function AcompGeo({ setPagina }: Props){
 const styles:{[key:string]:React.CSSProperties}={
 
   container:{
-
     minHeight:"100vh",
-
     backgroundImage:
       "url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')",
-
     backgroundSize:"cover",
     backgroundPosition:"center"
-
   },
 
 
 
   overlay:{
-
     background:"rgba(0,0,0,0.65)",
     minHeight:"100vh",
     padding:40,
     color:"white"
-
   },
 
 
 
   header:{
-
     display:"flex",
     justifyContent:"space-between",
     marginBottom:30,
     alignItems:"center"
-
   },
 
 
 
   botoesRegionais:{
-
     display:"flex",
     gap:10
-
   },
 
 
 
   areaTabela:{
-
     display:"flex",
     justifyContent:"center",
     marginBottom:30
-
   },
 
 
 
   card:{
-
     background:"rgba(255,255,255,0.08)",
     padding:18,
     borderRadius:10,
     border:"1px solid rgba(255,255,255,0.25)",
     backdropFilter:"blur(6px)"
-
   },
 
 
 
   table:{
-
     borderCollapse:"collapse",
     fontSize:13
-
   },
 
 
 
   td:{
-
-    border:"1px solid rgba(255,255,255,0.25)",
+    border:"1px solid #ccc",
     padding:"6px 10px",
-    whiteSpace:"nowrap"
-
+    background:"white",
+    color:"black"
   },
 
 
 
   tdNota:{
-
-    border:"1px solid rgba(255,255,255,0.25)",
-    padding:"6px 14px"
-
+    border:"1px solid #ccc",
+    padding:"6px 14px",
+    background:"white",
+    color:"black"
   },
 
 
 
   tdMed:{
-
-    border:"1px solid rgba(255,255,255,0.25)",
-    padding:"6px",
-    width:70,
-    textAlign:"center"
-
-  },
-
-
-
-  colMed:{
-
-    width:70
-
+    border:"1px solid #ccc",
+    padding:"6px 8px",
+    textAlign:"center",
+    background:"white",
+    color:"black"
   },
 
 
 
   buscaArea:{
-
     display:"flex",
     justifyContent:"center",
     gap:10,
     marginBottom:30
-
   },
 
 
 
   input:{
-
     padding:8,
     borderRadius:6,
     border:"1px solid #ccc"
-
   },
 
 
 
   button:{
-
     padding:"10px 18px",
     borderRadius:8,
     border:"1px solid rgba(255,255,255,0.3)",
     backgroundColor:"rgba(255,255,255,0.15)",
     color:"white",
     cursor:"pointer"
-
   },
 
 
 
   buttonLimpar:{
-
     padding:"10px 18px",
     borderRadius:8,
     border:"1px solid rgba(255,255,255,0.3)",
     backgroundColor:"rgba(192,57,43,0.5)",
     color:"white",
     cursor:"pointer"
-
   }
 
 };
