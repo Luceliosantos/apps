@@ -28,59 +28,63 @@ export default function AcompGeo({ setPagina }: Props){
 
   async function carregarRegional(regional:string):Promise<LinhaResumo[]>{
 
-    const { data,error } = await supabase
-      .from("db_acomp_geo")
-      .select("*")
-      .eq("regional",regional)
-      .order("base_cr",{ascending:false});
+  const { data,error } = await supabase
+    .from("db_acomp_geo")
+    .select("nota,base_cr,medida,status_med,obs")
+    .eq("regional",regional);
 
-    if(error || !data){
+  if(error || !data){
 
-      console.log(error);
-      return [];
+    console.log(error);
+    return [];
+
+  }
+
+  const mapa:Record<string,LinhaResumo> = {};
+
+  data.forEach((r:any)=>{
+
+    if(!mapa[r.nota]){
+
+      mapa[r.nota] = {
+
+        nota:r.nota,
+        base_cr:Number(r.base_cr) || 0,
+        m609:"",
+        m614:"",
+        m625:"",
+        obs:""
+
+      };
 
     }
 
-    const mapa:Record<string,LinhaResumo> = {};
+    // guarda status das medidas
+    if(r.medida==="0609") mapa[r.nota].m609=r.status_med;
+    if(r.medida==="0614") mapa[r.nota].m614=r.status_med;
+    if(r.medida==="0625") mapa[r.nota].m625=r.status_med;
 
-    data.forEach((r:any)=>{
+    // obs somente se houver PEND
+    if(
+      (r.medida==="0609" ||
+       r.medida==="0614" ||
+       r.medida==="0625")
+      &&
+      r.status_med?.includes("PEND")
+    ){
 
-      if(!mapa[r.nota]){
+      mapa[r.nota].obs=r.obs;
 
-        mapa[r.nota] = {
+    }
 
-          nota:r.nota,
-          base_cr:Number(r.base_cr) || 0,
-          m609:"",
-          m614:"",
-          m625:"",
-          obs:""
+  });
 
-        };
+  // ordena por maior base_cr
+  return Object.values(mapa)
+    .sort((a,b)=>b.base_cr-a.base_cr)
+    .slice(0,10);
 
-      }
-
-      if(r.medida==="0609") mapa[r.nota].m609=r.status_med;
-      if(r.medida==="0614") mapa[r.nota].m614=r.status_med;
-      if(r.medida==="0625") mapa[r.nota].m625=r.status_med;
-
-      if(
-        (r.medida==="0609" ||
-         r.medida==="0614" ||
-         r.medida==="0625")
-        &&
-        r.status_med?.includes("PEND")
-      ){
-
-        mapa[r.nota].obs=r.obs;
-
-      }
-
-    });
-
-    return Object.values(mapa);
-
-  }
+}
 
 
 
