@@ -29,12 +29,7 @@ export default function AcompGeo({ setPagina }: Props){
       .select("nota,base_cr,medida,status_med,obs")
       .eq("regional",regional);
 
-    if(error || !data){
-
-      console.log(error);
-      return;
-
-    }
+    if(error || !data) return;
 
     const mapa:Record<string,LinhaResumo> = {};
 
@@ -43,14 +38,12 @@ export default function AcompGeo({ setPagina }: Props){
       if(!mapa[r.nota]){
 
         mapa[r.nota] = {
-
           nota:r.nota,
           base_cr:Number(r.base_cr) || 0,
           m609:"",
           m614:"",
           m625:"",
           obs:""
-
         };
 
       }
@@ -60,9 +53,7 @@ export default function AcompGeo({ setPagina }: Props){
       if(r.medida==="0625") mapa[r.nota].m625=r.status_med || "";
 
       if(r.obs && !mapa[r.nota].obs){
-
         mapa[r.nota].obs=r.obs;
-
       }
 
     });
@@ -80,6 +71,8 @@ export default function AcompGeo({ setPagina }: Props){
   function limparTabela(){
 
     setLista([]);
+    setResultadoBusca([]);
+    setBuscaNota("");
 
   }
 
@@ -92,6 +85,30 @@ export default function AcompGeo({ setPagina }: Props){
       .from("db_acomp_geo")
       .select("*")
       .eq("nota",buscaNota);
+
+    setResultadoBusca(data || []);
+
+  }
+
+
+  async function buscarDivergencias(){
+
+    const { data } = await supabase
+      .from("db_acomp_geo")
+      .select("*")
+      .is("resp_geral",null)
+      .neq("status_med","CONC");
+
+    setResultadoBusca(data || []);
+
+  }
+
+
+  async function buscarListaCompleta(){
+
+    const { data } = await supabase
+      .from("db_acomp_geo")
+      .select("*");
 
     setResultadoBusca(data || []);
 
@@ -136,6 +153,16 @@ export default function AcompGeo({ setPagina }: Props){
 
             <button style={styles.button} onClick={buscarNota}>
               Buscar
+            </button>
+
+
+            <button style={styles.button} onClick={buscarDivergencias}>
+              Divergencias
+            </button>
+
+
+            <button style={styles.button} onClick={buscarListaCompleta}>
+              Lista Completa
             </button>
 
           </div>
@@ -185,17 +212,8 @@ export default function AcompGeo({ setPagina }: Props){
                       <td style={styles.tdNota}>{l.nota}</td>
 
                       <td style={styles.td}>
-
-                        {l.base_cr.toLocaleString(
-                          "pt-BR",
-                          {
-                            style:"currency",
-                            currency:"BRL"
-                          }
-                        )}
-
+                        {l.base_cr.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
                       </td>
-
 
                       <td style={styles.tdMed}>{l.m609}</td>
                       <td style={styles.tdMed}>{l.m614}</td>
@@ -218,68 +236,64 @@ export default function AcompGeo({ setPagina }: Props){
 
 
 
-        <div style={styles.cardTabelaInferior}>
+        {resultadoBusca.length>0 && (
 
-          <table style={styles.tableFull}>
+          <div style={styles.cardTabelaInferior}>
 
-            <thead style={styles.thead}>
+            <table style={styles.tableFull}>
 
-              <tr>
+              <thead style={styles.thead}>
 
-                <th>REGIONAL</th>
-                <th>NOTA</th>
-                <th>MOD.</th>
-                <th>BASE_CR</th>
-                <th>MEDIDA</th>
-                <th>LINHA</th>
-                <th>STATUS_MED</th>
-                <th>OBS</th>
-                <th>RESP_GERAL</th>
-                <th>DATA_EMAIL</th>
+                <tr>
 
-              </tr>
-
-            </thead>
-
-
-            <tbody>
-
-              {resultadoBusca.map(r=>(
-
-                <tr key={r.id}>
-
-                  <td style={styles.td}>{r.regional}</td>
-                  <td style={styles.td}>{r.nota}</td>
-                  <td style={styles.td}>{r.modalidade}</td>
-
-                  <td style={styles.td}>
-
-                    {Number(r.base_cr).toLocaleString(
-                      "pt-BR",
-                      {
-                        style:"currency",
-                        currency:"BRL"
-                      }
-                    )}
-
-                  </td>
-
-                  <td style={styles.td}>{r.medida}</td>
-                  <td style={styles.td}>{r.linha_med}</td>
-                  <td style={styles.td}>{r.status_med}</td>
-                  <td style={styles.td}>{r.obs}</td>
-                  <td style={styles.td}>{r.resp_geral}</td>
-                  <td style={styles.td}>{r.data_email}</td>
+                  <th>REGIONAL</th>
+                  <th>NOTA</th>
+                  <th>MOD.</th>
+                  <th>BASE_CR</th>
+                  <th>MEDIDA</th>
+                  <th>LINHA</th>
+                  <th>STATUS_MED</th>
+                  <th>OBS</th>
+                  <th>RESP_GERAL</th>
+                  <th>DATA_EMAIL</th>
 
                 </tr>
 
-              ))}
+              </thead>
 
-            </tbody>
 
-          </table>
+              <tbody>
 
-        </div>
+                {resultadoBusca.map(r=>(
+
+                  <tr key={r.id}>
+
+                    <td style={styles.td}>{r.regional}</td>
+                    <td style={styles.td}>{r.nota}</td>
+                    <td style={styles.td}>{r.modalidade}</td>
+
+                    <td style={styles.td}>
+                      {Number(r.base_cr).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+                    </td>
+
+                    <td style={styles.td}>{r.medida}</td>
+                    <td style={styles.td}>{r.linha_med}</td>
+                    <td style={styles.td}>{r.status_med}</td>
+                    <td style={styles.td}>{r.obs}</td>
+                    <td style={styles.td}>{r.resp_geral}</td>
+                    <td style={styles.td}>{r.data_email}</td>
+
+                  </tr>
+
+                ))}
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        )}
 
 
 
@@ -309,7 +323,6 @@ const styles:{[key:string]:React.CSSProperties}={
     color:"white"
   },
 
-
   linhaTopo:{
     display:"flex",
     justifyContent:"space-between",
@@ -324,13 +337,11 @@ const styles:{[key:string]:React.CSSProperties}={
     flexWrap:"wrap"
   },
 
-
   areaTabela:{
     display:"flex",
     justifyContent:"flex-start",
     marginBottom:30
   },
-
 
   card:{
     background:"rgba(255,255,255,0.08)",
@@ -339,7 +350,6 @@ const styles:{[key:string]:React.CSSProperties}={
     border:"1px solid rgba(255,255,255,0.25)",
     backdropFilter:"blur(6px)"
   },
-
 
   cardTabelaInferior:{
     background:"rgba(255,255,255,0.08)",
@@ -350,14 +360,12 @@ const styles:{[key:string]:React.CSSProperties}={
     width:"100%"
   },
 
-
   tableRegional:{
     borderCollapse:"collapse",
     fontSize:13,
     background:"white",
     color:"black"
   },
-
 
   tableFull:{
     borderCollapse:"collapse",
@@ -367,13 +375,11 @@ const styles:{[key:string]:React.CSSProperties}={
     width:"100%"
   },
 
-
   thead:{
     background:"#cfe8ff",
     color:"#000",
     border:"1px solid #7fb3ff"
   },
-
 
   td:{
     border:"1px solid #ccc",
@@ -382,14 +388,12 @@ const styles:{[key:string]:React.CSSProperties}={
     color:"black"
   },
 
-
   tdNota:{
     border:"1px solid #ccc",
     padding:"6px 14px",
     background:"white",
     color:"black"
   },
-
 
   tdMed:{
     border:"1px solid #ccc",
@@ -399,13 +403,11 @@ const styles:{[key:string]:React.CSSProperties}={
     color:"black"
   },
 
-
   input:{
     padding:8,
     borderRadius:6,
     border:"1px solid #ccc"
   },
-
 
   button:{
     padding:"10px 18px",
@@ -415,7 +417,6 @@ const styles:{[key:string]:React.CSSProperties}={
     color:"white",
     cursor:"pointer"
   },
-
 
   buttonLimpar:{
     padding:"10px 18px",
