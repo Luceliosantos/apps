@@ -6,70 +6,98 @@ type Props = {
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
 };
 
+type LinhaResumo = {
+  nota:string
+  base_cr:number
+  m609:string
+  m614:string
+  m625:string
+  obs:string
+};
+
 export default function AcompGeo({ setPagina }: Props){
 
-  const [lista1,setLista1] = useState<any[]>([]);
-  const [lista2,setLista2] = useState<any[]>([]);
-  const [lista3,setLista3] = useState<any[]>([]);
+  const [listaMC,setListaMC] = useState<LinhaResumo[]>([]);
+  const [listaPR,setListaPR] = useState<LinhaResumo[]>([]);
+  const [listaSL,setListaSL] = useState<LinhaResumo[]>([]);
+
   const [buscaNota,setBuscaNota] = useState("");
   const [resultadoBusca,setResultadoBusca] = useState<any[]>([]);
 
+
   async function carregarRegional(regional:string){
 
-    const { data } = await supabase
+    const { data,error } = await supabase
       .from("db_acomp_geo")
       .select("*")
       .eq("regional",regional)
       .order("base_cr",{ascending:false});
 
-    if(!data) return [];
+    if(error){
 
-    const agrupado:any = {};
+      console.log(error);
+      return [];
 
-    data.forEach(r=>{
+    }
 
-      if(!agrupado[r.nota]){
+    const mapa:any = {};
 
-        agrupado[r.nota] = {
+    data?.forEach(r=>{
+
+      if(!mapa[r.nota]){
+
+        mapa[r.nota] = {
+
           nota:r.nota,
-          base_cr:r.base_cr,
+          base_cr:Number(r.base_cr) || 0,
           m609:"",
           m614:"",
           m625:"",
           obs:""
+
         };
 
       }
 
-      if(r.medida==="0609") agrupado[r.nota].m609=r.status_med;
-      if(r.medida==="0614") agrupado[r.nota].m614=r.status_med;
-      if(r.medida==="0625") agrupado[r.nota].m625=r.status_med;
+      if(r.medida==="0609") mapa[r.nota].m609=r.status_med;
+      if(r.medida==="0614") mapa[r.nota].m614=r.status_med;
+      if(r.medida==="0625") mapa[r.nota].m625=r.status_med;
 
       if(
-        (r.medida==="0609" || r.medida==="0614" || r.medida==="0625")
+        (r.medida==="0609" ||
+         r.medida==="0614" ||
+         r.medida==="0625")
         &&
         r.status_med?.includes("PEND")
       ){
-        agrupado[r.nota].obs=r.obs;
+
+        mapa[r.nota].obs=r.obs;
+
       }
 
     });
 
-    return Object.values(agrupado)
+    return Object.values(mapa)
       .sort((a:any,b:any)=>b.base_cr-a.base_cr)
       .slice(0,10);
 
   }
 
+
+
   async function carregarListas(){
 
-    setLista1(await carregarRegional("NORTE"));
-    setLista2(await carregarRegional("SUL"));
-    setLista3(await carregarRegional("LESTE"));
+    setListaMC(await carregarRegional("NE/MC"));
+    setListaPR(await carregarRegional("NE/PR"));
+    setListaSL(await carregarRegional("CE/SL"));
 
   }
 
+
+
   async function buscarNota(){
+
+    if(!buscaNota) return;
 
     const { data } = await supabase
       .from("db_acomp_geo")
@@ -80,13 +108,18 @@ export default function AcompGeo({ setPagina }: Props){
 
   }
 
+
+
   useEffect(()=>{
+
     carregarListas();
+
   },[]);
 
 
 
-  function tabela(lista:any[], titulo:string){
+
+  function tabela(lista:LinhaResumo[],titulo:string){
 
     return(
 
@@ -118,11 +151,11 @@ export default function AcompGeo({ setPagina }: Props){
 
               <tr key={i}>
 
-                <td>{l.nota}</td>
-                <td>{l.m609}</td>
-                <td>{l.m614}</td>
-                <td>{l.m625}</td>
-                <td>{l.obs}</td>
+                <td style={styles.td}>{l.nota}</td>
+                <td style={styles.td}>{l.m609}</td>
+                <td style={styles.td}>{l.m614}</td>
+                <td style={styles.td}>{l.m625}</td>
+                <td style={styles.td}>{l.obs}</td>
 
               </tr>
 
@@ -146,6 +179,8 @@ export default function AcompGeo({ setPagina }: Props){
 
       <div style={styles.overlay}>
 
+
+
         <div style={styles.header}>
 
           <h1>
@@ -165,9 +200,9 @@ export default function AcompGeo({ setPagina }: Props){
 
         <div style={styles.grid}>
 
-          {tabela(lista1,"NE/MC")}
-          {tabela(lista2,"NE/PR")}
-          {tabela(lista3,"CE/SL")}
+          {tabela(listaMC,"NE/MC")}
+          {tabela(listaPR,"NE/PR")}
+          {tabela(listaSL,"CE/SL")}
 
         </div>
 
@@ -203,15 +238,12 @@ export default function AcompGeo({ setPagina }: Props){
 
                 <th>REGIONAL</th>
                 <th>NOTA</th>
-                <th>MODALIDADE</th>
-                <th>EMPREITEIRA</th>
+                <th>MOD.</th>
                 <th>BASE_CR</th>
                 <th>MEDIDA</th>
-                <th>LINHA_MED</th>
+                <th>LINHA</th>
                 <th>STATUS_MED</th>
                 <th>OBS</th>
-                <th>RESP_META</th>
-                <th>RESP_FREE</th>
                 <th>RESP_GERAL</th>
                 <th>DATA_EMAIL</th>
 
@@ -225,19 +257,23 @@ export default function AcompGeo({ setPagina }: Props){
 
                 <tr key={r.id}>
 
-                  <td>{r.regional}</td>
-                  <td>{r.nota}</td>
-                  <td>{r.modalidade}</td>
-                  <td>{r.empreiteira}</td>
-                  <td>{r.base_cr}</td>
-                  <td>{r.medida}</td>
-                  <td>{r.linha_med}</td>
-                  <td>{r.status_med}</td>
-                  <td>{r.obs}</td>
-                  <td>{r.resp_meta}</td>
-                  <td>{r.resp_free}</td>
-                  <td>{r.resp_geral}</td>
-                  <td>{r.data_email}</td>
+                  <td style={styles.td}>{r.regional}</td>
+                  <td style={styles.td}>{r.nota}</td>
+                  <td style={styles.td}>{r.modalidade}</td>
+                  <td style={styles.td}>
+
+                    {Number(r.base_cr).toLocaleString(
+                      "pt-BR",
+                      {style:"currency",currency:"BRL"}
+                    )}
+
+                  </td>
+                  <td style={styles.td}>{r.medida}</td>
+                  <td style={styles.td}>{r.linha_med}</td>
+                  <td style={styles.td}>{r.status_med}</td>
+                  <td style={styles.td}>{r.obs}</td>
+                  <td style={styles.td}>{r.resp_geral}</td>
+                  <td style={styles.td}>{r.data_email}</td>
 
                 </tr>
 
@@ -248,6 +284,8 @@ export default function AcompGeo({ setPagina }: Props){
           </table>
 
         </div>
+
+
 
       </div>
 
@@ -282,15 +320,6 @@ const styles:{[key:string]:React.CSSProperties}={
     marginBottom:30
   },
 
-  button:{
-    padding:"10px 22px",
-    borderRadius:8,
-    border:"1px solid rgba(255,255,255,0.3)",
-    backgroundColor:"rgba(255,255,255,0.15)",
-    color:"white",
-    cursor:"pointer"
-  },
-
   grid:{
     display:"flex",
     justifyContent:"center",
@@ -304,32 +333,49 @@ const styles:{[key:string]:React.CSSProperties}={
     padding:20,
     borderRadius:10,
     border:"1px solid rgba(255,255,255,0.25)",
-    backdropFilter:"blur(6px)"
+    backdropFilter:"blur(6px)",
+    minWidth:320
   },
 
   cardTitle:{
     textAlign:"center",
-    marginBottom:10,
-    fontWeight:600
+    marginBottom:12,
+    fontWeight:600,
+    fontSize:14
   },
 
   table:{
-    fontSize:13,
+    width:"100%",
     borderCollapse:"collapse",
-    width:"100%"
+    fontSize:13
+  },
+
+  td:{
+    border:"1px solid rgba(255,255,255,0.25)",
+    padding:"6px 10px",
+    whiteSpace:"nowrap"
   },
 
   buscaArea:{
-    marginBottom:30,
     display:"flex",
+    justifyContent:"center",
     gap:10,
-    justifyContent:"center"
+    marginBottom:30
   },
 
   input:{
     padding:8,
     borderRadius:6,
     border:"1px solid #ccc"
+  },
+
+  button:{
+    padding:"10px 22px",
+    borderRadius:8,
+    border:"1px solid rgba(255,255,255,0.3)",
+    backgroundColor:"rgba(255,255,255,0.15)",
+    color:"white",
+    cursor:"pointer"
   }
 
 };
