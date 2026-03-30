@@ -8,6 +8,7 @@ import Consulta from "./pages/Consulta";
 import Home from "./pages/Home";
 import Usuarios from "./pages/Usuarios";
 import CorrigirCadastro from "./pages/CorrigirCadastro";
+import AcompGeo from "./pages/AcompGeo";
 
 type Usuario = {
   id: string;
@@ -436,25 +437,15 @@ if(pagina === "corrigirCadastro"){
 }
     if(pagina === "geo"){
 
-      return(
+  return(
 
-        <div style={{padding:40}}>
+    <AcompGeo
+      setPagina={setPagina}
+    />
 
-          <h1>Acompanhamento GEO em desenvolvimento</h1>
+  );
 
-          <button
-            style={styles.menuButton}
-            onClick={()=>setPagina("menu")}
-          >
-            Voltar
-          </button>
-
-        </div>
-
-      );
-
-    }
-
+}
     if(pagina === "proorc"){
 
       return(
