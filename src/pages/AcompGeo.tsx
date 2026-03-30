@@ -106,47 +106,25 @@ export default function AcompGeo({ setPagina }: Props){
       <div style={styles.overlay}>
 
 
+        <div style={styles.topBar}>
 
-        <div style={styles.header}>
+          <div style={styles.leftTop}>
 
-
-
-          <div style={styles.botoesRegionais}>
-
-            <button
-              style={styles.button}
-              onClick={()=>carregarRegional("NE/MC")}
-            >
-              NE/MC
-            </button>
-
+            <input
+              style={styles.input}
+              placeholder="NUMERO DA NOTA"
+              value={buscaNota}
+              onChange={(e)=>setBuscaNota(e.target.value)}
+            />
 
             <button
               style={styles.button}
-              onClick={()=>carregarRegional("NE/PR")}
+              onClick={buscarNota}
             >
-              NE/PR
+              Buscar
             </button>
-
-
-            <button
-              style={styles.button}
-              onClick={()=>carregarRegional("CE/SL")}
-            >
-              CE/SL
-            </button>
-
-
-            <button
-              style={styles.buttonLimpar}
-              onClick={limparTabela}
-            >
-              Limpar
-            </button>
-
 
           </div>
-
 
 
           <button
@@ -156,7 +134,42 @@ export default function AcompGeo({ setPagina }: Props){
             Voltar
           </button>
 
+        </div>
 
+
+
+        <div style={styles.botoesRegionais}>
+
+          <button
+            style={styles.button}
+            onClick={()=>carregarRegional("NE/MC")}
+          >
+            NE/MC
+          </button>
+
+
+          <button
+            style={styles.button}
+            onClick={()=>carregarRegional("NE/PR")}
+          >
+            NE/PR
+          </button>
+
+
+          <button
+            style={styles.button}
+            onClick={()=>carregarRegional("CE/SL")}
+          >
+            CE/SL
+          </button>
+
+
+          <button
+            style={styles.buttonLimpar}
+            onClick={limparTabela}
+          >
+            Limpar
+          </button>
 
         </div>
 
@@ -164,15 +177,13 @@ export default function AcompGeo({ setPagina }: Props){
 
         <div style={styles.areaTabela}>
 
-
-
           {lista.length>0 && (
 
             <div style={styles.card}>
 
               <table style={styles.table}>
 
-                <thead>
+                <thead style={styles.thead}>
 
                   <tr>
 
@@ -253,31 +264,6 @@ export default function AcompGeo({ setPagina }: Props){
 
           )}
 
-
-
-        </div>
-
-
-
-        <div style={styles.buscaArea}>
-
-          <input
-            style={styles.input}
-            placeholder="NUMERO DA NOTA"
-            value={buscaNota}
-            onChange={(e)=>setBuscaNota(e.target.value)}
-          />
-
-
-          <button
-            style={styles.button}
-            onClick={buscarNota}
-          >
-            Buscar
-          </button>
-
-
-
         </div>
 
 
@@ -286,7 +272,7 @@ export default function AcompGeo({ setPagina }: Props){
 
           <table style={styles.table}>
 
-            <thead>
+            <thead style={styles.thead}>
 
               <tr>
 
@@ -375,7 +361,6 @@ const styles:{[key:string]:React.CSSProperties}={
   },
 
 
-
   overlay:{
     background:"rgba(0,0,0,0.65)",
     minHeight:"100vh",
@@ -384,21 +369,27 @@ const styles:{[key:string]:React.CSSProperties}={
   },
 
 
-
-  header:{
+  topBar:{
     display:"flex",
     justifyContent:"space-between",
-    marginBottom:30,
+    alignItems:"center",
+    marginBottom:20
+  },
+
+
+  leftTop:{
+    display:"flex",
+    gap:10,
     alignItems:"center"
   },
 
 
-
   botoesRegionais:{
     display:"flex",
-    gap:10
+    gap:10,
+    marginBottom:20,
+    justifyContent:"flex-start"
   },
-
 
 
   areaTabela:{
@@ -406,7 +397,6 @@ const styles:{[key:string]:React.CSSProperties}={
     justifyContent:"center",
     marginBottom:30
   },
-
 
 
   card:{
@@ -418,12 +408,19 @@ const styles:{[key:string]:React.CSSProperties}={
   },
 
 
-
   table:{
     borderCollapse:"collapse",
-    fontSize:13
+    fontSize:13,
+    background:"white",
+    color:"black"
   },
 
+
+  thead:{
+    background:"#cfe8ff",
+    color:"#000",
+    border:"1px solid #7fb3ff"
+  },
 
 
   td:{
@@ -434,14 +431,12 @@ const styles:{[key:string]:React.CSSProperties}={
   },
 
 
-
   tdNota:{
     border:"1px solid #ccc",
     padding:"6px 14px",
     background:"white",
     color:"black"
   },
-
 
 
   tdMed:{
@@ -453,22 +448,11 @@ const styles:{[key:string]:React.CSSProperties}={
   },
 
 
-
-  buscaArea:{
-    display:"flex",
-    justifyContent:"center",
-    gap:10,
-    marginBottom:30
-  },
-
-
-
   input:{
     padding:8,
     borderRadius:6,
     border:"1px solid #ccc"
   },
-
 
 
   button:{
@@ -479,7 +463,6 @@ const styles:{[key:string]:React.CSSProperties}={
     color:"white",
     cursor:"pointer"
   },
-
 
 
   buttonLimpar:{
