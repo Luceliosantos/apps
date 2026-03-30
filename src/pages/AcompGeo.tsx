@@ -165,9 +165,9 @@ export default function AcompGeo({ setPagina }: Props){
 
         <div style={styles.grid}>
 
-          {tabela(lista1,"NORTE")}
-          {tabela(lista2,"SUL")}
-          {tabela(lista3,"LESTE")}
+          {tabela(lista1,"NE/MC")}
+          {tabela(lista2,"NE/PR")}
+          {tabela(lista3,"CE/SL")}
 
         </div>
 
