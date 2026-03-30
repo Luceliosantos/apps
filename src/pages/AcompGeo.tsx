@@ -115,6 +115,57 @@ export default function AcompGeo({ setPagina }: Props){
   }
 
 
+  function exportarExcel(){
+
+    if(resultadoBusca.length===0) return;
+
+    let tabela =
+      "<table border='1'>" +
+      "<tr>" +
+      "<th>REGIONAL</th>" +
+      "<th>NOTA</th>" +
+      "<th>MOD.</th>" +
+      "<th>BASE_CR</th>" +
+      "<th>MEDIDA</th>" +
+      "<th>LINHA</th>" +
+      "<th>STATUS_MED</th>" +
+      "<th>OBS</th>" +
+      "<th>RESP_GERAL</th>" +
+      "<th>DATA_EMAIL</th>" +
+      "</tr>";
+
+    resultadoBusca.forEach(r=>{
+
+      tabela +=
+        "<tr>" +
+        "<td>"+(r.regional||"")+"</td>"+
+        "<td>"+(r.nota||"")+"</td>"+
+        "<td>"+(r.modalidade||"")+"</td>"+
+        "<td>"+(r.base_cr||"")+"</td>"+
+        "<td>"+(r.medida||"")+"</td>"+
+        "<td>"+(r.linha_med||"")+"</td>"+
+        "<td>"+(r.status_med||"")+"</td>"+
+        "<td>"+(r.obs||"")+"</td>"+
+        "<td>"+(r.resp_geral||"")+"</td>"+
+        "<td>"+(r.data_email||"")+"</td>"+
+        "</tr>";
+
+    });
+
+    tabela += "</table>";
+
+    const blob = new Blob([tabela],{type:"application/vnd.ms-excel"});
+
+    const link = document.createElement("a");
+
+    link.href = URL.createObjectURL(blob);
+    link.download = "acomp_geo.xls";
+
+    link.click();
+
+  }
+
+
 
   return(
 
@@ -163,6 +214,11 @@ export default function AcompGeo({ setPagina }: Props){
 
             <button style={styles.button} onClick={buscarListaCompleta}>
               Lista Completa
+            </button>
+
+
+            <button style={styles.button} onClick={exportarExcel}>
+              Exportar Excel
             </button>
 
           </div>
