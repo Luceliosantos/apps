@@ -279,6 +279,14 @@ useEffect(() => {
 
     await atualizarContagem();
 
+const { count } =
+  await supabase
+    .from("db_chaves")
+    .select("*", { count:"exact", head:true })
+    .is("ns", null);
+
+setQtdDisponiveis(count || 0);
+
     await buscarLista(nota);
 
 setDestacarUltima(true);
