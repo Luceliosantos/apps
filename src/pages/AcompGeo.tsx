@@ -83,9 +83,9 @@ export default function AcompGeo(){
 
   async function carregarListas(){
 
-    setLista1(await carregarRegional('Regional 1'))
-    setLista2(await carregarRegional('Regional 2'))
-    setLista3(await carregarRegional('Regional 3'))
+    setLista1(await carregarRegional('NE/MC'))
+    setLista2(await carregarRegional('NE/PR'))
+    setLista3(await carregarRegional('CE/SL'))
 
   }
 
