@@ -106,9 +106,26 @@ export default function AcompGeo({ setPagina }: Props){
       <div style={styles.overlay}>
 
 
-        <div style={styles.topBar}>
+        <div style={styles.linhaTopo}>
 
-          <div style={styles.leftTop}>
+          <div style={styles.grupoEsquerda}>
+
+            <button style={styles.button} onClick={()=>carregarRegional("NE/MC")}>
+              NE/MC
+            </button>
+
+            <button style={styles.button} onClick={()=>carregarRegional("NE/PR")}>
+              NE/PR
+            </button>
+
+            <button style={styles.button} onClick={()=>carregarRegional("CE/SL")}>
+              CE/SL
+            </button>
+
+            <button style={styles.buttonLimpar} onClick={limparTabela}>
+              Limpar
+            </button>
+
 
             <input
               style={styles.input}
@@ -117,10 +134,7 @@ export default function AcompGeo({ setPagina }: Props){
               onChange={(e)=>setBuscaNota(e.target.value)}
             />
 
-            <button
-              style={styles.button}
-              onClick={buscarNota}
-            >
+            <button style={styles.button} onClick={buscarNota}>
               Buscar
             </button>
 
@@ -138,50 +152,13 @@ export default function AcompGeo({ setPagina }: Props){
 
 
 
-        <div style={styles.botoesRegionais}>
-
-          <button
-            style={styles.button}
-            onClick={()=>carregarRegional("NE/MC")}
-          >
-            NE/MC
-          </button>
-
-
-          <button
-            style={styles.button}
-            onClick={()=>carregarRegional("NE/PR")}
-          >
-            NE/PR
-          </button>
-
-
-          <button
-            style={styles.button}
-            onClick={()=>carregarRegional("CE/SL")}
-          >
-            CE/SL
-          </button>
-
-
-          <button
-            style={styles.buttonLimpar}
-            onClick={limparTabela}
-          >
-            Limpar
-          </button>
-
-        </div>
-
-
-
         <div style={styles.areaTabela}>
 
           {lista.length>0 && (
 
             <div style={styles.card}>
 
-              <table style={styles.table}>
+              <table style={styles.tableRegional}>
 
                 <thead style={styles.thead}>
 
@@ -199,18 +176,13 @@ export default function AcompGeo({ setPagina }: Props){
                 </thead>
 
 
-
                 <tbody>
 
                   {lista.map((l,i)=>(
 
                     <tr key={i}>
 
-                      <td style={styles.tdNota}>
-                        {l.nota}
-                      </td>
-
-
+                      <td style={styles.tdNota}>{l.nota}</td>
 
                       <td style={styles.td}>
 
@@ -225,38 +197,16 @@ export default function AcompGeo({ setPagina }: Props){
                       </td>
 
 
-
-                      <td style={styles.tdMed}>
-                        {l.m609}
-                      </td>
-
-
-
-                      <td style={styles.tdMed}>
-                        {l.m614}
-                      </td>
-
-
-
-                      <td style={styles.tdMed}>
-                        {l.m625}
-                      </td>
-
-
-
-                      <td style={styles.td}>
-                        {l.obs}
-                      </td>
-
-
+                      <td style={styles.tdMed}>{l.m609}</td>
+                      <td style={styles.tdMed}>{l.m614}</td>
+                      <td style={styles.tdMed}>{l.m625}</td>
+                      <td style={styles.td}>{l.obs}</td>
 
                     </tr>
 
                   ))}
 
                 </tbody>
-
-
 
               </table>
 
@@ -268,9 +218,9 @@ export default function AcompGeo({ setPagina }: Props){
 
 
 
-        <div style={styles.card}>
+        <div style={styles.cardTabelaInferior}>
 
-          <table style={styles.table}>
+          <table style={styles.tableFull}>
 
             <thead style={styles.thead}>
 
@@ -292,7 +242,6 @@ export default function AcompGeo({ setPagina }: Props){
             </thead>
 
 
-
             <tbody>
 
               {resultadoBusca.map(r=>(
@@ -302,8 +251,6 @@ export default function AcompGeo({ setPagina }: Props){
                   <td style={styles.td}>{r.regional}</td>
                   <td style={styles.td}>{r.nota}</td>
                   <td style={styles.td}>{r.modalidade}</td>
-
-
 
                   <td style={styles.td}>
 
@@ -317,8 +264,6 @@ export default function AcompGeo({ setPagina }: Props){
 
                   </td>
 
-
-
                   <td style={styles.td}>{r.medida}</td>
                   <td style={styles.td}>{r.linha_med}</td>
                   <td style={styles.td}>{r.status_med}</td>
@@ -331,8 +276,6 @@ export default function AcompGeo({ setPagina }: Props){
               ))}
 
             </tbody>
-
-
 
           </table>
 
@@ -354,12 +297,10 @@ const styles:{[key:string]:React.CSSProperties}={
 
   container:{
     minHeight:"100vh",
-    backgroundImage:
-      "url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')",
+    backgroundImage:"url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')",
     backgroundSize:"cover",
     backgroundPosition:"center"
   },
-
 
   overlay:{
     background:"rgba(0,0,0,0.65)",
@@ -369,32 +310,24 @@ const styles:{[key:string]:React.CSSProperties}={
   },
 
 
-  topBar:{
+  linhaTopo:{
     display:"flex",
     justifyContent:"space-between",
     alignItems:"center",
-    marginBottom:20
+    marginBottom:25
   },
 
-
-  leftTop:{
+  grupoEsquerda:{
     display:"flex",
     gap:10,
-    alignItems:"center"
-  },
-
-
-  botoesRegionais:{
-    display:"flex",
-    gap:10,
-    marginBottom:20,
-    justifyContent:"flex-start"
+    alignItems:"center",
+    flexWrap:"wrap"
   },
 
 
   areaTabela:{
     display:"flex",
-    justifyContent:"center",
+    justifyContent:"flex-start",
     marginBottom:30
   },
 
@@ -408,11 +341,30 @@ const styles:{[key:string]:React.CSSProperties}={
   },
 
 
-  table:{
+  cardTabelaInferior:{
+    background:"rgba(255,255,255,0.08)",
+    padding:18,
+    borderRadius:10,
+    border:"1px solid rgba(255,255,255,0.25)",
+    backdropFilter:"blur(6px)",
+    width:"100%"
+  },
+
+
+  tableRegional:{
     borderCollapse:"collapse",
     fontSize:13,
     background:"white",
     color:"black"
+  },
+
+
+  tableFull:{
+    borderCollapse:"collapse",
+    fontSize:13,
+    background:"white",
+    color:"black",
+    width:"100%"
   },
 
 
