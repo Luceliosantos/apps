@@ -8,13 +8,11 @@ type Props = {
 
 type LinhaResumo = {
   nota:string
+  tipo:string
   base_cr:number
   m609:string
   m614:string
   m625:string
-  tipo609:string
-  tipo614:string
-  tipo625:string
   obs:string
 };
 
@@ -40,40 +38,38 @@ export default function AcompGeo({ setPagina }: Props){
 
       if(!mapa[r.nota]){
 
-        mapa[r.nota] = {
-          nota:r.nota,
-          base_cr:Number(r.base_cr) || 0,
-          m609:"",
-          m614:"",
-          m625:"",
-          tipo609:"",
-          tipo614:"",
-          tipo625:"",
-          obs:""
-        };
+mapa[r.nota] = {
+  nota:r.nota,
+  tipo:"",
+  base_cr:Number(r.base_cr) || 0,
+  m609:"",
+  m614:"",
+  m625:"",
+  obs:""
+};
 
       }
 
       if(r.medida==="0609"){
-        mapa[r.nota].m609=r.status_med || "";
-        mapa[r.nota].tipo609=r.tipo || "";
-      }
+  mapa[r.nota].m609=r.status_med || "";
+  mapa[r.nota].tipo=r.tipo || "";
+}
 
-      if(r.medida==="0614"){
+if(r.medida==="0614"){
 
-        if(r.tipo==="MDCO"){
-          mapa[r.nota].m614="-";
-        }else{
-          mapa[r.nota].m614=r.status_med || "";
-        }
+  if(r.tipo==="MDCO"){
+    mapa[r.nota].m614="-";
+  }else{
+    mapa[r.nota].m614=r.status_med || "";
+  }
 
-        mapa[r.nota].tipo614=r.tipo || "";
-      }
+  mapa[r.nota].tipo=r.tipo || "";
+}
 
-      if(r.medida==="0625"){
-        mapa[r.nota].m625=r.status_med || "";
-        mapa[r.nota].tipo625=r.tipo || "";
-      }
+if(r.medida==="0625"){
+  mapa[r.nota].m625=r.status_med || "";
+  mapa[r.nota].tipo=r.tipo || "";
+}
 
       if(r.obs && !mapa[r.nota].obs){
         mapa[r.nota].obs=r.obs;
@@ -367,9 +363,17 @@ export default function AcompGeo({ setPagina }: Props){
                     <td style={styles.td}>{r.medida}</td>
                     <td style={styles.td}>{r.linha_med}</td>
                     <td style={styles.td}>{r.tipo}</td>
-                    <td style={styles.td}>{r.status_med}</td>
-                    <td style={styles.td}>{r.tipo==="MDCO" ? "-" : r.obs}</td>
-                    <td style={styles.td}>{r.tipo==="MDCO" ? "-" : r.resp_geral}</td>
+                    <td style={styles.td}>
+  {r.status_med}
+</td>
+
+<td style={styles.td}>
+  {(r.tipo==="MDCO" && r.medida==="0614") ? "-" : r.obs}
+</td>
+
+<td style={styles.td}>
+  {(r.tipo==="MDCO" && r.medida==="0614") ? "-" : r.resp_geral}
+</td>
 
                   </tr>
 
