@@ -401,3 +401,126 @@ export default function AcompGeo({ setPagina }: Props){
   );
 
 }
+const styles:{[key:string]:React.CSSProperties}={
+
+  container:{
+    minHeight:"100vh",
+    backgroundImage:"url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')",
+    backgroundSize:"cover",
+    backgroundPosition:"center"
+  },
+
+  overlay:{
+    background:"rgba(0,0,0,0.65)",
+    minHeight:"100vh",
+    padding:40,
+    color:"white"
+  },
+
+  linhaTopo:{
+    display:"flex",
+    justifyContent:"space-between",
+    alignItems:"center",
+    marginBottom:25
+  },
+
+  grupoEsquerda:{
+    display:"flex",
+    gap:10,
+    alignItems:"center",
+    flexWrap:"wrap"
+  },
+
+  areaTabela:{
+    display:"flex",
+    justifyContent:"flex-start",
+    marginBottom:30
+  },
+
+  card:{
+    background:"rgba(255,255,255,0.08)",
+    padding:18,
+    borderRadius:10,
+    border:"1px solid rgba(255,255,255,0.25)",
+    backdropFilter:"blur(6px)"
+  },
+
+  cardTabelaInferior:{
+    background:"rgba(255,255,255,0.08)",
+    padding:18,
+    borderRadius:10,
+    border:"1px solid rgba(255,255,255,0.25)",
+    backdropFilter:"blur(6px)",
+    width:"100%"
+  },
+
+  tableRegional:{
+    borderCollapse:"collapse",
+    fontSize:13,
+    background:"white",
+    color:"black"
+  },
+
+  tableFull:{
+    borderCollapse:"collapse",
+    fontSize:13,
+    background:"white",
+    color:"black",
+    width:"100%"
+  },
+
+  thead:{
+    background:"#cfe8ff",
+    color:"#000",
+    border:"1px solid #7fb3ff"
+  },
+
+  td:{
+    border:"1px solid #ccc",
+    padding:"6px 10px",
+    background:"white",
+    color:"black",
+    textAlign:"center"
+  },
+
+  tdNota:{
+    border:"1px solid #ccc",
+    padding:"6px 14px",
+    background:"white",
+    color:"black",
+    textAlign:"center"
+  },
+
+  tdMed:{
+    border:"1px solid #ccc",
+    padding:"6px 8px",
+    textAlign:"center",
+    background:"white",
+    color:"black"
+  },
+
+  input:{
+    padding:8,
+    borderRadius:6,
+    border:"1px solid #ccc"
+  },
+
+  button:{
+    padding:"10px 18px",
+    borderRadius:8,
+    border:"1px solid rgba(255,255,255,0.3)",
+    backgroundColor:"rgba(255,255,255,0.15)",
+    color:"white",
+    cursor:"pointer"
+  },
+
+  buttonLimpar:{
+    padding:"10px 18px",
+    borderRadius:8,
+    border:"1px solid rgba(255,255,255,0.3)",
+    backgroundColor:"rgba(192,57,43,0.5)",
+    color:"white",
+    cursor:"pointer"
+  }
+
+};
