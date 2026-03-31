@@ -38,38 +38,38 @@ export default function AcompGeo({ setPagina }: Props){
 
       if(!mapa[r.nota]){
 
-mapa[r.nota] = {
-  nota:r.nota,
-  tipo:"",
-  base_cr:Number(r.base_cr) || 0,
-  m609:"",
-  m614:"",
-  m625:"",
-  obs:""
-};
+        mapa[r.nota] = {
+          nota:r.nota,
+          tipo:"",
+          base_cr:Number(r.base_cr) || 0,
+          m609:"",
+          m614:"",
+          m625:"",
+          obs:""
+        };
 
       }
 
       if(r.medida==="0609"){
-  mapa[r.nota].m609=r.status_med || "";
-  mapa[r.nota].tipo=r.tipo || "";
-}
+        mapa[r.nota].m609=r.status_med || "";
+        mapa[r.nota].tipo=r.tipo || "";
+      }
 
-if(r.medida==="0614"){
+      if(r.medida==="0614"){
 
-  if(r.tipo==="MDCO"){
-    mapa[r.nota].m614="-";
-  }else{
-    mapa[r.nota].m614=r.status_med || "";
-  }
+        if(r.tipo==="MDCO"){
+          mapa[r.nota].m614="-";
+        }else{
+          mapa[r.nota].m614=r.status_med || "";
+        }
 
-  mapa[r.nota].tipo=r.tipo || "";
-}
+        mapa[r.nota].tipo=r.tipo || "";
+      }
 
-if(r.medida==="0625"){
-  mapa[r.nota].m625=r.status_med || "";
-  mapa[r.nota].tipo=r.tipo || "";
-}
+      if(r.medida==="0625"){
+        mapa[r.nota].m625=r.status_med || "";
+        mapa[r.nota].tipo=r.tipo || "";
+      }
 
       if(r.obs && !mapa[r.nota].obs){
         mapa[r.nota].obs=r.obs;
@@ -165,8 +165,8 @@ if(r.medida==="0625"){
         "<td>"+(r.linha_med||"")+"</td>"+
         "<td>"+(r.tipo||"")+"</td>"+
         "<td>"+(r.status_med||"")+"</td>"+
-        "<td>"+(r.tipo==="MDCO" ? "-" : (r.obs||""))+"</td>"+
-        "<td>"+(r.tipo==="MDCO" ? "-" : (r.resp_geral||""))+"</td>"+
+        "<td>"+((r.tipo==="MDCO" && r.medida==="0614") ? "-" : (r.obs||""))+"</td>"+
+        "<td>"+((r.tipo==="MDCO" && r.medida==="0614") ? "-" : (r.resp_geral||""))+"</td>"+
         "</tr>";
 
     });
@@ -267,13 +267,11 @@ if(r.medida==="0625"){
                   <tr>
 
                     <th>NOTA</th>
+                    <th>TIPO</th>
                     <th>BASE_CR</th>
                     <th>609</th>
-                    <th>TIPO</th>
                     <th>614</th>
-                    <th>TIPO</th>
                     <th>625</th>
-                    <th>TIPO</th>
                     <th>OBS</th>
 
                   </tr>
@@ -289,18 +287,15 @@ if(r.medida==="0625"){
 
                       <td style={styles.tdNota}>{l.nota}</td>
 
+                      <td style={styles.tdMed}>{l.tipo}</td>
+
                       <td style={styles.td}>
                         {l.base_cr.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
                       </td>
 
                       <td style={styles.tdMed}>{l.m609}</td>
-                      <td style={styles.tdMed}>{l.tipo609}</td>
-
                       <td style={styles.tdMed}>{l.m614}</td>
-                      <td style={styles.tdMed}>{l.tipo614}</td>
-
                       <td style={styles.tdMed}>{l.m625}</td>
-                      <td style={styles.tdMed}>{l.tipo625}</td>
 
                       <td style={styles.td}>{l.obs}</td>
 
@@ -363,17 +358,15 @@ if(r.medida==="0625"){
                     <td style={styles.td}>{r.medida}</td>
                     <td style={styles.td}>{r.linha_med}</td>
                     <td style={styles.td}>{r.tipo}</td>
+                    <td style={styles.td}>{r.status_med}</td>
+
                     <td style={styles.td}>
-  {r.status_med}
-</td>
+                      {(r.tipo==="MDCO" && r.medida==="0614") ? "-" : r.obs}
+                    </td>
 
-<td style={styles.td}>
-  {(r.tipo==="MDCO" && r.medida==="0614") ? "-" : r.obs}
-</td>
-
-<td style={styles.td}>
-  {(r.tipo==="MDCO" && r.medida==="0614") ? "-" : r.resp_geral}
-</td>
+                    <td style={styles.td}>
+                      {(r.tipo==="MDCO" && r.medida==="0614") ? "-" : r.resp_geral}
+                    </td>
 
                   </tr>
 
