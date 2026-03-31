@@ -12,6 +12,9 @@ type LinhaResumo = {
   m609:string
   m614:string
   m625:string
+  tipo609:string
+  tipo614:string
+  tipo625:string
   obs:string
 };
 
@@ -43,14 +46,28 @@ export default function AcompGeo({ setPagina }: Props){
           m609:"",
           m614:"",
           m625:"",
+          tipo609:"",
+          tipo614:"",
+          tipo625:"",
           obs:""
         };
 
       }
 
-      if(r.medida==="0609") mapa[r.nota].m609=r.status_med || "";
-      if(r.medida==="0614") mapa[r.nota].m614=r.status_med || "";
-      if(r.medida==="0625") mapa[r.nota].m625=r.status_med || "";
+      if(r.medida==="0609"){
+        mapa[r.nota].m609=r.status_med || "";
+        mapa[r.nota].tipo609=r.tipo || "";
+      }
+
+      if(r.medida==="0614"){
+        mapa[r.nota].m614=r.status_med || "";
+        mapa[r.nota].tipo614=r.tipo || "";
+      }
+
+      if(r.medida==="0625"){
+        mapa[r.nota].m625=r.status_med || "";
+        mapa[r.nota].tipo625=r.tipo || "";
+      }
 
       if(r.obs && !mapa[r.nota].obs){
         mapa[r.nota].obs=r.obs;
@@ -58,12 +75,12 @@ export default function AcompGeo({ setPagina }: Props){
 
     });
 
-    const top10 =
+    const top15 =
       Object.values(mapa)
         .sort((a,b)=>b.base_cr-a.base_cr)
-        .slice(0,10);
+        .slice(0,15);
 
-    setLista(top10);
+    setLista(top15);
 
   }
 
@@ -250,8 +267,11 @@ export default function AcompGeo({ setPagina }: Props){
                     <th>NOTA</th>
                     <th>BASE_CR</th>
                     <th>609</th>
+                    <th>TIPO</th>
                     <th>614</th>
+                    <th>TIPO</th>
                     <th>625</th>
+                    <th>TIPO</th>
                     <th>OBS</th>
 
                   </tr>
@@ -272,8 +292,14 @@ export default function AcompGeo({ setPagina }: Props){
                       </td>
 
                       <td style={styles.tdMed}>{l.m609}</td>
+                      <td style={styles.tdMed}>{l.tipo609}</td>
+
                       <td style={styles.tdMed}>{l.m614}</td>
+                      <td style={styles.tdMed}>{l.tipo614}</td>
+
                       <td style={styles.tdMed}>{l.m625}</td>
+                      <td style={styles.tdMed}>{l.tipo625}</td>
+
                       <td style={styles.td}>{l.obs}</td>
 
                     </tr>
