@@ -26,7 +26,7 @@ export default function AcompGeo({ setPagina }: Props){
 
     const { data,error } = await supabase
       .from("db_acomp_geo")
-      .select("nota,base_cr,medida,status_med,obs")
+      .select("nota,base_cr,medida,status_med,obs,tipo")
       .eq("regional",regional);
 
     if(error || !data) return;
@@ -122,16 +122,16 @@ export default function AcompGeo({ setPagina }: Props){
     let tabela =
       "<table border='1'>" +
       "<tr>" +
-      "<th>REGIONAL</th>" +
+      "<th>REG.</th>" +
       "<th>NOTA</th>" +
       "<th>MOD.</th>" +
       "<th>BASE_CR</th>" +
-      "<th>MEDIDA</th>" +
-      "<th>LINHA</th>" +
-      "<th>STATUS_MED</th>" +
+      "<th>MED</th>" +
+      "<th>LN</th>" +
+      "<th>TIPO</th>" +
+      "<th>STATUS</th>" +
       "<th>OBS</th>" +
-      "<th>RESP_GERAL</th>" +
-      "<th>DATA_EMAIL</th>" +
+      "<th>RESPONSAVEL</th>" +
       "</tr>";
 
     resultadoBusca.forEach(r=>{
@@ -144,10 +144,10 @@ export default function AcompGeo({ setPagina }: Props){
         "<td>"+(r.base_cr||"")+"</td>"+
         "<td>"+(r.medida||"")+"</td>"+
         "<td>"+(r.linha_med||"")+"</td>"+
+        "<td>"+(r.tipo||"")+"</td>"+
         "<td>"+(r.status_med||"")+"</td>"+
         "<td>"+(r.obs||"")+"</td>"+
         "<td>"+(r.resp_geral||"")+"</td>"+
-        "<td>"+(r.data_email||"")+"</td>"+
         "</tr>";
 
     });
@@ -302,16 +302,16 @@ export default function AcompGeo({ setPagina }: Props){
 
                 <tr>
 
-                  <th>REGIONAL</th>
+                  <th>REG.</th>
                   <th>NOTA</th>
                   <th>MOD.</th>
                   <th>BASE_CR</th>
-                  <th>MEDIDA</th>
-                  <th>LINHA</th>
-                  <th>STATUS_MED</th>
+                  <th>MED</th>
+                  <th>LN</th>
+                  <th>TIPO</th>
+                  <th>STATUS</th>
                   <th>OBS</th>
-                  <th>RESP_GERAL</th>
-                  <th>DATA_EMAIL</th>
+                  <th>RESPONSAVEL</th>
 
                 </tr>
 
@@ -334,10 +334,10 @@ export default function AcompGeo({ setPagina }: Props){
 
                     <td style={styles.td}>{r.medida}</td>
                     <td style={styles.td}>{r.linha_med}</td>
+                    <td style={styles.td}>{r.tipo}</td>
                     <td style={styles.td}>{r.status_med}</td>
                     <td style={styles.td}>{r.obs}</td>
                     <td style={styles.td}>{r.resp_geral}</td>
-                    <td style={styles.td}>{r.data_email}</td>
 
                   </tr>
 
@@ -441,14 +441,16 @@ const styles:{[key:string]:React.CSSProperties}={
     border:"1px solid #ccc",
     padding:"6px 10px",
     background:"white",
-    color:"black"
+    color:"black",
+    textAlign:"center"
   },
 
   tdNota:{
     border:"1px solid #ccc",
     padding:"6px 14px",
     background:"white",
-    color:"black"
+    color:"black",
+    textAlign:"center"
   },
 
   tdMed:{
