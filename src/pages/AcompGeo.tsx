@@ -60,7 +60,13 @@ export default function AcompGeo({ setPagina }: Props){
       }
 
       if(r.medida==="0614"){
-        mapa[r.nota].m614=r.status_med || "";
+
+        if(r.tipo==="MDCO"){
+          mapa[r.nota].m614="-";
+        }else{
+          mapa[r.nota].m614=r.status_med || "";
+        }
+
         mapa[r.nota].tipo614=r.tipo || "";
       }
 
@@ -163,8 +169,8 @@ export default function AcompGeo({ setPagina }: Props){
         "<td>"+(r.linha_med||"")+"</td>"+
         "<td>"+(r.tipo||"")+"</td>"+
         "<td>"+(r.status_med||"")+"</td>"+
-        "<td>"+(r.obs||"")+"</td>"+
-        "<td>"+(r.resp_geral||"")+"</td>"+
+        "<td>"+(r.tipo==="MDCO" ? "-" : (r.obs||""))+"</td>"+
+        "<td>"+(r.tipo==="MDCO" ? "-" : (r.resp_geral||""))+"</td>"+
         "</tr>";
 
     });
@@ -362,8 +368,8 @@ export default function AcompGeo({ setPagina }: Props){
                     <td style={styles.td}>{r.linha_med}</td>
                     <td style={styles.td}>{r.tipo}</td>
                     <td style={styles.td}>{r.status_med}</td>
-                    <td style={styles.td}>{r.obs}</td>
-                    <td style={styles.td}>{r.resp_geral}</td>
+                    <td style={styles.td}>{r.tipo==="MDCO" ? "-" : r.obs}</td>
+                    <td style={styles.td}>{r.tipo==="MDCO" ? "-" : r.resp_geral}</td>
 
                   </tr>
 
