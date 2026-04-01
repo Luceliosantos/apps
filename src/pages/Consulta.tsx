@@ -648,67 +648,73 @@ const styles:{[key:string]:React.CSSProperties} = {
   overlay:{
     minHeight:"100vh",
     backgroundColor:"rgba(0,0,0,0.55)",
-    padding:40
+    padding:"20px"
   },
 
   header:{
     display:"flex",
     justifyContent:"space-between",
+    alignItems:"flex-start",
     color:"white",
-    marginBottom:40
+    marginBottom:25,
+    flexWrap:"wrap",
+    gap:10
   },
 
   headerButtons:{
     display:"flex",
-    gap:10
+    gap:8,
+    flexWrap:"wrap"
   },
 
   titleArea:{
     textAlign:"center",
     color:"white",
-    marginBottom:40
+    marginBottom:25
   },
 
   title:{
-    fontSize:36,
+    fontSize:28,
     margin:0
   },
 
   subtitle:{
-    marginTop:10,
+    marginTop:6,
     opacity:0.85
   },
 
   panel:{
     maxWidth:1100,
-    margin:"0 auto 40px auto",
+    margin:"0 auto 25px auto",
     display:"flex",
     flexDirection:"column",
-    gap:20
+    gap:15
   },
 
   grupoBusca:{
     display:"grid",
-    gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",
-    gap:15
+    gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",
+    gap:10
   },
 
   input:{
-    padding:8,
+    padding:"8px 10px",
     borderRadius:8,
-    border:"1px solid #ccc"
+    border:"1px solid #ccc",
+    fontSize:14
   },
 
   button:{
     padding:"8px 12px",
-    height:"32px",
+    minHeight:"36px",
     fontSize:14,
     borderRadius:8,
     border:"1px solid rgba(255,255,255,0.35)",
     backgroundColor:"rgba(255,255,255,0.15)",
     color:"white",
     cursor:"pointer",
-    boxShadow:"0 2px 4px rgba(0,0,0,0.3)"
+    boxShadow:"0 2px 4px rgba(0,0,0,0.3)",
+    whiteSpace:"nowrap"
   },
 
   logoutButton:{
@@ -718,24 +724,28 @@ const styles:{[key:string]:React.CSSProperties} = {
   tableContainer:{
     backgroundColor:"white",
     borderRadius:10,
-    padding:20
+    padding:10,
+    overflowX:"auto"
   },
 
   table:{
     width:"100%",
     borderCollapse:"collapse",
-    textAlign:"center"
+    textAlign:"center",
+    minWidth:700
   },
 
   th:{
     border:"1px solid #ccc",
-    padding:8,
-    backgroundColor:"#f2f2f2"
+    padding:"6px 8px",
+    backgroundColor:"#f2f2f2",
+    whiteSpace:"nowrap"
   },
 
   td:{
     border:"1px solid #ccc",
-    padding:6
+    padding:"6px 8px",
+    whiteSpace:"nowrap"
   }
 
 };
