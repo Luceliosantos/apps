@@ -413,52 +413,58 @@ const styles:{[key:string]:React.CSSProperties}={
   overlay:{
     background:"rgba(0,0,0,0.65)",
     minHeight:"100vh",
-    padding:40,
+    padding:"20px",
     color:"white"
   },
 
   linhaTopo:{
     display:"flex",
     justifyContent:"space-between",
-    alignItems:"center",
-    marginBottom:25
+    alignItems:"flex-start",
+    marginBottom:20,
+    flexWrap:"wrap",
+    gap:10
   },
 
   grupoEsquerda:{
     display:"flex",
-    gap:10,
+    gap:8,
     alignItems:"center",
     flexWrap:"wrap"
   },
 
   areaTabela:{
-    display:"flex",
-    justifyContent:"flex-start",
-    marginBottom:30
+    display:"block",
+    width:"100%",
+    overflowX:"auto",
+    marginBottom:25
   },
 
   card:{
     background:"rgba(255,255,255,0.08)",
-    padding:18,
+    padding:14,
     borderRadius:10,
     border:"1px solid rgba(255,255,255,0.25)",
-    backdropFilter:"blur(6px)"
+    backdropFilter:"blur(6px)",
+    overflowX:"auto"
   },
 
   cardTabelaInferior:{
     background:"rgba(255,255,255,0.08)",
-    padding:18,
+    padding:14,
     borderRadius:10,
     border:"1px solid rgba(255,255,255,0.25)",
     backdropFilter:"blur(6px)",
-    width:"100%"
+    width:"100%",
+    overflowX:"auto"
   },
 
   tableRegional:{
     borderCollapse:"collapse",
     fontSize:13,
     background:"white",
-    color:"black"
+    color:"black",
+    minWidth:650
   },
 
   tableFull:{
@@ -466,7 +472,8 @@ const styles:{[key:string]:React.CSSProperties}={
     fontSize:13,
     background:"white",
     color:"black",
-    width:"100%"
+    width:"100%",
+    minWidth:900
   },
 
   thead:{
@@ -477,50 +484,56 @@ const styles:{[key:string]:React.CSSProperties}={
 
   td:{
     border:"1px solid #ccc",
-    padding:"6px 10px",
+    padding:"6px 8px",
     background:"white",
     color:"black",
-    textAlign:"center"
+    textAlign:"center",
+    whiteSpace:"nowrap"
   },
 
   tdNota:{
     border:"1px solid #ccc",
-    padding:"6px 14px",
+    padding:"6px 10px",
     background:"white",
     color:"black",
-    textAlign:"center"
+    textAlign:"center",
+    whiteSpace:"nowrap"
   },
 
   tdMed:{
     border:"1px solid #ccc",
-    padding:"6px 8px",
+    padding:"6px 6px",
     textAlign:"center",
     background:"white",
-    color:"black"
+    color:"black",
+    whiteSpace:"nowrap"
   },
 
   input:{
-    padding:8,
+    padding:"8px 10px",
     borderRadius:6,
-    border:"1px solid #ccc"
+    border:"1px solid #ccc",
+    minWidth:140
   },
 
   button:{
-    padding:"10px 18px",
+    padding:"8px 14px",
     borderRadius:8,
     border:"1px solid rgba(255,255,255,0.3)",
     backgroundColor:"rgba(255,255,255,0.15)",
     color:"white",
-    cursor:"pointer"
+    cursor:"pointer",
+    whiteSpace:"nowrap"
   },
 
   buttonLimpar:{
-    padding:"10px 18px",
+    padding:"8px 14px",
     borderRadius:8,
     border:"1px solid rgba(255,255,255,0.3)",
     backgroundColor:"rgba(192,57,43,0.5)",
     color:"white",
-    cursor:"pointer"
+    cursor:"pointer",
+    whiteSpace:"nowrap"
   }
 
 };
