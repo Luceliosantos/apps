@@ -316,7 +316,7 @@ const container:React.CSSProperties={
   backgroundSize:"cover",
   backgroundPosition:"center",
 
-  padding:"40px"
+  padding:"20px"
 
 };
 
@@ -328,20 +328,22 @@ const box:React.CSSProperties={
   background:"rgba(255,255,255,0.08)",
   backdropFilter:"blur(6px)",
   borderRadius:"14px",
-  padding:"30px",
+  padding:"20px",
   border:"1px solid rgba(255,255,255,0.25)"
 
 };
 
+
 const botaoAcao:React.CSSProperties={
 
-  padding:"8px 18px",
+  padding:"8px 14px",
   borderRadius:"10px",
   border:"1px solid rgba(192,57,43,0.6)",
   background:"rgba(192,57,43,0.85)",
   color:"white",
   cursor:"pointer",
-  fontWeight:"600"
+  fontWeight:"600",
+  whiteSpace:"nowrap"
 
 };
 
@@ -350,8 +352,10 @@ const topo:React.CSSProperties={
 
   display:"flex",
   justifyContent:"space-between",
-  alignItems:"center",
-  marginBottom:"5px"
+  alignItems:"flex-start",
+  flexWrap:"wrap",
+  gap:"10px",
+  marginBottom:"10px"
 
 };
 
@@ -366,8 +370,8 @@ const titulo:React.CSSProperties={
 const quantidade:React.CSSProperties={
 
   color:"white",
-  fontSize:"18px",
-  marginBottom:"25px",
+  fontSize:"16px",
+  marginBottom:"20px",
   textAlign:"left"
 
 };
@@ -376,17 +380,17 @@ const quantidade:React.CSSProperties={
 const linhaBusca:React.CSSProperties={
 
   display:"flex",
-  gap:"10px",
-  marginBottom:"25px",
-  justifyContent:"flex-start"
+  gap:"8px",
+  marginBottom:"20px",
+  flexWrap:"wrap"
 
 };
 
 
 const inputConsulta:React.CSSProperties={
 
-  width:"20%",
-  minWidth:"180px",
+  width:"100%",
+  maxWidth:"260px",
   padding:"10px",
   borderRadius:"8px",
   border:"1px solid rgba(255,255,255,0.4)",
@@ -399,13 +403,14 @@ const inputConsulta:React.CSSProperties={
 
 const botaoConsulta:React.CSSProperties={
 
-  padding:"8px 18px",
+  padding:"8px 16px",
   borderRadius:"10px",
   border:"1px solid rgba(255,255,255,0.4)",
   background:"rgba(255,255,255,0.15)",
   color:"white",
   cursor:"pointer",
-  backdropFilter:"blur(2px)"
+  backdropFilter:"blur(2px)",
+  whiteSpace:"nowrap"
 
 };
 
@@ -417,24 +422,27 @@ const tabela:React.CSSProperties={
   textAlign:"center",
   backgroundColor:"white",
   borderRadius:"10px",
-  overflow:"hidden"
+  overflow:"hidden",
+  minWidth:"750px"
 
 };
 
 
 const th:React.CSSProperties={
 
-  padding:"12px",
+  padding:"10px",
   border:"1px solid #ddd",
   backgroundColor:"#f4f4f4",
-  fontWeight:"700"
+  fontWeight:"700",
+  whiteSpace:"nowrap"
 
 };
 
 
 const td:React.CSSProperties={
 
-  padding:"10px",
-  border:"1px solid #e5e5e5"
+  padding:"8px",
+  border:"1px solid #e5e5e5",
+  whiteSpace:"nowrap"
 
 };
