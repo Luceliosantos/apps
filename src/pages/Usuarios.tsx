@@ -425,7 +425,7 @@ export default function Usuarios({ setPagina }: Props) {
 const styles:{[key:string]:React.CSSProperties} = {
 
   container:{
-    padding:40,
+    padding:"20px",
     display:"flex",
     justifyContent:"center"
   },
@@ -434,83 +434,96 @@ const styles:{[key:string]:React.CSSProperties} = {
     width:"100%",
     maxWidth:1100,
     background:"white",
-    padding:30,
+    padding:"20px",
     borderRadius:12,
-    boxShadow:"0 4px 20px rgba(0,0,0,0.15)"
+    boxShadow:"0 4px 20px rgba(0,0,0,0.15)",
+    overflowX:"auto"
   },
 
   topBar:{
     display:"flex",
     justifyContent:"space-between",
+    alignItems:"flex-start",
+    flexWrap:"wrap",
+    gap:10,
     marginBottom:20
   },
 
   novoUsuario:{
-    marginBottom:30
+    marginBottom:25
   },
 
   row:{
     display:"flex",
-    gap:10,
-    marginTop:10
+    gap:8,
+    marginTop:10,
+    flexWrap:"wrap"
   },
 
   input:{
-    padding:8,
+    padding:"8px 10px",
     borderRadius:6,
     border:"1px solid #ccc",
-    flex:1
+    flex:"1 1 180px",
+    minWidth:150
   },
 
   table:{
     width:"100%",
     borderCollapse:"collapse",
-    textAlign:"center"
+    textAlign:"center",
+    minWidth:900
   },
 
   th:{
     border:"1px solid #ccc",
-    padding:10,
+    padding:"8px",
     background:"#1e3c72",
-    color:"white"
+    color:"white",
+    whiteSpace:"nowrap"
   },
 
   td:{
     border:"1px solid #ccc",
-    padding:8
+    padding:"6px 8px",
+    whiteSpace:"nowrap"
   },
 
   select:{
-    padding:5,
+    padding:"6px",
     borderRadius:5,
-    border:"1px solid #ccc"
+    border:"1px solid #ccc",
+    minWidth:90
   },
 
   button:{
-    padding:"8px 14px",
+    padding:"7px 12px",
     borderRadius:8,
     border:"1px solid #1e3c72",
     background:"#1e3c72",
     color:"white",
-    cursor:"pointer"
+    cursor:"pointer",
+    whiteSpace:"nowrap"
   },
 
   deleteButton:{
-    padding:"8px 14px",
+    padding:"7px 12px",
     borderRadius:8,
     border:"1px solid #c0392b",
     background:"#c0392b",
     color:"white",
-    cursor:"pointer"
+    cursor:"pointer",
+    whiteSpace:"nowrap"
   },
 
   resetButton:{
-    padding:"8px 14px",
+    padding:"7px 12px",
     borderRadius:8,
     border:"1px solid #e67e22",
     background:"#e67e22",
     color:"white",
-    cursor:"pointer"
+    cursor:"pointer",
+    whiteSpace:"nowrap"
   }
 
 };
