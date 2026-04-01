@@ -492,7 +492,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
-    backgroundAttachment: "fixed",
     position: "relative",
     overflow: "hidden",
   },
@@ -505,7 +504,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 
   overlay: {
     minHeight: "100vh",
-    padding: "40px 20px",
+    padding: "20px",
     color: "white",
     position: "relative",
     zIndex: 2,
@@ -513,15 +512,18 @@ const styles: { [key: string]: React.CSSProperties } = {
 
   topBar: {
     maxWidth: "1200px",
-    margin: "0 auto 60px",
+    margin: "0 auto 30px",
     display: "flex",
     justifyContent: "space-between",
+    alignItems:"flex-start",
+    flexWrap:"wrap",
+    gap:10
   },
 
-linhaUsuario: {
-  fontSize: 16,
-  fontWeight: 400,
-},
+  linhaUsuario: {
+    fontSize: 16,
+    fontWeight: 400,
+  },
 
   mainContent: {
     maxWidth: "1200px",
@@ -531,8 +533,8 @@ linhaUsuario: {
   cardPrincipal: {
     background: "rgba(255,255,255,0.06)",
     backdropFilter: "blur(20px)",
-    borderRadius: "24px",
-    padding: "40px",
+    borderRadius: "20px",
+    padding: "20px",
   },
 
   inputFile: { display: "none" },
@@ -541,14 +543,15 @@ linhaUsuario: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: "40px",
+    padding: "25px",
     border: "2px dashed rgba(255,255,255,0.4)",
-    borderRadius: "20px",
+    borderRadius: "16px",
     cursor: "pointer",
+    textAlign:"center"
   },
 
   uploadIcon: {
-    fontSize: 48,
+    fontSize: 40,
   },
 
   caixaQuantidade: {
@@ -556,13 +559,14 @@ linhaUsuario: {
   },
 
   statsContent: {
-    marginBottom: 20,
+    marginBottom: 15,
   },
 
   validosInvalidos:{
     display:"flex",
     gap:8,
     alignItems:"center",
+    flexWrap:"wrap"
   },
 
   separador:{
@@ -572,6 +576,7 @@ linhaUsuario: {
   botaoContainer: {
     display: "flex",
     justifyContent: "center",
+    flexWrap:"wrap"
   },
 
   tabelaContainer: {
@@ -584,7 +589,8 @@ linhaUsuario: {
     tableLayout:"auto",
     background: "rgba(255,255,255,0.06)",
     color: "white",
-    borderCollapse:"collapse"
+    borderCollapse:"collapse",
+    minWidth:400
   },
 
   thead: {
@@ -593,42 +599,42 @@ linhaUsuario: {
   },
 
   thNumero: {
-    padding: 8.5,
+    padding: 8,
     border:"1px solid rgba(255,255,255,0.15)",
     textAlign:"center",
     whiteSpace:"nowrap"
   },
 
   thData: {
-    padding: 8.5,
+    padding: 8,
     border:"1px solid rgba(255,255,255,0.15)",
     textAlign:"center",
     whiteSpace:"nowrap"
   },
 
   thStatus: {
-    padding: 8.5,
+    padding: 8,
     border:"1px solid rgba(255,255,255,0.15)",
     textAlign:"center",
     whiteSpace:"nowrap"
   },
 
   tdNumero: {
-    padding: 8.5,
+    padding: 8,
     border:"1px solid rgba(255,255,255,0.15)",
     textAlign:"center",
     whiteSpace:"nowrap"
   },
 
   tdData: {
-    padding: 8.5,
+    padding: 8,
     border:"1px solid rgba(255,255,255,0.15)",
     textAlign:"center",
     whiteSpace:"nowrap"
   },
 
   tdStatus: {
-    padding: 8.5,
+    padding: 8,
     border:"1px solid rgba(255,255,255,0.15)",
     textAlign:"center",
     whiteSpace:"nowrap"
@@ -647,12 +653,12 @@ linhaUsuario: {
   },
 
   alertaErro: {
-    marginTop: 20,
+    marginTop: 15,
     color: "#ff6b6b",
   },
 
   statNumber: {
-    fontSize: 28,
+    fontSize: 24,
   },
 
   validos: { color: "#00ff88" },
@@ -660,15 +666,15 @@ linhaUsuario: {
   invalidos: { color: "#ff6b6b" },
 
   button: {
-    padding: "11px 18px",
-    fontSize: 16,
+    padding: "10px 16px",
+    fontSize: 15,
     borderRadius: 10,
     border: "1px solid rgba(255,255,255,0.25)",
     backgroundColor: "rgba(255,255,255,0.12)",
     color: "white",
     cursor: "pointer",
     backdropFilter: "blur(6px)",
-    transition: "all 0.3s ease",
+    whiteSpace:"nowrap"
   },
 
 };
