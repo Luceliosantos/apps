@@ -533,18 +533,20 @@ if(pagina === "corrigirCadastro"){
 const styles:{[key:string]:React.CSSProperties}={
 
   loginContainer:{
-    height:"100vh",
+    minHeight:"100vh",
     display:"flex",
     justifyContent:"center",
     alignItems:"center",
-    background:"linear-gradient(to bottom,#1e3c72,#2a5298)"
+    background:"linear-gradient(to bottom,#1e3c72,#2a5298)",
+    padding:16
   },
 
   loginCard:{
     background:"white",
-    padding:40,
+    padding:"24px",
     borderRadius:12,
-    width:350,
+    width:"100%",
+    maxWidth:360,
     textAlign:"center"
   },
 
@@ -553,26 +555,29 @@ const styles:{[key:string]:React.CSSProperties}={
     padding:12,
     marginBottom:15,
     borderRadius:8,
-    border:"1px solid #ccc"
+    border:"1px solid #ccc",
+    fontSize:16
   },
 
   loginButton:{
-    padding:"10px 18px",
+    padding:12,
     borderRadius:8,
     border:"none",
     background:"#1e3c72",
     color:"white",
     cursor:"pointer",
-    width:"100%"
+    width:"100%",
+    fontSize:16
   },
 
   menuButton:{
-    padding:10,
+    padding:12,
     borderRadius:8,
     border:"none",
     background:"#1e3c72",
     color:"white",
-    cursor:"pointer"
+    cursor:"pointer",
+    fontSize:16
   }
 
 };
