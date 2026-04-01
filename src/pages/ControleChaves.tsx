@@ -250,7 +250,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 
     backgroundColor: "rgba(0,0,0,0.6)",
 
-    padding: 40,
+    padding: "20px",
 
   },
 
@@ -261,11 +261,17 @@ const styles: { [key: string]: React.CSSProperties } = {
 
     justifyContent: "space-between",
 
+    alignItems:"flex-start",
+
+    flexWrap:"wrap",
+
+    gap:10,
+
     color: "white",
 
     fontWeight: 500,
 
-    marginBottom: 60,
+    marginBottom: 30,
 
   },
 
@@ -276,14 +282,14 @@ const styles: { [key: string]: React.CSSProperties } = {
 
     color: "white",
 
-    marginBottom: 50,
+    marginBottom: 30,
 
   },
 
 
   title: {
 
-    fontSize: 44,
+    fontSize: 28,
 
     fontWeight: 600,
 
@@ -296,9 +302,9 @@ const styles: { [key: string]: React.CSSProperties } = {
 
   subtitle: {
 
-    marginTop: 10,
+    marginTop: 8,
 
-    fontSize: 18,
+    fontSize: 16,
 
     opacity: 0.85,
 
@@ -313,18 +319,18 @@ const styles: { [key: string]: React.CSSProperties } = {
 
     display: "grid",
 
-    gridTemplateColumns: "1fr 1fr",
+    gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))",
 
-    gap: 20,
+    gap: 12,
 
   },
 
 
   button: {
 
-    padding: 18,
+    padding: 14,
 
-    fontSize: 16,
+    fontSize: 15,
 
     borderRadius: 10,
 
@@ -338,7 +344,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 
     backdropFilter: "blur(6px)",
 
-    transition: "all 0.3s ease",
+    whiteSpace:"nowrap"
 
   },
 
