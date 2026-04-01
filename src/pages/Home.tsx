@@ -164,45 +164,49 @@ const styles: { [key:string]: React.CSSProperties } = {
   overlay:{
     minHeight:"100vh",
     background:"rgba(0,0,0,0.75)",
-    padding:40,
+    padding:"20px",
     color:"white"
   },
 
   header:{
     display:"flex",
     justifyContent:"space-between",
-    marginBottom:60
+    alignItems:"flex-start",
+    flexWrap:"wrap",
+    gap:10,
+    marginBottom:30
   },
 
   titleArea:{
     textAlign:"center",
-    marginBottom:40
+    marginBottom:25
   },
 
   grid:{
     maxWidth:500,
     margin:"0 auto",
     display:"grid",
-    gap:20
+    gap:12,
+    gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))"
   },
 
   button:{
-    padding:18,
-    fontSize:16,
+    padding:16,
+    fontSize:15,
     borderRadius:10,
     border:"1px solid rgba(255,255,255,0.25)",
     backgroundColor:"rgba(255,255,255,0.12)",
     color:"white",
     cursor:"pointer",
     backdropFilter:"blur(6px)",
-    transition:"all 0.3s ease"
+    whiteSpace:"nowrap"
   },
 
-logoutButton:{
-  border:"1px solid rgba(255,0,0,0.6)",
-  backgroundColor:"rgba(192,57,43,0.45)",
-  padding:"10px 22px",  // altura 80% e largura levemente maior
-  minWidth:120          // aumenta largura sem estourar layout
-}
+  logoutButton:{
+    border:"1px solid rgba(255,0,0,0.6)",
+    backgroundColor:"rgba(192,57,43,0.45)",
+    padding:"10px 18px",
+    minWidth:100
+  }
 
 };
