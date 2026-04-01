@@ -630,196 +630,124 @@ onChange={(e)=>{
 const styles:{[key:string]:React.CSSProperties} = {
 
   container:{
-
     minHeight:"100vh",
-
     backgroundImage:
       "url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')",
-
     backgroundSize:"cover",
-
     backgroundPosition:"center"
-
   },
-
 
   overlay:{
-
     minHeight:"100vh",
-
     background:"rgba(0,0,0,0.75)",
-
-    padding:40,
-
+    padding:"20px",
     color:"white"
-
   },
-
 
   topBar:{
-
-    marginBottom:40,
-
+    marginBottom:25,
     display:"flex",
-
     justifyContent:"space-between",
-
-    alignItems:"center"
-
+    alignItems:"flex-start",
+    flexWrap:"wrap",
+    gap:10
   },
-
 
   contentRow:{
-
     display:"flex",
-
-    gap:40,
-
-    alignItems:"flex-start"
-
+    gap:20,
+    alignItems:"flex-start",
+    flexWrap:"wrap"
   },
-
 
   card:{
-
-    width:400,
-
+    width:"100%",
+    maxWidth:420,
     background:"rgba(255,255,255,0.08)",
-
     backdropFilter:"blur(20px)",
-
     borderRadius:20,
-
-    padding:30
-
+    padding:20
   },
-
 
   listaCard:{
-
     flex:1,
-
+    minWidth:280,
     background:"rgba(255,255,255,0.08)",
-
-    padding:25,
-
+    padding:20,
     borderRadius:20,
-
-    backdropFilter:"blur(20px)"
-
+    backdropFilter:"blur(20px)",
+    overflowX:"auto"
   },
-
 
   input:{
-
     width:"100%",
-
-    padding:14,
-
-    marginBottom:15,
-
+    padding:12,
+    marginBottom:12,
     borderRadius:10,
-
-    border:"none"
-
+    border:"none",
+    fontSize:16
   },
-
 
   button:{
-  padding:"8px 12px",
-  height:"32px",
-  fontSize:14,
-  borderRadius:8,
-  border:"1px solid rgba(255,255,255,0.35)",
-  backgroundColor:"rgba(255,255,255,0.15)",
-  color:"white",
-  cursor:"pointer",
-  boxShadow:"0 2px 4px rgba(0,0,0,0.3)"
-},
-
+    padding:"8px 12px",
+    height:"36px",
+    fontSize:14,
+    borderRadius:8,
+    border:"1px solid rgba(255,255,255,0.35)",
+    backgroundColor:"rgba(255,255,255,0.15)",
+    color:"white",
+    cursor:"pointer",
+    boxShadow:"0 2px 4px rgba(0,0,0,0.3)",
+    whiteSpace:"nowrap"
+  },
 
   table:{
-
     width:"100%",
-
     borderCollapse:"collapse",
-
-    marginTop:20,
-
+    marginTop:15,
     backgroundColor:"white",
-
-    color:"black"
-
+    color:"black",
+    minWidth:520
   },
-
 
   th:{
-
     border:"1px solid #ccc",
-
-    padding:"5px 8px",
-
+    padding:"6px 8px",
     textAlign:"center",
-
     backgroundColor:"#1e3c72",
-
     color:"white",
-
-    fontSize:"13px"
-
+    fontSize:"13px",
+    whiteSpace:"nowrap"
   },
-
 
   td:{
-
     border:"1px solid #ccc",
-
-    padding:"5px 8px",
-
+    padding:"6px 8px",
     textAlign:"center",
-
-    fontSize:"13px"
-
+    fontSize:"13px",
+    whiteSpace:"nowrap"
   },
-
 
   linhaUltima:{
-
     backgroundColor:"#a3d9a5"
-
   },
-
 
   linhaNormal:{},
 
-
   msgErro:{
-
     marginTop:15,
-
     padding:12,
-
     background:"rgba(231,76,60,0.2)",
-
     borderRadius:8,
-
     color:"#ff6b6b"
-
   },
 
-
   msgSucesso:{
-
     marginTop:15,
-
     padding:12,
-
     background:"rgba(46,204,113,0.2)",
-
     borderRadius:8,
-
     color:"#2ecc71"
-
   },
 
 };
