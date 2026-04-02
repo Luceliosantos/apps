@@ -1,35 +1,36 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../supabase"
+import { Pagina } from "../App"
 
-export default function Proorc2() {
+type Props = {
 
-  const [nota, setNota] = useState("")
-  const [busca, setBusca] = useState("")
+  setPagina: React.Dispatch<React.SetStateAction<Pagina>>
 
-  const [materiais, setMateriais] = useState<any[]>([])
-  const [selecionado, setSelecionado] = useState<any>(null)
+}
 
-  const [quantidade, setQuantidade] = useState(1)
+export default function Proorc2({ setPagina }:Props){
 
-  const [listaNota, setListaNota] = useState<any[]>([])
+  const [nota,setNota] = useState("")
 
-  useEffect(() => {
+  const [busca,setBusca] = useState("")
+  const [material,setMaterial] = useState<any>(null)
 
-    if (busca.length < 2) return
+  const [quantidade,setQuantidade] = useState("")
 
-    buscarMateriais()
+  const [aplicacao,setAplicacao] = useState("N")
 
-  }, [busca])
+  const [lista,setLista] = useState<any[]>([])
+  const [explodido,setExplodido] = useState<any[]>([])
 
-  useEffect(() => {
+  useEffect(()=>{
 
-    if (!nota) return
+    if(!nota) return
 
-    carregarNota()
+    carregar()
 
-  }, [nota])
+  },[nota])
 
-  async function buscarMateriais() {
+  async function buscar(){
 
     const { data } = await supabase
 
@@ -37,54 +38,15 @@ export default function Proorc2() {
 
       .select("*")
 
-      .or(
+      .eq("codigo", busca.toUpperCase())
 
-        `codigo.ilike.%${busca}%,descricao.ilike.%${busca}%`
+      .single()
 
-      )
-
-      .limit(20)
-
-    setMateriais(data || [])
+    setMaterial(data)
 
   }
 
-  async function carregarNota() {
-
-    const { data } = await supabase
-
-      .from("db_proorc_nota_materiais")
-
-      .select(`
-
-        id,
-        quantidade,
-        tipo,
-
-        db_proorc_materiais(
-
-          codigo,
-          descricao,
-          unidade
-
-        )
-
-      `)
-
-      .eq("nota", nota)
-
-    setListaNota(data || [])
-
-  }
-
-  async function adicionarMaterial() {
-
-    if (!nota) {
-
-      alert("informe a nota")
-      return
-
-    }
+  async function adicionar(){
 
     await supabase.rpc(
 
@@ -93,23 +55,22 @@ export default function Proorc2() {
       {
 
         p_nota: nota,
-        p_codigo: selecionado.codigo,
-        p_quantidade: quantidade,
-        p_tipo: selecionado.tipo
+        p_codigo: material.codigo,
+        p_quantidade: Number(quantidade),
+        p_tipo: material.tipo,
+        p_aplicacao: aplicacao
 
       }
 
     )
 
-    setSelecionado(null)
-    setBusca("")
-    setQuantidade(1)
+    limpar()
 
-    carregarNota()
+    carregar()
 
   }
 
-  async function excluir(id:string) {
+  async function excluir(id:string){
 
     await supabase
 
@@ -119,27 +80,61 @@ export default function Proorc2() {
 
       .eq("id", id)
 
-    carregarNota()
+    carregar()
 
   }
 
-  return (
+  function limpar(){
 
-    <div className="page">
+    setBusca("")
+    setMaterial(null)
 
-      <h2>
+    setQuantidade("")
 
-        PROORC 2.0
+    setAplicacao("N")
 
-      </h2>
+  }
 
-      <div className="card">
+  async function carregar(){
 
-        <label>
+    const { data } = await supabase
 
-          nota
+      .from("vw_proorc_nota")
 
-        </label>
+      .select("*")
+
+      .eq("nota",nota)
+
+    setLista(data || [])
+
+    const { data:exp } = await supabase
+
+      .from("vw_proorc_nota_itens")
+
+      .select("*")
+
+      .eq("nota",nota)
+
+    setExplodido(exp || [])
+
+  }
+
+  const podeGravar =
+
+    nota &&
+    material &&
+    quantidade &&
+    aplicacao
+
+  return(
+
+    <div style={styles.container}>
+
+      <h2>PROORC 2.0</h2>
+
+      <div style={styles.card}>
+
+        <label>nota</label>
 
         <input
 
@@ -151,131 +146,121 @@ export default function Proorc2() {
 
       </div>
 
-      <div className="card">
+      <div style={styles.card}>
 
-        <label>
+        <label>material</label>
 
-          buscar material
-
-        </label>
-
-        <input
-
-          value={busca}
-
-          onChange={(e)=>setBusca(e.target.value)}
-
-        />
-
-        <div className="lista">
-
-          {materiais.map(m => (
-
-            <div
-
-              key={m.codigo}
-
-              onClick={()=>setSelecionado(m)}
-
-              className="linha"
-
-            >
-
-              {m.codigo}
-
-              {" - "}
-
-              {m.descricao}
-
-              <span>
-
-                {m.tipo}
-
-              </span>
-
-            </div>
-
-          ))}
-
-        </div>
-
-      </div>
-
-      {selecionado && (
-
-        <div className="card">
-
-          <div>
-
-            {selecionado.codigo}
-
-            {" - "}
-
-            {selecionado.descricao}
-
-          </div>
+        <div style={{display:"flex",gap:8}}>
 
           <input
 
-            type="number"
+            value={busca}
 
-            value={quantidade}
-
-            onChange={(e)=>setQuantidade(Number(e.target.value))}
+            onChange={(e)=>setBusca(e.target.value)}
 
           />
 
-          <button
+          <button onClick={buscar}>
 
-            onClick={adicionarMaterial}
-
-          >
-
-            adicionar
+            buscar
 
           </button>
 
         </div>
 
-      )}
+        {material && (
 
-      <div className="card">
+          <div>
 
-        <h3>
+            {material.codigo}
 
-          materiais da nota
+            {" - "}
 
-        </h3>
+            {material.descricao}
 
-        {listaNota.map(item => (
+            {" ("}
 
-          <div
+            {material.tipo}
 
-            key={item.id}
+            {")"}
 
-            className="linha"
+          </div>
 
-          >
+        )}
 
-            <div>
+      </div>
 
-              {item.db_proorc_materiais.codigo}
+      <div style={styles.card}>
 
-              {" - "}
+        <label>quantidade</label>
 
-              {item.db_proorc_materiais.descricao}
+        <input
 
-            </div>
+          type="number"
 
-            <div>
+          value={quantidade}
 
-              {item.quantidade}
+          onChange={(e)=>setQuantidade(e.target.value)}
 
-            </div>
+        />
+
+        <label>aplicação</label>
+
+        <select
+
+          value={aplicacao}
+
+          onChange={(e)=>setAplicacao(e.target.value)}
+
+        >
+
+          <option value="N">N</option>
+
+          <option value="U">U</option>
+
+          <option value="S">S</option>
+
+        </select>
+
+        <button
+
+          disabled={!podeGravar}
+
+          onClick={adicionar}
+
+        >
+
+          adicionar
+
+        </button>
+
+      </div>
+
+      <div style={styles.card}>
+
+        <h3>registros cadastrados</h3>
+
+        {lista.map(x=>(
+
+          <div key={x.id} style={styles.row}>
+
+            {x.codigo}
+
+            {" - "}
+
+            {x.descricao}
+
+            {" | qtd:"}
+
+            {x.quantidade}
+
+            {" | "}
+
+            {x.aplicacao}
 
             <button
 
-              onClick={()=>excluir(item.id)}
+              onClick={()=>excluir(x.id)}
 
             >
 
@@ -289,8 +274,96 @@ export default function Proorc2() {
 
       </div>
 
+      <div style={styles.card}>
+
+        <h3>itens consolidados</h3>
+
+        {explodido.map(x=>(
+
+          <div key={x.codigo} style={styles.row}>
+
+            {x.codigo}
+
+            {" - "}
+
+            {x.descricao}
+
+            {" | total:"}
+
+            {x.quantidade}
+
+          </div>
+
+        ))}
+
+      </div>
+
+      <button
+
+        style={styles.voltar}
+
+        onClick={()=>setPagina("menu")}
+
+      >
+
+        voltar
+
+      </button>
+
     </div>
 
   )
+
+}
+
+const styles:any = {
+
+  container:{
+
+    padding:20,
+
+    maxWidth:900,
+
+    margin:"0 auto"
+
+  },
+
+  card:{
+
+    border:"1px solid #ddd",
+
+    borderRadius:8,
+
+    padding:12,
+
+    marginBottom:12,
+
+    background:"#fff"
+
+  },
+
+  row:{
+
+    display:"flex",
+
+    justifyContent:"space-between",
+
+    padding:4,
+
+    borderBottom:"1px solid #eee"
+
+  },
+
+  voltar:{
+
+    padding:10,
+
+    borderRadius:6,
+
+    background:"#1e3c72",
+
+    color:"white"
+
+  }
 
 }
