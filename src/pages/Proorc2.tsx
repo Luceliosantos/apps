@@ -15,6 +15,8 @@ export default function Proorc2({ setPagina }:Props){
   const [busca,setBusca] = useState("")
   const [material,setMaterial] = useState<any>(null)
 
+  const [estrutura,setEstrutura] = useState<any[]>([])
+
   const [quantidade,setQuantidade] = useState("")
 
   const [aplicacao,setAplicacao] = useState("N")
@@ -22,62 +24,73 @@ export default function Proorc2({ setPagina }:Props){
   const [lista,setLista] = useState<any[]>([])
   const [explodido,setExplodido] = useState<any[]>([])
 
+
   useEffect(()=>{
 
-  if(busca.length < 2){
+    if(!nota) return
 
-    setMaterial(null)
-    setEstrutura([])
+    carregar()
 
-    return
-  }
-
-  buscarMaterial()
-
-},[busca])
+  },[nota])
 
 
-const [estrutura,setEstrutura] = useState<any[]>([])
+  useEffect(()=>{
+
+    if(busca.length < 2){
+
+      setMaterial(null)
+      setEstrutura([])
+
+      return
+
+    }
+
+    buscarMaterial()
+
+  },[busca])
 
 
-async function buscarMaterial(){
+  async function buscarMaterial(){
 
-  const { data } = await supabase
+    const { data } = await supabase
 
-    .from("vw_proorc_materiais")
-
-    .select("*")
-
-    .eq("codigo", busca.toUpperCase())
-
-    .maybeSingle()
-
-  setMaterial(data || null)
-
-
-  if(data?.tipo === "KIT"){
-
-    const { data:itens } = await supabase
-
-      .from("vw_proorc_estrutura")
+      .from("vw_proorc_materiais")
 
       .select("*")
 
-      .eq("codigo_kit", data.codigo)
+      .eq("codigo", busca.toUpperCase())
 
-    setEstrutura(itens || [])
+      .maybeSingle()
+
+    setMaterial(data || null)
+
+
+    if(data?.tipo === "KIT"){
+
+      const { data:itens } = await supabase
+
+        .from("vw_proorc_estrutura")
+
+        .select("*")
+
+        .eq("codigo_kit", data.codigo)
+
+      setEstrutura(itens || [])
+
+    }
+
+    else{
+
+      setEstrutura([])
+
+    }
 
   }
 
-  else{
-
-    setEstrutura([])
-
-  }
-
-}
 
   async function adicionar(){
+
+    if(!material) return
 
     await supabase.rpc(
 
@@ -95,11 +108,14 @@ async function buscarMaterial(){
 
     )
 
-    limpar()
+    setBusca("")
+    setMaterial(null)
+    setQuantidade("")
 
     carregar()
 
   }
+
 
   async function excluir(id:string){
 
@@ -115,16 +131,6 @@ async function buscarMaterial(){
 
   }
 
-  function limpar(){
-
-    setBusca("")
-    setMaterial(null)
-
-    setQuantidade("")
-
-    setAplicacao("N")
-
-  }
 
   async function carregar(){
 
@@ -136,7 +142,10 @@ async function buscarMaterial(){
 
       .eq("nota",nota)
 
+      .order("created_at",{ascending:false})
+
     setLista(data || [])
+
 
     const { data:exp } = await supabase
 
@@ -146,9 +155,12 @@ async function buscarMaterial(){
 
       .eq("nota",nota)
 
+      .order("codigo")
+
     setExplodido(exp || [])
 
   }
+
 
   const podeGravar =
 
@@ -157,17 +169,21 @@ async function buscarMaterial(){
     quantidade &&
     aplicacao
 
+
   return(
 
     <div style={styles.container}>
 
       <h2>PROORC 2.0</h2>
 
+
       <div style={styles.card}>
 
         <label>nota</label>
 
         <input
+
+          style={styles.input}
 
           value={nota}
 
@@ -177,33 +193,33 @@ async function buscarMaterial(){
 
       </div>
 
+
       <div style={styles.card}>
 
-        <label>material</label>
+        <label>material / kit</label>
 
-        <div style={{display:"flex",gap:8}}>
+        <input
 
-          <input
+          style={styles.input}
 
-            value={busca}
+          placeholder="digite o código"
 
-            onChange={(e)=>setBusca(e.target.value)}
+          value={busca}
 
-          />
+          onChange={(e)=>setBusca(e.target.value)}
 
-          <button onClick={buscar}>
+        />
 
-            buscar
-
-          </button>
-
-        </div>
 
         {material && (
 
-          <div>
+          <div style={styles.resultado}>
 
-            {material.codigo}
+            <strong>
+
+              {material.codigo}
+
+            </strong>
 
             {" - "}
 
@@ -221,11 +237,47 @@ async function buscarMaterial(){
 
       </div>
 
+
+      {estrutura.length > 0 && (
+
+        <div style={styles.card}>
+
+          <strong>
+
+            itens do kit
+
+          </strong>
+
+          {estrutura.map(i => (
+
+            <div key={i.codigo_item} style={styles.row}>
+
+              {i.codigo_item}
+
+              {" - "}
+
+              {i.item}
+
+              {" | qtd:"}
+
+              {i.quantidade}
+
+            </div>
+
+          ))}
+
+        </div>
+
+      )}
+
+
       <div style={styles.card}>
 
         <label>quantidade</label>
 
         <input
+
+          style={styles.input}
 
           type="number"
 
@@ -235,9 +287,12 @@ async function buscarMaterial(){
 
         />
 
+
         <label>aplicação</label>
 
         <select
+
+          style={styles.input}
 
           value={aplicacao}
 
@@ -253,7 +308,16 @@ async function buscarMaterial(){
 
         </select>
 
+
         <button
+
+          style={{
+
+            ...styles.botao,
+
+            opacity: podeGravar ? 1 : 0.5
+
+          }}
 
           disabled={!podeGravar}
 
@@ -267,6 +331,7 @@ async function buscarMaterial(){
 
       </div>
 
+
       <div style={styles.card}>
 
         <h3>registros cadastrados</h3>
@@ -275,21 +340,29 @@ async function buscarMaterial(){
 
           <div key={x.id} style={styles.row}>
 
-            {x.codigo}
+            <div>
 
-            {" - "}
+              {x.codigo}
 
-            {x.descricao}
+              {" - "}
 
-            {" | qtd:"}
+              {x.descricao}
 
-            {x.quantidade}
+            </div>
 
-            {" | "}
+            <div>
 
-            {x.aplicacao}
+              qtd: {x.quantidade}
+
+              {" | "}
+
+              {x.aplicacao}
+
+            </div>
 
             <button
+
+              style={styles.excluir}
 
               onClick={()=>excluir(x.id)}
 
@@ -305,6 +378,7 @@ async function buscarMaterial(){
 
       </div>
 
+
       <div style={styles.card}>
 
         <h3>itens consolidados</h3>
@@ -313,21 +387,28 @@ async function buscarMaterial(){
 
           <div key={x.codigo} style={styles.row}>
 
-            {x.codigo}
+            <div>
 
-            {" - "}
+              {x.codigo}
 
-            {x.descricao}
+              {" - "}
 
-            {" | total:"}
+              {x.descricao}
 
-            {x.quantidade}
+            </div>
+
+            <strong>
+
+              {x.quantidade}
+
+            </strong>
 
           </div>
 
         ))}
 
       </div>
+
 
       <button
 
@@ -346,6 +427,7 @@ async function buscarMaterial(){
   )
 
 }
+
 
 const styles:any = {
 
@@ -373,15 +455,77 @@ const styles:any = {
 
   },
 
+  input:{
+
+    width:"100%",
+
+    padding:8,
+
+    marginTop:4,
+
+    marginBottom:10,
+
+    borderRadius:6,
+
+    border:"1px solid #ccc"
+
+  },
+
+  resultado:{
+
+    padding:6,
+
+    background:"#f5f5f5",
+
+    borderRadius:6
+
+  },
+
   row:{
 
     display:"flex",
 
     justifyContent:"space-between",
 
-    padding:4,
+    padding:6,
 
-    borderBottom:"1px solid #eee"
+    borderBottom:"1px solid #eee",
+
+    fontSize:14
+
+  },
+
+  botao:{
+
+    padding:10,
+
+    borderRadius:6,
+
+    border:"none",
+
+    background:"#1e3c72",
+
+    color:"white",
+
+    cursor:"pointer",
+
+    width:"100%"
+
+  },
+
+  excluir:{
+
+    border:"none",
+
+    background:"#c0392b",
+
+    color:"white",
+
+    padding:"4px 8px",
+
+    borderRadius:4,
+
+    cursor:"pointer"
 
   },
 
@@ -391,9 +535,13 @@ const styles:any = {
 
     borderRadius:6,
 
-    background:"#1e3c72",
+    background:"#555",
 
-    color:"white"
+    color:"white",
+
+    border:"none",
+
+    cursor:"pointer"
 
   }
 
