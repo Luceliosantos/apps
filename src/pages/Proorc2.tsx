@@ -89,28 +89,35 @@ export default function Proorc2({ setPagina }:Props){
 
   async function carregarNota(){
 
-    const { data } = await supabase
-
-      .from("vw_proorc_cadastro")
-
-      .select("*")
-
-      .eq("nota",nota)
-
-    setCadastro(data || [])
+  if(!nota) return
 
 
-    const { data:exp } = await supabase
+  const { data:cad } = await supabase
 
-      .from("vw_proorc_cadastro_itens")
+    .from("vw_proorc_cadastro")
 
-      .select("*")
+    .select("*")
 
-      .eq("nota",nota)
+    .eq("nota",nota)
 
-    setExplodido(exp || [])
+    .order("created_at",{ascending:true})
 
-  }
+  setCadastro(cad || [])
+
+
+  const { data:exp } = await supabase
+
+    .from("vw_proorc_cadastro_itens")
+
+    .select("*")
+
+    .eq("nota",nota)
+
+    .order("codigo")
+
+  setExplodido(exp || [])
+
+}
 
 
   async function adicionar(){
