@@ -22,7 +22,7 @@ export default function Proorc2({ setPagina }:Props){
   const [explodido,setExplodido] = useState<any[]>([])
 
   const [editando,setEditando] = useState<string | null>(null)
-
+  const [infoNota,setInfoNota] = useState<any>(null)
 
   useEffect(()=>{
 
@@ -88,32 +88,43 @@ export default function Proorc2({ setPagina }:Props){
 
   async function carregarNota(){
 
-    const { data } = await supabase
+  const { data } = await supabase
 
-      .from("vw_proorc_cadastro")
+    .from("vw_proorc_cadastro")
 
-      .select("*")
+    .select("*")
 
-      .eq("nota",nota)
+    .eq("nota",nota)
 
-      .order("created_at")
+    .order("created_at")
 
-    setCadastro(data || [])
+  setCadastro(data || [])
 
 
-    const { data:exp } = await supabase
+  const { data:exp } = await supabase
 
-      .from("vw_proorc_cadastro_itens")
+    .from("vw_proorc_cadastro_itens")
 
-      .select("*")
+    .select("*")
 
-      .eq("nota",nota)
+    .eq("nota",nota)
 
-      .order("codigo")
+  setExplodido(exp || [])
 
-    setExplodido(exp || [])
 
-  }
+  const { data:info } = await supabase
+
+    .from("vw_proorc_nota_info")
+
+    .select("*")
+
+    .eq("nota",nota)
+
+    .maybeSingle()
+
+  setInfoNota(info)
+
+}
 
 
   async function salvar(){
