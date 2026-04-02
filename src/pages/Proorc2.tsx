@@ -24,27 +24,58 @@ export default function Proorc2({ setPagina }:Props){
 
   useEffect(()=>{
 
-    if(!nota) return
+  if(busca.length < 2){
 
-    carregar()
+    setMaterial(null)
+    setEstrutura([])
 
-  },[nota])
+    return
+  }
 
-  async function buscar(){
+  buscarMaterial()
 
-    const { data } = await supabase
+},[busca])
 
-      .from("vw_proorc_materiais")
+
+const [estrutura,setEstrutura] = useState<any[]>([])
+
+
+async function buscarMaterial(){
+
+  const { data } = await supabase
+
+    .from("vw_proorc_materiais")
+
+    .select("*")
+
+    .eq("codigo", busca.toUpperCase())
+
+    .maybeSingle()
+
+  setMaterial(data || null)
+
+
+  if(data?.tipo === "KIT"){
+
+    const { data:itens } = await supabase
+
+      .from("vw_proorc_estrutura")
 
       .select("*")
 
-      .eq("codigo", busca.toUpperCase())
+      .eq("codigo_kit", data.codigo)
 
-      .single()
-
-    setMaterial(data)
+    setEstrutura(itens || [])
 
   }
+
+  else{
+
+    setEstrutura([])
+
+  }
+
+}
 
   async function adicionar(){
 
