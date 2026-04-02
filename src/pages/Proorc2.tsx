@@ -122,28 +122,41 @@ export default function Proorc2({ setPagina }:Props){
 
   async function adicionar(){
 
-    await supabase.rpc(
+  if(!material){
 
-      "fn_proorc_cadastrar",
-
-      {
-
-        p_nota: nota,
-        p_codigo: material.codigo,
-        p_quantidade: Number(quantidade),
-        p_aplicacao: aplicacao
-
-      }
-
-    )
-
-    setCodigo("")
-    setQuantidade("")
-
-    carregarNota()
+    alert("material não encontrado")
+    return
 
   }
 
+  const { error } = await supabase.rpc(
+
+    "fn_proorc_cadastrar",
+
+    {
+
+      p_nota: nota,
+      p_codigo: material.codigo,
+      p_quantidade: Number(quantidade),
+      p_aplicacao: aplicacao
+
+    }
+
+  )
+
+  if(error){
+
+    alert(error.message)
+    return
+
+  }
+
+  setCodigo("")
+  setQuantidade("")
+
+  carregarNota()
+
+}
 
   async function excluir(id:string){
 
