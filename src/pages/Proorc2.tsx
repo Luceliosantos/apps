@@ -6,12 +6,14 @@ type Props = {
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>
 }
 
-export default function Proorc2({ setPagina }:Props){
+export default function Proorc2({ setPagina }: Props) {
 
   const [nota,setNota] = useState("")
 
   const [codigo,setCodigo] = useState("")
   const [material,setMaterial] = useState<any>(null)
+
+  const [estrutura,setEstrutura] = useState<any[]>([])
 
   const [quantidade,setQuantidade] = useState("")
   const [aplicacao,setAplicacao] = useState("N")
@@ -38,6 +40,7 @@ export default function Proorc2({ setPagina }:Props){
     if(codigo.length < 2){
 
       setMaterial(null)
+      setEstrutura([])
       return
 
     }
@@ -60,6 +63,27 @@ export default function Proorc2({ setPagina }:Props){
       .maybeSingle()
 
     setMaterial(data)
+
+
+    if(data?.tipo === "KIT"){
+
+      const { data:itens } = await supabase
+
+        .from("vw_proorc_estrutura")
+
+        .select("*")
+
+        .eq("codigo_kit", data.codigo)
+
+      setEstrutura(itens || [])
+
+    }
+
+    else{
+
+      setEstrutura([])
+
+    }
 
   }
 
@@ -120,11 +144,9 @@ export default function Proorc2({ setPagina }:Props){
         .update({
 
           quantidade:Number(quantidade),
-
           aplicacao,
 
           updated_by:user.data.user?.id,
-
           updated_at:new Date()
 
         })
@@ -164,19 +186,19 @@ export default function Proorc2({ setPagina }:Props){
   }
 
 
-async function excluir(id:string){
+  async function excluir(id:string){
 
-  await supabase
+    await supabase
 
-    .from("db_proorc_cadastro")
+      .from("db_proorc_cadastro")
 
-    .delete()
+      .delete()
 
-    .eq("id",id)
+      .eq("id",id)
 
-  carregarNota()
+    carregarNota()
 
-}
+  }
 
 
   function editar(linha:any){
@@ -202,7 +224,7 @@ async function excluir(id:string){
   const podeSalvar =
 
     nota &&
-    codigo &&
+    material &&
     quantidade &&
     aplicacao
 
@@ -251,11 +273,7 @@ async function excluir(id:string){
 
           <div style={styles.info}>
 
-            criado por:
-
-            {" "}
-
-            {infoNota.criado_por}
+            criado por: {infoNota.criado_por}
 
             {" | "}
 
@@ -263,11 +281,7 @@ async function excluir(id:string){
 
             <br/>
 
-            ultima alteração:
-
-            {" "}
-
-            {infoNota.atualizado_por}
+            ultima alteração: {infoNota.atualizado_por}
 
             {" | "}
 
@@ -342,18 +356,77 @@ async function excluir(id:string){
         </div>
 
 
-        <div style={styles.descricaoMaterial}>
+        {material && (
 
-          {material?.descricao}
+          <div style={styles.descricaoMaterial}>
 
-        </div>
+            {material.descricao}
+
+            {" ("}
+
+            {material.tipo}
+
+            {")"}
+
+          </div>
+
+        )}
 
 
-        <h3 style={styles.titulo}>
+        {estrutura.length > 0 && (
+
+          <div>
+
+            <div style={styles.titulo}>
+
+              estrutura do kit
+
+            </div>
+
+            <table style={styles.tabela}>
+
+              <thead>
+
+                <tr>
+
+                  <th>codigo</th>
+                  <th>descricao</th>
+                  <th>qtd</th>
+
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+                {estrutura.map(i => (
+
+                  <tr key={i.codigo_item}>
+
+                    <td>{i.codigo_item}</td>
+
+                    <td>{i.item}</td>
+
+                    <td>{i.quantidade}</td>
+
+                  </tr>
+
+                ))}
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        )}
+
+
+        <div className="titulo">
 
           registros cadastrados
 
-        </h3>
+        </div>
 
 
         <table style={styles.tabela}>
@@ -388,26 +461,14 @@ async function excluir(id:string){
 
                 <td>
 
-                  <button
-
-                    style={styles.botaoEditar}
-
-                    onClick={()=>editar(x)}
-
-                  >
+                  <button onClick={()=>editar(x)}>
 
                     editar
 
                   </button>
 
 
-                  <button
-
-                    style={styles.botaoExcluir}
-
-                    onClick={()=>excluir(x.id)}
-
-                  >
+                  <button onClick={()=>excluir(x.id)}>
 
                     excluir
 
@@ -424,11 +485,11 @@ async function excluir(id:string){
         </table>
 
 
-        <h3 style={styles.titulo}>
+        <div style={styles.titulo}>
 
           itens consolidados
 
-        </h3>
+        </div>
 
 
         <table style={styles.tabela}>
@@ -541,9 +602,7 @@ info:{
 
 fontSize:12,
 
-marginBottom:10,
-
-opacity:0.9
+marginBottom:10
 
 },
 
@@ -559,25 +618,19 @@ marginBottom:6
 
 material:{
 
-width:220,
-
-padding:4
+width:220
 
 },
 
 qtd:{
 
-width:80,
-
-padding:4
+width:80
 
 },
 
 aplicacao:{
 
-width:80,
-
-padding:4
+width:80
 
 },
 
@@ -591,9 +644,7 @@ color:"white",
 
 border:"none",
 
-borderRadius:6,
-
-cursor:"pointer"
+borderRadius:6
 
 },
 
@@ -601,15 +652,13 @@ descricaoMaterial:{
 
 fontSize:12,
 
-marginBottom:10,
-
-opacity:0.9
+marginBottom:10
 
 },
 
 titulo:{
 
-marginTop:16,
+marginTop:15,
 
 marginBottom:4
 
@@ -626,38 +675,6 @@ color:"black",
 borderCollapse:"collapse",
 
 fontSize:12
-
-},
-
-th:{
-
-padding:"3px 6px",
-
-borderBottom:"1px solid #ccc",
-
-background:"#f1f1f1"
-
-},
-
-td:{
-
-padding:"2px 6px",
-
-borderBottom:"1px solid #eee"
-
-},
-
-botaoEditar:{
-
-marginRight:4,
-
-fontSize:11
-
-},
-
-botaoExcluir:{
-
-fontSize:11
 
 }
 
