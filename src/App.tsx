@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import Usuarios from "./pages/Usuarios";
 import CorrigirCadastro from "./pages/CorrigirCadastro";
 import AcompGeo from "./pages/AcompGeo";
+import Proorc2 from "./pages/Proorc2"
 
 type Usuario = {
   id: string;
