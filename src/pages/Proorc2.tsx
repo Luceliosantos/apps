@@ -9,10 +9,12 @@ type Props = {
 export default function Proorc2({ setPagina }:Props){
 
   const [nota,setNota] = useState("")
+  const [notasSug,setNotasSug] = useState<any[]>([])
 
   const [codigo,setCodigo] = useState("")
-  const [material,setMaterial] = useState<any>(null)
+  const [materiaisSug,setMateriaisSug] = useState<any[]>([])
 
+  const [material,setMaterial] = useState<any>(null)
   const [estrutura,setEstrutura] = useState<any[]>([])
 
   const [quantidade,setQuantidade] = useState("")
@@ -23,6 +25,18 @@ export default function Proorc2({ setPagina }:Props){
 
   const [editando,setEditando] = useState<string | null>(null)
 
+  useEffect(()=>{
+
+    if(nota.length < 2){
+
+      setNotasSug([])
+      return
+
+    }
+
+    buscarNotas()
+
+  },[nota])
 
   useEffect(()=>{
 
@@ -32,23 +46,40 @@ export default function Proorc2({ setPagina }:Props){
 
   },[nota])
 
-
   useEffect(()=>{
 
     if(codigo.length < 2){
 
       setMaterial(null)
       setEstrutura([])
+      setMateriaisSug([])
       return
 
     }
 
-    buscarMaterial()
+    buscarMateriais()
 
   },[codigo])
 
 
-  async function buscarMaterial(){
+  async function buscarNotas(){
+
+    const { data } = await supabase
+
+      .from("vw_proorc_notas")
+
+      .select("nota")
+
+      .ilike("nota",`${nota}%`)
+
+      .limit(10)
+
+    setNotasSug(data || [])
+
+  }
+
+
+  async function buscarMateriais(){
 
     const { data } = await supabase
 
@@ -56,12 +87,31 @@ export default function Proorc2({ setPagina }:Props){
 
       .select("*")
 
-      .eq("codigo", codigo.toUpperCase())
+      .ilike("codigo",`${codigo}%`)
+
+      .limit(10)
+
+    setMateriaisSug(data || [])
+
+  }
+
+
+  async function selecionarMaterial(cod:string){
+
+    setCodigo(cod)
+    setMateriaisSug([])
+
+    const { data } = await supabase
+
+      .from("vw_proorc_materiais")
+
+      .select("*")
+
+      .eq("codigo", cod)
 
       .maybeSingle()
 
     setMaterial(data)
-
 
     if(data?.tipo === "KIT"){
 
@@ -99,7 +149,6 @@ export default function Proorc2({ setPagina }:Props){
       .order("created_at")
 
     setCadastro(data || [])
-
 
     const { data:exp } = await supabase
 
@@ -191,6 +240,17 @@ export default function Proorc2({ setPagina }:Props){
   }
 
 
+  function formatarData(data?:string){
+
+    if(!data) return ""
+
+    return new Date(data)
+
+      .toLocaleString("pt-BR")
+
+  }
+
+
   const podeSalvar =
 
     nota &&
@@ -207,11 +267,7 @@ export default function Proorc2({ setPagina }:Props){
 
         <div style={styles.header}>
 
-          <h2>
-
-            PROORC 2.0
-
-          </h2>
+          <h2>PROORC 2.0</h2>
 
           <button
 
@@ -242,6 +298,37 @@ export default function Proorc2({ setPagina }:Props){
 
           />
 
+          {notasSug.length>0 &&(
+
+            <div style={styles.sugestoes}>
+
+              {notasSug.map(n=>(
+
+                <div
+
+                  key={n.nota}
+
+                  style={styles.itemSug}
+
+                  onClick={()=>{
+
+                    setNota(n.nota)
+                    setNotasSug([])
+
+                  }}
+
+                >
+
+                  {n.nota}
+
+                </div>
+
+              ))}
+
+            </div>
+
+          )}
+
         </div>
 
 
@@ -251,13 +338,39 @@ export default function Proorc2({ setPagina }:Props){
 
             style={styles.material}
 
-            placeholder="material"
+            placeholder="material ou kit"
 
             value={codigo}
 
             onChange={(e)=>setCodigo(e.target.value)}
 
           />
+
+          {materiaisSug.length>0 &&(
+
+            <div style={styles.sugestoes}>
+
+              {materiaisSug.map(m=>(
+
+                <div
+
+                  key={m.codigo}
+
+                  style={styles.itemSug}
+
+                  onClick={()=>selecionarMaterial(m.codigo)}
+
+                >
+
+                  {m.codigo} - {m.descricao}
+
+                </div>
+
+              ))}
+
+            </div>
+
+          )}
 
 
           <input
@@ -313,13 +426,7 @@ export default function Proorc2({ setPagina }:Props){
 
           <div style={styles.materialInfo}>
 
-            {material.descricao}
-
-            {" ("}
-
-            {material.tipo}
-
-            {")"}
+            {material.descricao} ({material.tipo})
 
           </div>
 
@@ -330,13 +437,9 @@ export default function Proorc2({ setPagina }:Props){
 
           <div style={styles.card}>
 
-            <strong>
+            <strong>estrutura do kit</strong>
 
-              estrutura do kit
-
-            </strong>
-
-            <table style={styles.tabela}>
+            <table style={styles.tabelaPadrao}>
 
               <thead>
 
@@ -377,13 +480,9 @@ export default function Proorc2({ setPagina }:Props){
 
         <div style={styles.card}>
 
-          <strong>
+          <strong>registros cadastrados</strong>
 
-            registros cadastrados
-
-          </strong>
-
-          <table style={styles.tabela}>
+          <table style={styles.tabelaPadrao}>
 
             <thead>
 
@@ -393,6 +492,13 @@ export default function Proorc2({ setPagina }:Props){
                 <th>descricao</th>
                 <th>qtd</th>
                 <th>apl</th>
+
+                <th>criado por</th>
+                <th>data criação</th>
+
+                <th>editado por</th>
+                <th>data edição</th>
+
                 <th></th>
 
               </tr>
@@ -413,15 +519,35 @@ export default function Proorc2({ setPagina }:Props){
 
                   <td>{x.aplicacao}</td>
 
+                  <td>{x.criado_por}</td>
+
+                  <td>{formatarData(x.created_at)}</td>
+
+                  <td>{x.editado_por}</td>
+
+                  <td>{formatarData(x.updated_at)}</td>
+
                   <td>
 
-                    <button onClick={()=>editar(x)}>
+                    <button
+
+                      style={styles.btnGrid}
+
+                      onClick={()=>editar(x)}
+
+                    >
 
                       editar
 
                     </button>
 
-                    <button onClick={()=>excluir(x.id)}>
+                    <button
+
+                      style={styles.btnExcluir}
+
+                      onClick={()=>excluir(x.id)}
+
+                    >
 
                       excluir
 
@@ -442,13 +568,9 @@ export default function Proorc2({ setPagina }:Props){
 
         <div style={styles.card}>
 
-          <strong>
+          <strong>itens consolidados</strong>
 
-            itens consolidados
-
-          </strong>
-
-          <table style={styles.tabela}>
+          <table style={styles.tabelaPadrao}>
 
             <thead>
 
@@ -554,7 +676,7 @@ const styles:any = {
 
     color:"black",
 
-    padding:10,
+    padding:12,
 
     borderRadius:8,
 
@@ -568,7 +690,9 @@ const styles:any = {
 
     gap:6,
 
-    marginBottom:10
+    marginBottom:10,
+
+    alignItems:"center"
 
   },
 
@@ -580,27 +704,15 @@ const styles:any = {
 
   },
 
-  material:{
+  material:{ width:"25%" },
 
-    width:"20%"
+  qtd:{ width:"8%" },
 
-  },
-
-  qtd:{
-
-    width:"10%"
-
-  },
-
-  aplicacao:{
-
-    width:"10%"
-
-  },
+  aplicacao:{ width:"8%" },
 
   salvar:{
 
-    width:"10%",
+    padding:"6px 10px",
 
     background:"#1e3c72",
 
@@ -608,23 +720,77 @@ const styles:any = {
 
     border:"none",
 
-    borderRadius:6
+    borderRadius:6,
+
+    cursor:"pointer"
 
   },
 
-  materialInfo:{
+  sugestoes:{
 
-    marginBottom:8
+    background:"white",
+
+    border:"1px solid #ccc",
+
+    position:"absolute",
+
+    zIndex:999,
+
+    width:"300px"
 
   },
 
-  tabela:{
+  itemSug:{
+
+    padding:6,
+
+    cursor:"pointer",
+
+    borderBottom:"1px solid #eee"
+
+  },
+
+  tabelaPadrao:{
 
     width:"100%",
 
     borderCollapse:"collapse",
 
     fontSize:13
+
+  },
+
+  btnGrid:{
+
+    background:"#34495e",
+
+    color:"white",
+
+    border:"none",
+
+    padding:"4px 8px",
+
+    borderRadius:4,
+
+    marginRight:4,
+
+    cursor:"pointer"
+
+  },
+
+  btnExcluir:{
+
+    background:"#c0392b",
+
+    color:"white",
+
+    border:"none",
+
+    padding:"4px 8px",
+
+    borderRadius:4,
+
+    cursor:"pointer"
 
   }
 
