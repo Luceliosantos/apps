@@ -164,21 +164,19 @@ export default function Proorc2({ setPagina }:Props){
   }
 
 
-  async function excluir(id:string){
+async function excluir(id:string){
 
-    const user = await supabase.auth.getUser()
+  await supabase
 
-    await supabase
+    .from("db_proorc_cadastro")
 
-      .from("db_proorc_cadastro")
+    .delete()
 
-      .delete()
+    .eq("id",id)
 
-      .eq("id",id)
+  carregarNota()
 
-    carregarNota()
-
-  }
+}
 
 
   function editar(linha:any){
