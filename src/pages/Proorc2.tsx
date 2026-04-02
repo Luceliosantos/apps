@@ -3,9 +3,7 @@ import { supabase } from "../supabase"
 import { Pagina } from "../App"
 
 type Props = {
-
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>
-
 }
 
 export default function Proorc2({ setPagina }:Props){
@@ -23,6 +21,8 @@ export default function Proorc2({ setPagina }:Props){
   const [cadastro,setCadastro] = useState<any[]>([])
   const [explodido,setExplodido] = useState<any[]>([])
 
+  const [editando,setEditando] = useState<string | null>(null)
+
 
   useEffect(()=>{
 
@@ -39,7 +39,6 @@ export default function Proorc2({ setPagina }:Props){
 
       setMaterial(null)
       setEstrutura([])
-
       return
 
     }
@@ -89,74 +88,82 @@ export default function Proorc2({ setPagina }:Props){
 
   async function carregarNota(){
 
-  if(!nota) return
+    const { data } = await supabase
+
+      .from("vw_proorc_cadastro")
+
+      .select("*")
+
+      .eq("nota",nota)
+
+      .order("created_at")
+
+    setCadastro(data || [])
 
 
-  const { data:cad } = await supabase
+    const { data:exp } = await supabase
 
-    .from("vw_proorc_cadastro")
+      .from("vw_proorc_cadastro_itens")
 
-    .select("*")
+      .select("*")
 
-    .eq("nota",nota)
+      .eq("nota",nota)
 
-    .order("created_at",{ascending:true})
+      .order("codigo")
 
-  setCadastro(cad || [])
-
-
-  const { data:exp } = await supabase
-
-    .from("vw_proorc_cadastro_itens")
-
-    .select("*")
-
-    .eq("nota",nota)
-
-    .order("codigo")
-
-  setExplodido(exp || [])
-
-}
-
-
-  async function adicionar(){
-
-  if(!material){
-
-    alert("material não encontrado")
-    return
+    setExplodido(exp || [])
 
   }
 
-  const { error } = await supabase.rpc(
 
-    "fn_proorc_cadastrar",
+  async function salvar(){
 
-    {
+    if(editando){
 
-      p_nota: nota,
-      p_codigo: material.codigo,
-      p_quantidade: Number(quantidade),
-      p_aplicacao: aplicacao
+      await supabase
+
+        .from("db_proorc_cadastro")
+
+        .update({
+
+          quantidade:Number(quantidade),
+          aplicacao
+
+        })
+
+        .eq("id",editando)
+
+      setEditando(null)
 
     }
 
-  )
+    else{
 
-  if(error){
+      await supabase.rpc(
 
-    alert(error.message)
-    return
+        "fn_proorc_cadastrar",
+
+        {
+
+          p_nota: nota,
+          p_codigo: material.codigo,
+          p_quantidade: Number(quantidade),
+          p_aplicacao: aplicacao
+
+        }
+
+      )
+
+    }
+
+    setCodigo("")
+    setQuantidade("")
+    setAplicacao("N")
+
+    carregarNota()
 
   }
 
-  setCodigo("")
-  setQuantidade("")
-
-  carregarNota()
-
-}
 
   async function excluir(id:string){
 
@@ -173,10 +180,21 @@ export default function Proorc2({ setPagina }:Props){
   }
 
 
+  function editar(linha:any){
+
+    setCodigo(linha.codigo)
+    setQuantidade(linha.quantidade)
+    setAplicacao(linha.aplicacao)
+
+    setEditando(linha.id)
+
+  }
+
+
   const podeSalvar =
 
     nota &&
-    material &&
+    codigo &&
     quantidade &&
     aplicacao
 
@@ -185,207 +203,289 @@ export default function Proorc2({ setPagina }:Props){
 
     <div style={styles.container}>
 
-      <h2>PROORC 2.0</h2>
+      <div style={styles.overlay}>
 
+        <div style={styles.header}>
 
-      <div style={styles.card}>
+          <h2>
 
-        nota
+            PROORC 2.0
 
-        <input
+          </h2>
 
-          style={styles.inputNota}
+          <button
 
-          value={nota}
+            style={styles.voltar}
 
-          onChange={(e)=>setNota(e.target.value)}
+            onClick={()=>setPagina("menu")}
 
-        />
+          >
 
-      </div>
+            voltar
 
-
-      <div style={styles.linhaCadastro}>
-
-        <input
-
-          style={styles.material}
-
-          placeholder="material"
-
-          value={codigo}
-
-          onChange={(e)=>setCodigo(e.target.value)}
-
-        />
-
-
-        <input
-
-          style={styles.qtd}
-
-          type="number"
-
-          placeholder="qtd"
-
-          value={quantidade}
-
-          onChange={(e)=>setQuantidade(e.target.value)}
-
-        />
-
-
-        <select
-
-          style={styles.aplicacao}
-
-          value={aplicacao}
-
-          onChange={(e)=>setAplicacao(e.target.value)}
-
-        >
-
-          <option value="N">N</option>
-          <option value="U">U</option>
-          <option value="S">S</option>
-
-        </select>
-
-
-        <button
-
-          style={styles.salvar}
-
-          disabled={!podeSalvar}
-
-          onClick={adicionar}
-
-        >
-
-          salvar
-
-        </button>
-
-      </div>
-
-
-      {material && (
-
-        <div style={styles.materialInfo}>
-
-          {material.descricao}
-
-          {" ("}
-
-          {material.tipo}
-
-          {")"}
+          </button>
 
         </div>
 
-      )}
-
-
-      {estrutura.length > 0 && (
 
         <div style={styles.card}>
 
-          itens do kit:
+          nota
 
-          {estrutura.map(i => (
+          <input
 
-            <div key={i.codigo_item}>
+            style={styles.inputNota}
 
-              {i.codigo_item}
+            value={nota}
 
-              {" - "}
+            onChange={(e)=>setNota(e.target.value)}
 
-              {i.item}
-
-              {" ("}
-
-              {i.quantidade}
-
-              {")"}
-
-            </div>
-
-          ))}
+          />
 
         </div>
 
-      )}
+
+        <div style={styles.linhaCadastro}>
+
+          <input
+
+            style={styles.material}
+
+            placeholder="material"
+
+            value={codigo}
+
+            onChange={(e)=>setCodigo(e.target.value)}
+
+          />
 
 
-      <div style={styles.card}>
+          <input
 
-        registros cadastrados
+            style={styles.qtd}
 
-        {cadastro.map(x => (
+            type="number"
 
-          <div key={x.id} style={styles.row}>
+            placeholder="qtd"
 
-            {x.codigo}
+            value={quantidade}
 
-            {" - "}
+            onChange={(e)=>setQuantidade(e.target.value)}
 
-            {x.descricao}
+          />
 
-            {" | "}
 
-            {x.quantidade}
+          <select
 
-            {" | "}
+            style={styles.aplicacao}
 
-            {x.aplicacao}
+            value={aplicacao}
 
-            <button onClick={()=>excluir(x.id)}>
+            onChange={(e)=>setAplicacao(e.target.value)}
 
-              excluir
+          >
 
-            </button>
+            <option value="N">N</option>
+            <option value="U">U</option>
+            <option value="S">S</option>
+
+          </select>
+
+
+          <button
+
+            style={styles.salvar}
+
+            disabled={!podeSalvar}
+
+            onClick={salvar}
+
+          >
+
+            {editando ? "alterar" : "gravar"}
+
+          </button>
+
+        </div>
+
+
+        {material && (
+
+          <div style={styles.materialInfo}>
+
+            {material.descricao}
+
+            {" ("}
+
+            {material.tipo}
+
+            {")"}
 
           </div>
 
-        ))}
-
-      </div>
+        )}
 
 
-      <div style={styles.card}>
+        {estrutura.length > 0 && (
 
-        itens consolidados
+          <div style={styles.card}>
 
-        {explodido.map(x => (
+            <strong>
 
-          <div key={x.codigo} style={styles.row}>
+              estrutura do kit
 
-            {x.codigo}
+            </strong>
 
-            {" - "}
+            <table style={styles.tabela}>
 
-            {x.descricao}
+              <thead>
 
-            {" | total:"}
+                <tr>
 
-            {x.quantidade}
+                  <th>codigo</th>
+                  <th>descricao</th>
+                  <th>qtd</th>
+
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+                {estrutura.map(i => (
+
+                  <tr key={i.codigo_item}>
+
+                    <td>{i.codigo_item}</td>
+
+                    <td>{i.item}</td>
+
+                    <td>{i.quantidade}</td>
+
+                  </tr>
+
+                ))}
+
+              </tbody>
+
+            </table>
 
           </div>
 
-        ))}
+        )}
+
+
+        <div style={styles.card}>
+
+          <strong>
+
+            registros cadastrados
+
+          </strong>
+
+          <table style={styles.tabela}>
+
+            <thead>
+
+              <tr>
+
+                <th>codigo</th>
+                <th>descricao</th>
+                <th>qtd</th>
+                <th>apl</th>
+                <th></th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              {cadastro.map(x => (
+
+                <tr key={x.id}>
+
+                  <td>{x.codigo}</td>
+
+                  <td>{x.descricao}</td>
+
+                  <td>{x.quantidade}</td>
+
+                  <td>{x.aplicacao}</td>
+
+                  <td>
+
+                    <button onClick={()=>editar(x)}>
+
+                      editar
+
+                    </button>
+
+                    <button onClick={()=>excluir(x.id)}>
+
+                      excluir
+
+                    </button>
+
+                  </td>
+
+                </tr>
+
+              ))}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+
+        <div style={styles.card}>
+
+          <strong>
+
+            itens consolidados
+
+          </strong>
+
+          <table style={styles.tabela}>
+
+            <thead>
+
+              <tr>
+
+                <th>codigo</th>
+                <th>descricao</th>
+                <th>total</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              {explodido.map(x => (
+
+                <tr key={x.codigo}>
+
+                  <td>{x.codigo}</td>
+
+                  <td>{x.descricao}</td>
+
+                  <td>{x.quantidade}</td>
+
+                </tr>
+
+              ))}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
 
       </div>
-
-
-      <button
-
-        onClick={()=>setPagina("menu")}
-
-      >
-
-        voltar
-
-      </button>
 
     </div>
 
@@ -398,17 +498,76 @@ const styles:any = {
 
   container:{
 
+    minHeight:"100vh",
+
+    backgroundImage:"url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')",
+
+    backgroundSize:"cover",
+
+    backgroundPosition:"center"
+
+  },
+
+  overlay:{
+
+    minHeight:"100vh",
+
+    background:"rgba(0,0,0,0.75)",
+
     padding:20,
-    maxWidth:1100,
-    margin:"0 auto"
+
+    color:"white"
+
+  },
+
+  header:{
+
+    display:"flex",
+
+    justifyContent:"space-between",
+
+    alignItems:"center",
+
+    marginBottom:20
+
+  },
+
+  voltar:{
+
+    padding:"8px 14px",
+
+    background:"#c0392b",
+
+    border:"none",
+
+    borderRadius:6,
+
+    color:"white",
+
+    cursor:"pointer"
 
   },
 
   card:{
 
-    border:"1px solid #ddd",
-    borderRadius:8,
+    background:"white",
+
+    color:"black",
+
     padding:10,
+
+    borderRadius:8,
+
+    marginBottom:12
+
+  },
+
+  linhaCadastro:{
+
+    display:"flex",
+
+    gap:6,
+
     marginBottom:10
 
   },
@@ -416,15 +575,8 @@ const styles:any = {
   inputNota:{
 
     width:200,
+
     padding:6
-
-  },
-
-  linhaCadastro:{
-
-    display:"flex",
-    gap:8,
-    marginBottom:10
 
   },
 
@@ -449,24 +601,30 @@ const styles:any = {
   salvar:{
 
     width:"10%",
+
     background:"#1e3c72",
+
     color:"white",
+
     border:"none",
+
     borderRadius:6
 
   },
 
   materialInfo:{
 
-    marginBottom:10
+    marginBottom:8
 
   },
 
-  row:{
+  tabela:{
 
-    display:"flex",
-    justifyContent:"space-between",
-    padding:4
+    width:"100%",
+
+    borderCollapse:"collapse",
+
+    fontSize:13
 
   }
 
