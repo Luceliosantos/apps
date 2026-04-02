@@ -445,26 +445,15 @@ if(pagina === "corrigirCadastro"){
 
     }
 
-    if(pagina === "proorc"){
+if(pagina === "proorc"){
 
-      return(
+  return(
 
-        <div style={{padding:40}}>
+    <Proorc2 />
 
-          <h1>Proorc 2.0 em desenvolvimento</h1>
+  );
 
-          <button
-            style={styles.menuButton}
-            onClick={()=>setPagina("menu")}
-          >
-            Voltar
-          </button>
-
-        </div>
-
-      );
-
-    }
+}
 
     return(
 
