@@ -6,7 +6,7 @@ type Props = {
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>
 }
 
-export default function Proorc2({ setPagina }: Props) {
+export default function Proorc2({ setPagina }:Props){
 
   const [nota,setNota] = useState("")
 
@@ -20,8 +20,6 @@ export default function Proorc2({ setPagina }: Props) {
 
   const [cadastro,setCadastro] = useState<any[]>([])
   const [explodido,setExplodido] = useState<any[]>([])
-
-  const [infoNota,setInfoNota] = useState<any>(null)
 
   const [editando,setEditando] = useState<string | null>(null)
 
@@ -115,25 +113,10 @@ export default function Proorc2({ setPagina }: Props) {
 
     setExplodido(exp || [])
 
-
-    const { data:info } = await supabase
-
-      .from("vw_proorc_nota_info")
-
-      .select("*")
-
-      .eq("nota",nota)
-
-      .maybeSingle()
-
-    setInfoNota(info)
-
   }
 
 
   async function salvar(){
-
-    const user = await supabase.auth.getUser()
 
     if(editando){
 
@@ -144,10 +127,7 @@ export default function Proorc2({ setPagina }: Props) {
         .update({
 
           quantidade:Number(quantidade),
-          aplicacao,
-
-          updated_by:user.data.user?.id,
-          updated_at:new Date()
+          aplicacao
 
         })
 
@@ -168,8 +148,7 @@ export default function Proorc2({ setPagina }: Props) {
           p_nota: nota,
           p_codigo: material.codigo,
           p_quantidade: Number(quantidade),
-          p_aplicacao: aplicacao,
-          p_user:user.data.user?.id
+          p_aplicacao: aplicacao
 
         }
 
@@ -212,19 +191,10 @@ export default function Proorc2({ setPagina }: Props) {
   }
 
 
-  function formatarData(d:any){
-
-    if(!d) return ""
-
-    return new Date(d).toLocaleString()
-
-  }
-
-
   const podeSalvar =
 
     nota &&
-    material &&
+    codigo &&
     quantidade &&
     aplicacao
 
@@ -235,24 +205,13 @@ export default function Proorc2({ setPagina }: Props) {
 
       <div style={styles.overlay}>
 
-        <div style={styles.topo}>
+        <div style={styles.header}>
 
-          <div>
+          <h2>
 
-            nota
+            PROORC 2.0
 
-            <input
-
-              style={styles.inputNota}
-
-              value={nota}
-
-              onChange={(e)=>setNota(e.target.value)}
-
-            />
-
-          </div>
-
+          </h2>
 
           <button
 
@@ -269,27 +228,21 @@ export default function Proorc2({ setPagina }: Props) {
         </div>
 
 
-        {infoNota && (
+        <div style={styles.card}>
 
-          <div style={styles.info}>
+          nota
 
-            criado por: {infoNota.criado_por}
+          <input
 
-            {" | "}
+            style={styles.inputNota}
 
-            {formatarData(infoNota.criado_em)}
+            value={nota}
 
-            <br/>
+            onChange={(e)=>setNota(e.target.value)}
 
-            ultima alteração: {infoNota.atualizado_por}
+          />
 
-            {" | "}
-
-            {formatarData(infoNota.atualizado_em)}
-
-          </div>
-
-        )}
+        </div>
 
 
         <div style={styles.linhaCadastro}>
@@ -358,7 +311,7 @@ export default function Proorc2({ setPagina }: Props) {
 
         {material && (
 
-          <div style={styles.descricaoMaterial}>
+          <div style={styles.materialInfo}>
 
             {material.descricao}
 
@@ -375,13 +328,13 @@ export default function Proorc2({ setPagina }: Props) {
 
         {estrutura.length > 0 && (
 
-          <div>
+          <div style={styles.card}>
 
-            <div style={styles.titulo}>
+            <strong>
 
               estrutura do kit
 
-            </div>
+            </strong>
 
             <table style={styles.tabela}>
 
@@ -422,109 +375,114 @@ export default function Proorc2({ setPagina }: Props) {
         )}
 
 
-        <div className="titulo">
+        <div style={styles.card}>
 
-          registros cadastrados
+          <strong>
+
+            registros cadastrados
+
+          </strong>
+
+          <table style={styles.tabela}>
+
+            <thead>
+
+              <tr>
+
+                <th>codigo</th>
+                <th>descricao</th>
+                <th>qtd</th>
+                <th>apl</th>
+                <th></th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              {cadastro.map(x => (
+
+                <tr key={x.id}>
+
+                  <td>{x.codigo}</td>
+
+                  <td>{x.descricao}</td>
+
+                  <td>{x.quantidade}</td>
+
+                  <td>{x.aplicacao}</td>
+
+                  <td>
+
+                    <button onClick={()=>editar(x)}>
+
+                      editar
+
+                    </button>
+
+                    <button onClick={()=>excluir(x.id)}>
+
+                      excluir
+
+                    </button>
+
+                  </td>
+
+                </tr>
+
+              ))}
+
+            </tbody>
+
+          </table>
 
         </div>
 
 
-        <table style={styles.tabela}>
+        <div style={styles.card}>
 
-          <thead>
+          <strong>
 
-            <tr>
+            itens consolidados
 
-              <th>codigo</th>
-              <th>descricao</th>
-              <th>qtd</th>
-              <th>apl</th>
-              <th></th>
+          </strong>
 
-            </tr>
+          <table style={styles.tabela}>
 
-          </thead>
+            <thead>
 
-          <tbody>
+              <tr>
 
-            {cadastro.map(x => (
-
-              <tr key={x.id}>
-
-                <td>{x.codigo}</td>
-
-                <td>{x.descricao}</td>
-
-                <td>{x.quantidade}</td>
-
-                <td>{x.aplicacao}</td>
-
-                <td>
-
-                  <button onClick={()=>editar(x)}>
-
-                    editar
-
-                  </button>
-
-
-                  <button onClick={()=>excluir(x.id)}>
-
-                    excluir
-
-                  </button>
-
-                </td>
+                <th>codigo</th>
+                <th>descricao</th>
+                <th>total</th>
 
               </tr>
 
-            ))}
+            </thead>
 
-          </tbody>
+            <tbody>
 
-        </table>
+              {explodido.map(x => (
 
+                <tr key={x.codigo}>
 
-        <div style={styles.titulo}>
+                  <td>{x.codigo}</td>
 
-          itens consolidados
+                  <td>{x.descricao}</td>
+
+                  <td>{x.quantidade}</td>
+
+                </tr>
+
+              ))}
+
+            </tbody>
+
+          </table>
 
         </div>
-
-
-        <table style={styles.tabela}>
-
-          <thead>
-
-            <tr>
-
-              <th>codigo</th>
-              <th>descricao</th>
-              <th>total</th>
-
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            {explodido.map(x => (
-
-              <tr key={x.codigo}>
-
-                <td>{x.codigo}</td>
-
-                <td>{x.descricao}</td>
-
-                <td>{x.quantidade}</td>
-
-              </tr>
-
-            ))}
-
-          </tbody>
-
-        </table>
 
 
       </div>
@@ -538,144 +496,136 @@ export default function Proorc2({ setPagina }: Props) {
 
 const styles:any = {
 
-container:{
+  container:{
 
-minHeight:"100vh",
+    minHeight:"100vh",
 
-backgroundImage:"url('/fundo.jpg')",
+    backgroundImage:"url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')",
 
-backgroundSize:"cover",
+    backgroundSize:"cover",
 
-backgroundPosition:"center"
+    backgroundPosition:"center"
 
-},
+  },
 
-overlay:{
+  overlay:{
 
-background:"rgba(0,0,0,0.75)",
+    minHeight:"100vh",
 
-minHeight:"100vh",
+    background:"rgba(0,0,0,0.75)",
 
-padding:20,
+    padding:20,
 
-color:"white"
+    color:"white"
 
-},
+  },
 
-topo:{
+  header:{
 
-display:"flex",
+    display:"flex",
 
-justifyContent:"space-between",
+    justifyContent:"space-between",
 
-alignItems:"center",
+    alignItems:"center",
 
-marginBottom:10
+    marginBottom:20
 
-},
+  },
 
-inputNota:{
+  voltar:{
 
-width:180,
+    padding:"8px 14px",
 
-padding:5
+    background:"#c0392b",
 
-},
+    border:"none",
 
-voltar:{
+    borderRadius:6,
 
-background:"#c0392b",
+    color:"white",
 
-border:"none",
+    cursor:"pointer"
 
-padding:"6px 12px",
+  },
 
-borderRadius:6,
+  card:{
 
-color:"white",
+    background:"white",
 
-cursor:"pointer"
+    color:"black",
 
-},
+    padding:10,
 
-info:{
+    borderRadius:8,
 
-fontSize:12,
+    marginBottom:12
 
-marginBottom:10
+  },
 
-},
+  linhaCadastro:{
 
-linhaCadastro:{
+    display:"flex",
 
-display:"flex",
+    gap:6,
 
-gap:6,
+    marginBottom:10
 
-marginBottom:6
+  },
 
-},
+  inputNota:{
 
-material:{
+    width:200,
 
-width:220
+    padding:6
 
-},
+  },
 
-qtd:{
+  material:{
 
-width:80
+    width:"20%"
 
-},
+  },
 
-aplicacao:{
+  qtd:{
 
-width:80
+    width:"10%"
 
-},
+  },
 
-salvar:{
+  aplicacao:{
 
-width:90,
+    width:"10%"
 
-background:"#1e3c72",
+  },
 
-color:"white",
+  salvar:{
 
-border:"none",
+    width:"10%",
 
-borderRadius:6
+    background:"#1e3c72",
 
-},
+    color:"white",
 
-descricaoMaterial:{
+    border:"none",
 
-fontSize:12,
+    borderRadius:6
 
-marginBottom:10
+  },
 
-},
+  materialInfo:{
 
-titulo:{
+    marginBottom:8
 
-marginTop:15,
+  },
 
-marginBottom:4
+  tabela:{
 
-},
+    width:"100%",
 
-tabela:{
+    borderCollapse:"collapse",
 
-width:"auto",
+    fontSize:13
 
-background:"white",
-
-color:"black",
-
-borderCollapse:"collapse",
-
-fontSize:12
-
-}
+  }
 
 }
