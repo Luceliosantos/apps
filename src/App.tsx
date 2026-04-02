@@ -449,7 +449,9 @@ if(pagina === "proorc"){
 
   return(
 
-    <Proorc2 />
+    <Proorc2
+      setPagina={setPagina}
+    />
 
   );
 
