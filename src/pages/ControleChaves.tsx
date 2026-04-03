@@ -1,351 +1,146 @@
-import React from "react";
-import { Pagina } from "../App";
+import { FilePlus, Link2, Search, Edit3, Home } from "lucide-react";
+import type { Pagina } from "../App";
+import Layout from "../components/Layout";
+import Card from "../components/ui/Card";
 
 type Props = {
   usuario: {
     matricula: string;
     nome: string;
-    tipo: string;
   };
-
-  permissoes:any[];
-
+  permissoes: { sistema: string; tipo: string }[];
   chavesDisponiveis: number;
-
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
-
   handleLogout: () => void;
 };
 
+type ActionCard = {
+  id: Pagina;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  check: () => boolean;
+};
+
 export default function ControleChaves({
-
   usuario,
-
   permissoes,
-
   chavesDisponiveis,
-
   setPagina,
-
+  handleLogout,
 }: Props) {
-
-  function temPermissao(
-    sistema:string,
-    tipos:string[]
-  ){
-
-    const p =
-      permissoes.find(
-        x => x.sistema === sistema
-      );
-
-    if(!p) return false;
-
-    // admin sempre passa
-    if(p.tipo === "admin") return true;
-
+  function temPermissao(sistema: string, tipos: string[]) {
+    const p = permissoes.find((x) => x.sistema === sistema);
+    if (!p) return false;
+    if (p.tipo === "admin") return true;
     return tipos.includes(p.tipo);
-
   }
 
+  const acessoModulo = temPermissao("chaves", [
+    "leitura",
+    "gravacao",
+    "comissionador",
+    "cad_ch",
+  ]);
 
-  // acesso ao módulo chaves
-  const acessoModulo =
-    temPermissao(
-      "chaves",
-      ["leitura","gravacao","comissionador","cad_ch"]
-    );
-
-
-  const podeCadastrar =
-    temPermissao(
-      "chaves",
-      ["cad_ch"]
-    );
-
-
-  const podeAssociar =
-    temPermissao(
-      "chaves",
-      ["gravacao","comissionador"]
-    );
-
-
-  const podeConsultar =
-    temPermissao(
-      "chaves",
-      ["leitura","gravacao","comissionador","cad_ch"]
-    );
-
-  const podeCorrigirCadastro =
-
-  temPermissao("global", ["admin"])
-
-  ||
-
-  (
-    temPermissao("global", ["usuario"])
-    &&
-    temPermissao("chaves", ["comissionador"])
-  );
-
-  // segurança extra
-  if(!acessoModulo){
-
+  if (!acessoModulo) {
     setPagina("menu");
-
     return null;
-
   }
 
+  const actions: ActionCard[] = [
+    {
+      id: "cadastro",
+      title: "Cadastrar",
+      description: "Importar novas chaves via planilha Excel",
+      icon: <FilePlus size={28} />,
+      check: () => temPermissao("chaves", ["cad_ch"]),
+    },
+    {
+      id: "associacao",
+      title: "Associar",
+      description: "Vincular chaves a notas, postes e coordenadas",
+      icon: <Link2 size={28} />,
+      check: () => temPermissao("chaves", ["gravacao", "comissionador"]),
+    },
+    {
+      id: "consulta",
+      title: "Consulta",
+      description: "Pesquisar e exportar dados das chaves",
+      icon: <Search size={28} />,
+      check: () =>
+        temPermissao("chaves", [
+          "leitura",
+          "gravacao",
+          "comissionador",
+          "cad_ch",
+        ]),
+    },
+    {
+      id: "corrigirCadastro",
+      title: "Corrigir",
+      description: "Remover associacoes de chaves cadastradas",
+      icon: <Edit3 size={28} />,
+      check: () =>
+        temPermissao("global", ["admin"]) ||
+        (temPermissao("global", ["usuario"]) &&
+          temPermissao("chaves", ["comissionador"])),
+    },
+    {
+      id: "menu",
+      title: "Home",
+      description: "Voltar ao menu principal",
+      icon: <Home size={28} />,
+      check: () => true,
+    },
+  ];
+
+  const visibleActions = actions.filter((a) => a.check());
 
   return (
-
-    <div style={styles.container}>
-
-      <div style={styles.overlay}>
-
-        {/* HEADER */}
-
-        <div style={styles.header}>
-
-          <div>
-            <strong>CHAVES DISPONÍVEIS:</strong>
-            {" "}
-            {chavesDisponiveis}
-          </div>
-          <div>
-            <strong>
-              {usuario.matricula?.toUpperCase()}
-            </strong>
-            {" | "}
-              {usuario.nome?.toUpperCase()}
-          </div>
-        </div>
-
-
-        {/* TITULO */}
-
-        <div style={styles.titleArea}>
-
-          <h1 style={styles.title}>
-
-            Controle de Chaves
-
-          </h1>
-
-          <p style={styles.subtitle}>
-
-            Sistema Corporativo de Gestão de Chaves
-
+    <Layout
+      usuario={usuario}
+      permissoes={permissoes}
+      pagina="home"
+      setPagina={setPagina}
+      handleLogout={handleLogout}
+      title="Controle de Chaves"
+    >
+      <div className="max-w-4xl mx-auto">
+        {/* Header Stats */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-text-primary mb-2">
+            Sistema de Gestao de Chaves
+          </h2>
+          <p className="text-text-secondary">
+            <span className="text-accent font-semibold">{chavesDisponiveis}</span> chaves disponiveis para associacao
           </p>
-
         </div>
 
-
-        {/* BOTOES */}
-
-        <div style={styles.panel}>
-
-          {podeCadastrar && (
-
-            <button
-              style={styles.button}
-              onClick={() => setPagina("cadastro")}
+        {/* Action Cards */}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {visibleActions.map((action) => (
+            <Card
+              key={action.id}
+              hoverable
+              onClick={() => setPagina(action.id)}
+              className="group"
             >
-
-              Cadastrar
-
-            </button>
-
-          )}
-
-
-{podeCorrigirCadastro && (
-
-  <button
-    style={styles.button}
-    onClick={()=>setPagina("corrigirCadastro")}
-  >
-    Corrigir cadastro
-  </button>
-
-)}
-
-{podeConsultar && (
-
-  <button
-    style={styles.button}
-    onClick={() => setPagina("consulta")}
-  >
-    Consulta
-  </button>
-
-)}
-
-
-          {podeAssociar && (
-
-            <button
-              style={styles.button}
-              onClick={() => setPagina("associacao")}
-            >
-
-              Associar
-
-            </button>
-
-          )}
-
-
-          <button
-            style={styles.button}
-            onClick={() => setPagina("menu")}
-          >
-
-            Home
-
-          </button>
-
+              <div className="flex flex-col items-center text-center">
+                <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-accent/10 text-accent group-hover:bg-accent/20 transition-colors mb-4">
+                  {action.icon}
+                </div>
+                <h3 className="text-lg font-semibold text-text-primary group-hover:text-accent transition-colors">
+                  {action.title}
+                </h3>
+                <p className="text-sm text-text-secondary mt-1">
+                  {action.description}
+                </p>
+              </div>
+            </Card>
+          ))}
         </div>
-
       </div>
-
-    </div>
-
+    </Layout>
   );
-
 }
-
-
-
-// ================================
-// ESTILOS
-// ================================
-
-const styles: { [key: string]: React.CSSProperties } = {
-
-  container: {
-
-    minHeight: "100vh",
-
-    width: "100%",
-
-    backgroundImage:
-
-      "url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg/377c7a2b-edfd-dd1e-c8a6-91d79dc31a39?version=1.0&t=1726774318701')",
-
-    backgroundSize: "cover",
-
-    backgroundPosition: "center",
-
-    backgroundRepeat: "no-repeat",
-
-  },
-
-
-  overlay: {
-
-    minHeight: "100vh",
-
-    backgroundColor: "rgba(0,0,0,0.6)",
-
-    padding: "20px",
-
-  },
-
-
-  header: {
-
-    display: "flex",
-
-    justifyContent: "space-between",
-
-    alignItems:"flex-start",
-
-    flexWrap:"wrap",
-
-    gap:10,
-
-    color: "white",
-
-    fontWeight: 500,
-
-    marginBottom: 30,
-
-  },
-
-
-  titleArea: {
-
-    textAlign: "center",
-
-    color: "white",
-
-    marginBottom: 30,
-
-  },
-
-
-  title: {
-
-    fontSize: 28,
-
-    fontWeight: 600,
-
-    margin: 0,
-
-    letterSpacing: 1,
-
-  },
-
-
-  subtitle: {
-
-    marginTop: 8,
-
-    fontSize: 16,
-
-    opacity: 0.85,
-
-  },
-
-
-  panel: {
-
-    maxWidth: 600,
-
-    margin: "0 auto",
-
-    display: "grid",
-
-    gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))",
-
-    gap: 12,
-
-  },
-
-
-  button: {
-
-    padding: 14,
-
-    fontSize: 15,
-
-    borderRadius: 10,
-
-    border: "1px solid rgba(255,255,255,0.25)",
-
-    backgroundColor: "rgba(255,255,255,0.12)",
-
-    color: "white",
-
-    cursor: "pointer",
-
-    backdropFilter: "blur(6px)",
-
-    whiteSpace:"nowrap"
-
-  },
-
-};

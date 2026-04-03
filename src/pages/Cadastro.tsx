@@ -1,7 +1,19 @@
 import { useState } from "react";
 import * as XLSX from "xlsx";
+import { Upload, FileSpreadsheet, CheckCircle, XCircle } from "lucide-react";
 import { supabase } from "../supabase";
-import { Pagina } from "../App";
+import type { Pagina } from "../App";
+import Layout from "../components/Layout";
+import Card from "../components/ui/Card";
+import Button from "../components/ui/Button";
+import Badge from "../components/ui/Badge";
+import Table, {
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "../components/ui/Table";
 
 type Registro = {
   numero: string;
@@ -13,149 +25,101 @@ type Props = {
   usuario: {
     matricula: string;
     nome: string;
-    tipo: string;
   };
-
-  permissoes:any[];
-
+  permissoes: { sistema: string; tipo: string }[];
   chavesDisponiveis: number;
-
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
-
   handleLogout: () => void;
-
   atualizarContagem: () => Promise<void>;
 };
 
 export default function Cadastro({
-
   usuario,
-
   permissoes,
-
   chavesDisponiveis,
-
   setPagina,
-
+  handleLogout,
   atualizarContagem,
-
 }: Props) {
-
-  function temPermissao(
-    sistema:string,
-    tipos:string[]
-  ){
-
-    const p =
-      permissoes.find(
-        x => x.sistema === sistema
-      );
-
-    if(!p) return false;
-
-    if(p.tipo === "admin") return true;
-
+  function temPermissao(sistema: string, tipos: string[]) {
+    const p = permissoes.find((x) => x.sistema === sistema);
+    if (!p) return false;
+    if (p.tipo === "admin") return true;
     return tipos.includes(p.tipo);
-
   }
 
-  if(
-    !temPermissao(
-      "chaves",
-      ["cad_ch"]
-    )
-  ){
-
+  if (!temPermissao("chaves", ["cad_ch"])) {
     setPagina("home");
-
     return null;
-
   }
 
   const [registros, setRegistros] = useState<Registro[]>([]);
-
   const [erroImportacao, setErroImportacao] = useState("");
-
   const [loading, setLoading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
 
-  function dataHojeBR(){
-
+  function dataHojeBR() {
     return new Date().toLocaleDateString("pt-BR");
-
   }
 
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-
-    const file = e.target.files?.[0];
-
-    if (!file) return;
-
+  function processFile(file: File) {
     const reader = new FileReader();
 
     reader.onload = (evt) => {
-
       const data = evt.target?.result;
-
       if (!data) return;
 
       const workbook = XLSX.read(data, { type: "binary" });
-
       const sheetName = workbook.SheetNames[0];
-
       const worksheet = workbook.Sheets[sheetName];
-
-      const json: any[][] = XLSX.utils.sheet_to_json(worksheet, {
+      const json: unknown[][] = XLSX.utils.sheet_to_json(worksheet, {
         header: 1,
       });
 
       const novos: Registro[] = [];
 
       for (let i = 0; i < json.length; i++) {
-
-        const numero = String(json[i][0] ?? "").trim();
-
+        const numero = String((json[i] as unknown[])[0] ?? "").trim();
         let erro = "";
 
         if (!/^[1-9]\d{5}$/.test(numero)) {
-        
-          erro = "Número deve ter 6 dígitos e não pode iniciar com 0";
-        
+          erro = "Numero deve ter 6 digitos e nao pode iniciar com 0";
         }
 
         novos.push({
-
           numero,
-
           data: dataHojeBR(),
-
           erro: erro || undefined,
-
         });
-
       }
 
       setRegistros(novos);
-
       setErroImportacao("");
-
     };
 
     reader.readAsBinaryString(file);
+  }
 
+  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    processFile(file);
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) processFile(file);
   }
 
   async function handleCadastrar() {
-
     setErroImportacao("");
-
     const registrosAtualizados = [...registros];
-
     let possuiErro = false;
 
     for (let i = 0; i < registrosAtualizados.length; i++) {
-
       const r = registrosAtualizados[i];
-
       const { data } = await supabase
         .from("db_chaves")
         .select("id")
@@ -163,518 +127,179 @@ export default function Cadastro({
         .maybeSingle();
 
       if (data) {
-
-        registrosAtualizados[i].erro = "Chave já existente no banco";
-
+        registrosAtualizados[i].erro = "Chave ja existente no banco";
         possuiErro = true;
-
       }
-
     }
 
     setRegistros(registrosAtualizados);
 
     if (possuiErro) {
-
       setErroImportacao(
-        "Existem registros inválidos ou duplicados. Corrija antes de cadastrar."
+        "Existem registros invalidos ou duplicados. Corrija antes de cadastrar."
       );
-
       return;
-
     }
 
     setLoading(true);
 
     for (const r of registrosAtualizados) {
-
-await supabase.from("db_chaves").insert([
-  {
-    numero: r.numero,
-
-    dt_disp: new Date().toISOString(),
-
-    usu_cad_db: usuario.matricula,
-
-    dt_ass_db: null,
-    usu_ass: null,
-    ns: null,
-    flh: null,
-    poste: null,
-    coord: null
-
-  },
-]);
-
+      await supabase.from("db_chaves").insert([
+        {
+          numero: r.numero,
+          dt_disp: new Date().toISOString(),
+          usu_cad_db: usuario.matricula,
+          dt_ass_db: null,
+          usu_ass: null,
+          ns: null,
+          flh: null,
+          poste: null,
+          coord: null,
+        },
+      ]);
     }
 
     alert("Chaves cadastradas com sucesso!");
-
     setRegistros([]);
-
     atualizarContagem();
-
     setLoading(false);
-
   }
 
+  const validCount = registros.filter((r) => !r.erro).length;
+  const errorCount = registros.filter((r) => r.erro).length;
+
   return (
-
-    <div style={styles.container}>
-
-      <div style={styles.electricParticles}></div>
-
-      <div style={styles.overlay}>
-
-        <div style={styles.topBar}>
-
-          <div style={styles.headerUsuario}>
-
-            <div>
-            
-              <strong>
-                {usuario.nome?.toUpperCase()}
-              </strong>
-            
-              {" | "}
-            
-              {usuario.matricula?.toUpperCase()}
-            
-              <div>
-                Chaves disponíveis: {chavesDisponiveis}
-              </div>
-            
-            </div>
-
-          </div>
-
-          <div style={styles.acoesUsuario}>
-
-            <button
-              style={styles.button}
-              onClick={() => setPagina("home")}
-            >
-              Voltar
-            </button>
-
-          </div>
-
+    <Layout
+      usuario={usuario}
+      permissoes={permissoes}
+      pagina="cadastro"
+      setPagina={setPagina}
+      handleLogout={handleLogout}
+      title="Cadastrar Chaves"
+    >
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* Stats */}
+        <div className="flex items-center gap-4 text-sm text-text-secondary">
+          <span>Chaves disponiveis: {chavesDisponiveis}</span>
         </div>
 
-        <div style={styles.mainContent}>
-
-          <div style={styles.cardPrincipal}>
-
-            <div style={styles.uploadArea}>
-
-              <input
-                type="file"
-                accept=".xls,.xlsx"
-                onChange={handleFile}
-                style={styles.inputFile}
-                id="file-upload"
-              />
-
-              <label htmlFor="file-upload" style={styles.labelUpload}>
-
-                <div style={styles.uploadIcon}>📁</div>
-
-                <div>
-
-                  <strong>Selecionar Arquivo Excel</strong>
-
-                  <p>Arraste ou clique para importar (.xls, .xlsx)</p>
-
-                </div>
-
-              </label>
-
+        {/* Upload Area */}
+        <Card padding="none">
+          <label
+            htmlFor="file-upload"
+            className={`
+              flex flex-col items-center justify-center p-12 cursor-pointer
+              border-2 border-dashed rounded-xl transition-all duration-200
+              ${
+                dragOver
+                  ? "border-accent bg-accent/5"
+                  : "border-border hover:border-border-hover hover:bg-bg-card-hover"
+              }
+            `}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOver(true);
+            }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={handleDrop}
+          >
+            <input
+              type="file"
+              accept=".xls,.xlsx"
+              onChange={handleFile}
+              className="hidden"
+              id="file-upload"
+            />
+            <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-accent/10 text-accent mb-4">
+              <Upload size={32} />
             </div>
-
-            {erroImportacao && (
-
-              <div style={styles.alertaErro}>
-
-                <span>⚠️ {erroImportacao}</span>
-
-              </div>
-
-            )}
-
-            {registros.length > 0 && (
-
-              <>
-
-                <div style={styles.caixaQuantidade}>
-
-                  <div style={styles.statsContent}>
-
-                    <div style={styles.statItem}>
-
-                      <strong style={styles.statNumber}>
-
-                        {registros.length}
-
-                      </strong>
-
-                      <span> registros importados</span>
-
-                    </div>
-
-                    <div style={styles.validosInvalidos}>
-
-                      <span style={styles.validos}>
-                        {
-                          registros.filter(
-                            r => !r.erro
-                          ).length
-                        } válidos
-                      </span>
-
-                      <span style={styles.separador}>|</span>
-
-                      <span style={styles.invalidos}>
-                        {
-                          registros.filter(
-                            r => r.erro
-                          ).length
-                        } com erro
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                  <div style={styles.botaoContainer}>
-
-                    <button
-
-                      style={{
-
-                        ...styles.button,
-
-                        opacity:
-
-                          loading ||
-
-                          registros.filter(
-                            r => !r.erro
-                          ).length === 0
-
-                            ? 0.5
-                            : 1,
-
-                      }}
-
-                      onClick={handleCadastrar}
-
-                      disabled={
-
-                        loading ||
-
-                        registros.filter(
-                          r => !r.erro
-                        ).length === 0
-
-                      }
-
-                    >
-
-                      {
-
-                        loading
-                          ? "Cadastrando..."
-                          : `Cadastrar ${
-                              registros.filter(
-                                r => !r.erro
-                              ).length
-                            } Chaves`
-
-                      }
-
-                    </button>
-
-                  </div>
-
-                </div>
-
-                <div style={styles.tabelaContainer}>
-
-                  <table style={styles.tabela}>
-
-                    <thead style={styles.thead}>
-
-                      <tr>
-
-                        <th style={styles.thNumero}>Número</th>
-
-                        <th style={styles.thData}>Data</th>
-
-                        <th style={styles.thStatus}>Status</th>
-
-                      </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                      {registros.map((r, index) => (
-
-                        <tr
-                          key={index}
-                          style={
-                            r.erro
-                              ? styles.linhaErro
-                              : styles.linhaOk
-                          }
-                        >
-
-                          <td style={styles.tdNumero}>{r.numero}</td>
-
-                          <td style={styles.tdData}>{r.data}</td>
-
-                          <td style={styles.tdStatus}>
-
-                            {
-
-                              r.erro
-
-                                ? (
-                                  <span style={styles.statusErro}>
-                                    {r.erro}
-                                  </span>
-                                )
-
-                                : (
-                                  <span style={styles.statusOk}>
-                                    OK
-                                  </span>
-                                )
-
-                            }
-
-                          </td>
-
-                        </tr>
-
-                      ))}
-
-                    </tbody>
-
-                  </table>
-
-                </div>
-
-              </>
-
-            )}
-
+            <p className="text-lg font-medium text-text-primary mb-1">
+              Selecionar Arquivo Excel
+            </p>
+            <p className="text-sm text-text-secondary">
+              Arraste ou clique para importar (.xls, .xlsx)
+            </p>
+          </label>
+        </Card>
+
+        {/* Error Alert */}
+        {erroImportacao && (
+          <div className="flex items-center gap-3 p-4 rounded-lg bg-error/10 border border-error/20">
+            <XCircle className="text-error flex-shrink-0" size={20} />
+            <span className="text-sm text-error">{erroImportacao}</span>
           </div>
+        )}
 
-        </div>
+        {/* Results */}
+        {registros.length > 0 && (
+          <>
+            {/* Stats Card */}
+            <Card>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-2">
+                    <FileSpreadsheet className="text-accent" size={20} />
+                    <span className="text-2xl font-bold text-text-primary">
+                      {registros.length}
+                    </span>
+                    <span className="text-text-secondary">
+                      registros importados
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="success">{validCount} validos</Badge>
+                    {errorCount > 0 && (
+                      <Badge variant="error">{errorCount} com erro</Badge>
+                    )}
+                  </div>
+                </div>
+                <Button
+                  onClick={handleCadastrar}
+                  loading={loading}
+                  disabled={validCount === 0}
+                >
+                  Cadastrar {validCount} Chaves
+                </Button>
+              </div>
+            </Card>
 
+            {/* Table */}
+            <Table>
+              <TableHeader>
+                <TableRow hoverable={false}>
+                  <TableHead>Numero</TableHead>
+                  <TableHead>Data</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {registros.map((r, index) => (
+                  <TableRow
+                    key={index}
+                    className={r.erro ? "bg-error/5" : ""}
+                  >
+                    <TableCell className="font-mono">{r.numero}</TableCell>
+                    <TableCell>{r.data}</TableCell>
+                    <TableCell>
+                      {r.erro ? (
+                        <div className="flex items-center gap-2 text-error">
+                          <XCircle size={16} />
+                          <span className="text-sm">{r.erro}</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 text-success">
+                          <CheckCircle size={16} />
+                          <span className="text-sm">OK</span>
+                        </div>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </>
+        )}
       </div>
-
-    </div>
-
+    </Layout>
   );
-
 }
-
-const styles: { [key: string]: React.CSSProperties } = {
-
-  container: {
-    minHeight: "100vh",
-    backgroundImage: `
-      linear-gradient(rgba(10,31,68,0.55), rgba(10,31,68,0.75)),
-      url("https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg")
-    `,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-    position: "relative",
-    overflow: "hidden",
-  },
-
-  electricParticles: {
-    position: "absolute",
-    inset: 0,
-    pointerEvents: "none",
-  },
-
-  overlay: {
-    minHeight: "100vh",
-    padding: "20px",
-    color: "white",
-    position: "relative",
-    zIndex: 2,
-  },
-
-  topBar: {
-    maxWidth: "1200px",
-    margin: "0 auto 30px",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems:"flex-start",
-    flexWrap:"wrap",
-    gap:10
-  },
-
-  linhaUsuario: {
-    fontSize: 16,
-    fontWeight: 400,
-  },
-
-  mainContent: {
-    maxWidth: "1200px",
-    margin: "0 auto",
-  },
-
-  cardPrincipal: {
-    background: "rgba(255,255,255,0.06)",
-    backdropFilter: "blur(20px)",
-    borderRadius: "20px",
-    padding: "20px",
-  },
-
-  inputFile: { display: "none" },
-
-  labelUpload: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    padding: "25px",
-    border: "2px dashed rgba(255,255,255,0.4)",
-    borderRadius: "16px",
-    cursor: "pointer",
-    textAlign:"center"
-  },
-
-  uploadIcon: {
-    fontSize: 40,
-  },
-
-  caixaQuantidade: {
-    marginTop: 20,
-  },
-
-  statsContent: {
-    marginBottom: 15,
-  },
-
-  validosInvalidos:{
-    display:"flex",
-    gap:8,
-    alignItems:"center",
-    flexWrap:"wrap"
-  },
-
-  separador:{
-    opacity:0.7
-  },
-
-  botaoContainer: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap:"wrap"
-  },
-
-  tabelaContainer: {
-    overflowX: "auto",
-    marginTop: 20,
-  },
-
-  tabela: {
-    width: "100%",
-    tableLayout:"auto",
-    background: "rgba(255,255,255,0.06)",
-    color: "white",
-    borderCollapse:"collapse",
-    minWidth:400
-  },
-
-  thead: {
-    background: "#1e3c72",
-    color: "white",
-  },
-
-  thNumero: {
-    padding: 8,
-    border:"1px solid rgba(255,255,255,0.15)",
-    textAlign:"center",
-    whiteSpace:"nowrap"
-  },
-
-  thData: {
-    padding: 8,
-    border:"1px solid rgba(255,255,255,0.15)",
-    textAlign:"center",
-    whiteSpace:"nowrap"
-  },
-
-  thStatus: {
-    padding: 8,
-    border:"1px solid rgba(255,255,255,0.15)",
-    textAlign:"center",
-    whiteSpace:"nowrap"
-  },
-
-  tdNumero: {
-    padding: 8,
-    border:"1px solid rgba(255,255,255,0.15)",
-    textAlign:"center",
-    whiteSpace:"nowrap"
-  },
-
-  tdData: {
-    padding: 8,
-    border:"1px solid rgba(255,255,255,0.15)",
-    textAlign:"center",
-    whiteSpace:"nowrap"
-  },
-
-  tdStatus: {
-    padding: 8,
-    border:"1px solid rgba(255,255,255,0.15)",
-    textAlign:"center",
-    whiteSpace:"nowrap"
-  },
-
-  linhaErro: {
-    background: "rgba(255,0,0,0.15)",
-  },
-
-  statusErro: {
-    color: "#ff6b6b",
-  },
-
-  statusOk: {
-    color: "#00ff88",
-  },
-
-  alertaErro: {
-    marginTop: 15,
-    color: "#ff6b6b",
-  },
-
-  statNumber: {
-    fontSize: 24,
-  },
-
-  validos: { color: "#00ff88" },
-
-  invalidos: { color: "#ff6b6b" },
-
-  button: {
-    padding: "10px 16px",
-    fontSize: 15,
-    borderRadius: 10,
-    border: "1px solid rgba(255,255,255,0.25)",
-    backgroundColor: "rgba(255,255,255,0.12)",
-    color: "white",
-    cursor: "pointer",
-    backdropFilter: "blur(6px)",
-    whiteSpace:"nowrap"
-  },
-
-};

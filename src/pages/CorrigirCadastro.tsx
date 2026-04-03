@@ -1,448 +1,240 @@
 import { useState, useEffect } from "react";
+import { Search, Trash2 } from "lucide-react";
 import { supabase } from "../supabase";
-import { Pagina } from "../App";
+import type { Pagina } from "../App";
+import Layout from "../components/Layout";
+import Card, { CardHeader, CardTitle } from "../components/ui/Card";
+import Input from "../components/ui/Input";
+import Button from "../components/ui/Button";
+import Table, {
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "../components/ui/Table";
 
 type Props = {
-  permissoes: any[];
+  usuario: {
+    matricula: string;
+    nome: string;
+  };
+  permissoes: { sistema: string; tipo: string }[];
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
   atualizarContagem: () => Promise<void>;
+  handleLogout: () => void;
+};
+
+type ChaveRecord = {
+  id: number;
+  numero: number;
+  ns: number | null;
+  poste: string | null;
+  flh: string | null;
+  coord: string | null;
+  usu_ass: string | null;
+  dt_ass_db: string | null;
 };
 
 export default function CorrigirCadastro({
+  usuario,
   permissoes,
   setPagina,
-  atualizarContagem
+  atualizarContagem,
+  handleLogout,
 }: Props) {
-
   const [busca, setBusca] = useState("");
-  const [lista, setLista] = useState<any[]>([]);
+  const [lista, setLista] = useState<ChaveRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [quantidadeDisponivel, setQuantidadeDisponivel] = useState(0);
 
-
-  function temPermissao(
-    sistema: string,
-    tipos: string[]
-  ){
-
-    const p =
-      permissoes.find(
-        x => x.sistema === sistema
-      );
-
-    if(!p) return false;
-
-    if(p.tipo === "admin") return true;
-
+  function temPermissao(sistema: string, tipos: string[]) {
+    const p = permissoes.find((x) => x.sistema === sistema);
+    if (!p) return false;
+    if (p.tipo === "admin") return true;
     return tipos.includes(p.tipo);
-
   }
-
 
   const acessoPermitido =
+    temPermissao("global", ["admin"]) ||
+    (temPermissao("global", ["usuario"]) &&
+      temPermissao("chaves", ["comissionador"]));
 
-    temPermissao("global", ["admin"])
-
-    ||
-
-    (
-      temPermissao("global", ["usuario"])
-      &&
-      temPermissao("chaves", ["comissionador"])
-    );
-
-
-  useEffect(()=>{
+  useEffect(() => {
     carregarQuantidadeDisponivel();
-  },[]);
+  }, []);
 
-
-  async function carregarQuantidadeDisponivel(){
-
+  async function carregarQuantidadeDisponivel() {
     const r = await supabase
       .from("db_chaves")
-      .select("*", { count:"exact", head:true })
+      .select("*", { count: "exact", head: true })
       .is("ns", null);
-
     setQuantidadeDisponivel(r.count || 0);
-
   }
 
-
-  async function pesquisar(){
-
-    if(!busca) return;
+  async function pesquisar() {
+    if (!busca) return;
 
     setLoading(true);
-
     const valor = Number(busca);
 
-    if(isNaN(valor)){
-
+    if (isNaN(valor)) {
       setLista([]);
       setLoading(false);
       return;
-
     }
 
+    const rNota = await supabase.from("db_chaves").select("*").eq("ns", valor);
 
-    const rNota = await supabase
-      .from("db_chaves")
-      .select("*")
-      .eq("ns", valor);
-
-
-    if(rNota.data && rNota.data.length > 0){
-
+    if (rNota.data && rNota.data.length > 0) {
       setLista(rNota.data);
       setLoading(false);
       return;
-
     }
-
 
     const rNumero = await supabase
       .from("db_chaves")
       .select("*")
       .eq("numero", valor);
 
-
     setLista(rNumero.data || []);
     setLoading(false);
-
   }
 
-
-  async function removerAssociacao(id:number){
-
-    const confirmar =
-      confirm("Deseja remover a associação desta chave?");
-
-    if(!confirmar) return;
-
+  async function removerAssociacao(id: number) {
+    const confirmar = confirm("Deseja remover a associacao desta chave?");
+    if (!confirmar) return;
 
     await supabase
       .from("db_chaves")
       .update({
-
         ns: null,
         poste: null,
         flh: null,
         coord: null,
         usu_ass: null,
-        dt_ass_db: null
-
+        dt_ass_db: null,
       })
       .eq("id", id);
 
-
     pesquisar();
     carregarQuantidadeDisponivel();
-
   }
 
-
-  if(!acessoPermitido)
-    return <div>Sem permissão</div>;
-
-
-  return(
-
-    <div
-      style={container}
-    >
-
-      <div
-        style={box}
+  if (!acessoPermitido) {
+    return (
+      <Layout
+        usuario={usuario}
+        permissoes={permissoes}
+        pagina="corrigirCadastro"
+        setPagina={setPagina}
+        handleLogout={handleLogout}
+        title="Corrigir Cadastro"
       >
-
-        <div
-          style={topo}
-        >
-
-          <h2 style={titulo}>
-            Corrigir cadastro
-          </h2>
-          <button
-            onClick={async ()=>{
-              await atualizarContagem();
-              setPagina("home");
-            }}
-            style={botaoConsulta}
-          >
-            Voltar
-          </button>
-        </div>
-
-        <div style={quantidade}>
-          {quantidadeDisponivel} chaves disponíveis
-        </div>
-
-        <div style={linhaBusca}>
-
-          <input
-            placeholder="Digite número da chave ou nota"
-            value={busca}
-            onChange={(e)=>setBusca(e.target.value)}
-            onKeyDown={(e)=>{
-              if(e.key==="Enter") pesquisar();
-            }}
-            style={inputConsulta}
-          />
-
-          <button
-            onClick={pesquisar}
-            style={botaoConsulta}
-          >
-            Pesquisar
-          </button>
-
-        </div>
-
-
-        {loading && (
-          <p style={{color:"white"}}>
-            Buscando...
+        <Card>
+          <p className="text-center text-text-secondary py-8">
+            Voce nao tem permissao para acessar esta pagina.
           </p>
-        )}
+        </Card>
+      </Layout>
+    );
+  }
 
+  return (
+    <Layout
+      usuario={usuario}
+      permissoes={permissoes}
+      pagina="corrigirCadastro"
+      setPagina={setPagina}
+      handleLogout={handleLogout}
+      title="Corrigir Cadastro"
+    >
+      <div className="max-w-6xl mx-auto space-y-6">
+        {/* Stats */}
+        <div className="text-sm text-text-secondary">
+          {quantidadeDisponivel} chaves disponiveis
+        </div>
 
-        {!loading && lista.length === 0 && (
+        {/* Search */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Pesquisar</CardTitle>
+          </CardHeader>
 
-          <p style={{color:"white"}}>
-            Nenhum registro encontrado
-          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex-1">
+              <Input
+                placeholder="Digite numero da chave ou nota"
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") pesquisar();
+                }}
+              />
+            </div>
+            <Button onClick={pesquisar} loading={loading} icon={<Search size={18} />}>
+              Pesquisar
+            </Button>
+          </div>
+        </Card>
 
-        )}
-
-
-        {lista.length > 0 && (
-
-          <table style={tabela}>
-
-            <thead>
-
-              <tr>
-
-                <th style={th}>CHAVE</th>
-                <th style={th}>NOTA</th>
-                <th style={th}>POSTE</th>
-                <th style={th}>FOLHA</th>
-                <th style={th}>COORDENADA</th>
-                <th style={th}>USUÁRIO</th>
-                <th style={th}>DATA ASSOCIAÇÃO</th>
-                <th style={th}>AÇÃO</th>
-
-              </tr>
-
-            </thead>
-
-
-            <tbody>
-
-              {lista.map(item => (
-
-                <tr key={item.id}>
-
-                  <td style={td}>{item.numero}</td>
-                  <td style={td}>{item.ns}</td>
-                  <td style={td}>{item.poste}</td>
-                  <td style={td}>{item.flh}</td>
-                  <td style={td}>{item.coord}</td>
-                  <td style={td}>{item.usu_ass}</td>
-
-                  <td style={td}>
-
-                    {
-                      item.dt_ass_db
-                      ?
-
-                      new Date(item.dt_ass_db)
-                      .toLocaleString("pt-BR")
-
-                      :
-
-                      ""
-                    }
-
-                  </td>
-
-
-                  <td style={td}>
-
-                    <button
-                    onClick={()=>
-                      removerAssociacao(item.id)
-                    }
-                    style={botaoAcao}
-                  >
-                    Remover Associação
-                  </button>
-
-                  </td>
-
-                </tr>
-
+        {/* Results */}
+        {loading ? (
+          <p className="text-text-secondary">Buscando...</p>
+        ) : lista.length === 0 ? (
+          <Card>
+            <p className="text-center text-text-secondary py-8">
+              Nenhum registro encontrado
+            </p>
+          </Card>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow hoverable={false}>
+                <TableHead>Chave</TableHead>
+                <TableHead>Nota</TableHead>
+                <TableHead>Poste</TableHead>
+                <TableHead>Folha</TableHead>
+                <TableHead>Coordenada</TableHead>
+                <TableHead>Usuario</TableHead>
+                <TableHead>Data Associacao</TableHead>
+                <TableHead>Acao</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {lista.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell className="font-mono">{item.numero}</TableCell>
+                  <TableCell>{item.ns || "-"}</TableCell>
+                  <TableCell>{item.poste || "-"}</TableCell>
+                  <TableCell>{item.flh || "-"}</TableCell>
+                  <TableCell className="font-mono">
+                    {item.coord || "-"}
+                  </TableCell>
+                  <TableCell>{item.usu_ass || "-"}</TableCell>
+                  <TableCell>
+                    {item.dt_ass_db
+                      ? new Date(item.dt_ass_db).toLocaleString("pt-BR")
+                      : "-"}
+                  </TableCell>
+                  <TableCell>
+                    {item.ns && (
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => removerAssociacao(item.id)}
+                        icon={<Trash2 size={14} />}
+                      >
+                        Remover
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
               ))}
-
-            </tbody>
-
-          </table>
-
+            </TableBody>
+          </Table>
         )}
-
       </div>
-
-    </div>
-
+    </Layout>
   );
-
 }
-
-
-
-const container:React.CSSProperties={
-
-  minHeight:"100vh",
-
-  backgroundImage:`
-    linear-gradient(
-      rgba(0,0,0,0.55),
-      rgba(0,0,0,0.55)
-    ),
-    url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg/377c7a2b-edfd-dd1e-c8a6-91d79dc31a39?version=1.0&t=1726774318701')
-  `,
-
-  backgroundSize:"cover",
-  backgroundPosition:"center",
-
-  padding:"20px"
-
-};
-
-
-const box:React.CSSProperties={
-
-  maxWidth:"1200px",
-  margin:"0 auto",
-  background:"rgba(255,255,255,0.08)",
-  backdropFilter:"blur(6px)",
-  borderRadius:"14px",
-  padding:"20px",
-  border:"1px solid rgba(255,255,255,0.25)"
-
-};
-
-
-const botaoAcao:React.CSSProperties={
-
-  padding:"8px 14px",
-  borderRadius:"10px",
-  border:"1px solid rgba(192,57,43,0.6)",
-  background:"rgba(192,57,43,0.85)",
-  color:"white",
-  cursor:"pointer",
-  fontWeight:"600",
-  whiteSpace:"nowrap"
-
-};
-
-
-const topo:React.CSSProperties={
-
-  display:"flex",
-  justifyContent:"space-between",
-  alignItems:"flex-start",
-  flexWrap:"wrap",
-  gap:"10px",
-  marginBottom:"10px"
-
-};
-
-
-const titulo:React.CSSProperties={
-
-  color:"white"
-
-};
-
-
-const quantidade:React.CSSProperties={
-
-  color:"white",
-  fontSize:"16px",
-  marginBottom:"20px",
-  textAlign:"left"
-
-};
-
-
-const linhaBusca:React.CSSProperties={
-
-  display:"flex",
-  gap:"8px",
-  marginBottom:"20px",
-  flexWrap:"wrap"
-
-};
-
-
-const inputConsulta:React.CSSProperties={
-
-  width:"100%",
-  maxWidth:"260px",
-  padding:"10px",
-  borderRadius:"8px",
-  border:"1px solid rgba(255,255,255,0.4)",
-  background:"rgba(255,255,255,0.15)",
-  color:"white",
-  outline:"none"
-
-};
-
-
-const botaoConsulta:React.CSSProperties={
-
-  padding:"8px 16px",
-  borderRadius:"10px",
-  border:"1px solid rgba(255,255,255,0.4)",
-  background:"rgba(255,255,255,0.15)",
-  color:"white",
-  cursor:"pointer",
-  backdropFilter:"blur(2px)",
-  whiteSpace:"nowrap"
-
-};
-
-
-const tabela:React.CSSProperties={
-
-  width:"100%",
-  borderCollapse:"collapse",
-  textAlign:"center",
-  backgroundColor:"white",
-  borderRadius:"10px",
-  overflow:"hidden",
-  minWidth:"750px"
-
-};
-
-
-const th:React.CSSProperties={
-
-  padding:"10px",
-  border:"1px solid #ddd",
-  backgroundColor:"#f4f4f4",
-  fontWeight:"700",
-  whiteSpace:"nowrap"
-
-};
-
-
-const td:React.CSSProperties={
-
-  padding:"8px",
-  border:"1px solid #e5e5e5",
-  whiteSpace:"nowrap"
-
-};

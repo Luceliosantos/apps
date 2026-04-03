@@ -1,9 +1,12 @@
-import { Pagina } from "../App";
+import { Key, MapPin, DollarSign, Users } from "lucide-react";
+import type { Pagina } from "../App";
+import Layout from "../components/Layout";
+import Card from "../components/ui/Card";
 
 type Props = {
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
   handleLogout: () => void;
-  permissoes:any[];
+  permissoes: { sistema: string; tipo: string }[];
   usuario: {
     id?: string;
     matricula: string;
@@ -11,202 +14,121 @@ type Props = {
   };
 };
 
+type ModuleCard = {
+  id: Pagina;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  sistema: string;
+  tipos: string[];
+};
+
+const modules: ModuleCard[] = [
+  {
+    id: "home",
+    title: "Cadastro de Chaves",
+    description: "Gerencie o cadastro, associacao e consulta de chaves",
+    icon: <Key size={32} />,
+    sistema: "chaves",
+    tipos: ["leitura", "gravacao", "comissionador", "cad_ch"],
+  },
+  {
+    id: "geo",
+    title: "Acompanhamento GEO",
+    description: "Monitore os indicadores geograficos por regional",
+    icon: <MapPin size={32} />,
+    sistema: "acomp_geo",
+    tipos: ["leitura"],
+  },
+  {
+    id: "proorc",
+    title: "Proorc 2.0",
+    description: "Gerencie o programa orcamentario",
+    icon: <DollarSign size={32} />,
+    sistema: "proorc",
+    tipos: ["leitura", "gravacao"],
+  },
+  {
+    id: "usuarios",
+    title: "Usuarios",
+    description: "Administre usuarios e permissoes do sistema",
+    icon: <Users size={32} />,
+    sistema: "global",
+    tipos: ["admin"],
+  },
+];
+
 export default function Home({
   setPagina,
   handleLogout,
   usuario,
-  permissoes
+  permissoes,
 }: Props) {
-
-  function temPermissao(
-    sistema:string,
-    tipos:string[]
-  ){
-
-    const p =
-      permissoes?.find(
-        x => x.sistema === sistema
-      );
-
-    if(!p) return false;
-
-    if(p.tipo === "admin") return true;
-
+  function temPermissao(sistema: string, tipos: string[]) {
+    const p = permissoes?.find((x) => x.sistema === sistema);
+    if (!p) return false;
+    if (p.tipo === "admin") return true;
     return tipos.includes(p.tipo);
-
   }
 
-  // acesso módulo chaves
-  const acessoChaves =
-    temPermissao(
-      "chaves",
-      ["leitura","gravacao","comissionador","cad_ch"]
-    );
-
-  // acesso geo
-  const acessoGeo =
-    temPermissao(
-      "acomp_geo",
-      ["leitura"]
-    );
-
-  // acesso proorc
-  const acessoProorc =
-    temPermissao(
-      "proorc",
-      ["leitura","gravacao"]
-    );
-
-  // admin global
-  const adminGlobal =
-    temPermissao(
-      "global",
-      ["admin"]
-    );
-
-  return (
-
-    <div style={styles.container}>
-
-      <div style={styles.overlay}>
-
-        <div style={styles.header}>
-
-          <div>
-            <strong>
-              {usuario.matricula?.toUpperCase()}
-            </strong>
-            {" | "}
-              {usuario.nome?.toUpperCase()}
-          </div>
-
-          <button
-            style={{
-              ...styles.button,
-              ...styles.logoutButton
-            }}
-            onClick={handleLogout}
-          >
-            Sair
-          </button>
-
-        </div>
-
-        <div style={styles.titleArea}>
-          <h1>Sistemas</h1>
-        </div>
-
-        <div style={styles.grid}>
-
-          {acessoChaves && (
-
-            <button
-              style={styles.button}
-              onClick={() => setPagina("home")}
-            >
-              Cadastro de Chaves
-            </button>
-
-          )}
-
-          {acessoGeo && (
-
-            <button
-              style={styles.button}
-              onClick={() => setPagina("geo")}
-            >
-              Acompanhamento GEO
-            </button>
-
-          )}
-
-          {acessoProorc && (
-
-            <button
-              style={styles.button}
-              onClick={() => setPagina("proorc")}
-            >
-              Proorc 2.0
-            </button>
-
-          )}
-
-          {adminGlobal && (
-
-            <button
-              style={styles.button}
-              onClick={() => setPagina("usuarios")}
-            >
-              Usuarios
-            </button>
-
-          )}
-
-        </div>
-
-      </div>
-
-    </div>
-
+  const visibleModules = modules.filter((m) =>
+    temPermissao(m.sistema, m.tipos)
   );
 
+  return (
+    <Layout
+      usuario={usuario}
+      permissoes={permissoes}
+      pagina="menu"
+      setPagina={setPagina}
+      handleLogout={handleLogout}
+      title="Sistemas"
+    >
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-text-primary mb-2">
+            Bem-vindo, {usuario.nome}
+          </h2>
+          <p className="text-text-secondary">
+            Selecione um dos sistemas abaixo para comecar
+          </p>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          {visibleModules.map((module) => (
+            <Card
+              key={module.id}
+              hoverable
+              onClick={() => setPagina(module.id)}
+              className="group"
+            >
+              <div className="flex items-start gap-4">
+                <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-accent/10 text-accent group-hover:bg-accent/20 transition-colors">
+                  {module.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-semibold text-text-primary group-hover:text-accent transition-colors">
+                    {module.title}
+                  </h3>
+                  <p className="text-sm text-text-secondary mt-1">
+                    {module.description}
+                  </p>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {visibleModules.length === 0 && (
+          <Card>
+            <p className="text-center text-text-secondary py-8">
+              Voce nao tem permissao para acessar nenhum sistema.
+              <br />
+              Entre em contato com o administrador.
+            </p>
+          </Card>
+        )}
+      </div>
+    </Layout>
+  );
 }
-
-const styles: { [key:string]: React.CSSProperties } = {
-
-  container:{
-    minHeight:"100vh",
-    backgroundImage:"url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')",
-    backgroundSize:"cover",
-    backgroundPosition:"center"
-  },
-
-  overlay:{
-    minHeight:"100vh",
-    background:"rgba(0,0,0,0.75)",
-    padding:"20px",
-    color:"white"
-  },
-
-  header:{
-    display:"flex",
-    justifyContent:"space-between",
-    alignItems:"flex-start",
-    flexWrap:"wrap",
-    gap:10,
-    marginBottom:30
-  },
-
-  titleArea:{
-    textAlign:"center",
-    marginBottom:25
-  },
-
-  grid:{
-    maxWidth:500,
-    margin:"0 auto",
-    display:"grid",
-    gap:12,
-    gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))"
-  },
-
-  button:{
-    padding:16,
-    fontSize:15,
-    borderRadius:10,
-    border:"1px solid rgba(255,255,255,0.25)",
-    backgroundColor:"rgba(255,255,255,0.12)",
-    color:"white",
-    cursor:"pointer",
-    backdropFilter:"blur(6px)",
-    whiteSpace:"nowrap"
-  },
-
-  logoutButton:{
-    border:"1px solid rgba(255,0,0,0.6)",
-    backgroundColor:"rgba(192,57,43,0.45)",
-    padding:"10px 18px",
-    minWidth:100
-  }
-
-};
