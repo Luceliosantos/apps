@@ -2,9 +2,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "../supabase";
 import { Pagina } from "../App";
 
-import { Save, Trash2, Key, UserPlus } from "lucide-react";
-import Button from "../components/ui/Button";
-
 type Props = {
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
 };
@@ -254,12 +251,12 @@ export default function Usuarios({ setPagina }: Props) {
 
           <h2>Administração de Usuários</h2>
 
-          <Button
-            variant="secondary"
+          <button
+            style={styles.secondaryButton}
             onClick={() => setPagina("menu")}
           >
             Voltar
-          </Button>
+          </button>
 
         </div>
 
@@ -283,12 +280,12 @@ export default function Usuarios({ setPagina }: Props) {
               style={styles.input}
             />
 
-            <Button
-              icon={<UserPlus size={18}/>}
+            <button
+              style={styles.primaryButton}
               onClick={cadastrarUsuario}
             >
               Cadastrar
-            </Button>
+            </button>
 
           </div>
 
@@ -326,16 +323,13 @@ export default function Usuarios({ setPagina }: Props) {
                 {sistemas.map(sistema => {
 
                   const opcoes =
-                    tipos.filter(
-                      t => t.sistema === sistema
-                    );
+                    tipos.filter(t => t.sistema === sistema);
 
                   return (
 
                     <td key={sistema} style={styles.td}>
 
                       <select
-
                         value={
                           permissoes[String(u.id)]?.[sistema]
                           || (sistema === "global"
@@ -376,33 +370,28 @@ export default function Usuarios({ setPagina }: Props) {
 
                 <td style={styles.td}>
 
-                  <div className="flex gap-2">
+                  <div style={styles.actions}>
 
-                    <Button
-                      size="sm"
+                    <button
+                      style={styles.primaryButtonSmall}
                       onClick={() => salvarUsuario(u.id)}
-                      icon={<Save size={14}/>}
                     >
                       Salvar
-                    </Button>
+                    </button>
 
-                    <Button
-                      size="sm"
-                      variant="secondary"
+                    <button
+                      style={styles.secondaryButtonSmall}
                       onClick={() => resetarSenha(u.id, u.matricula)}
-                      icon={<Key size={14}/>}
                     >
                       Senha
-                    </Button>
+                    </button>
 
-                    <Button
-                      size="sm"
-                      variant="danger"
+                    <button
+                      style={styles.dangerButtonSmall}
                       onClick={() => excluirUsuario(u.id)}
-                      icon={<Trash2 size={14}/>}
                     >
                       Excluir
-                    </Button>
+                    </button>
 
                   </div>
 
@@ -462,6 +451,12 @@ const styles:{[key:string]:React.CSSProperties} = {
     flexWrap:"wrap"
   },
 
+  actions:{
+    display:"flex",
+    gap:6,
+    justifyContent:"center"
+  },
+
   input:{
     padding:"8px 10px",
     borderRadius:6,
@@ -496,6 +491,54 @@ const styles:{[key:string]:React.CSSProperties} = {
     borderRadius:5,
     border:"1px solid #ccc",
     minWidth:90
+  },
+
+  primaryButton:{
+    padding:"8px 14px",
+    borderRadius:8,
+    border:"1px solid #1e3c72",
+    background:"#1e3c72",
+    color:"white",
+    cursor:"pointer"
+  },
+
+  secondaryButton:{
+    padding:"8px 14px",
+    borderRadius:8,
+    border:"1px solid #6c757d",
+    background:"#6c757d",
+    color:"white",
+    cursor:"pointer"
+  },
+
+  primaryButtonSmall:{
+    padding:"6px 10px",
+    borderRadius:6,
+    border:"1px solid #1e3c72",
+    background:"#1e3c72",
+    color:"white",
+    cursor:"pointer",
+    fontSize:13
+  },
+
+  secondaryButtonSmall:{
+    padding:"6px 10px",
+    borderRadius:6,
+    border:"1px solid #6c757d",
+    background:"#6c757d",
+    color:"white",
+    cursor:"pointer",
+    fontSize:13
+  },
+
+  dangerButtonSmall:{
+    padding:"6px 10px",
+    borderRadius:6,
+    border:"1px solid #c0392b",
+    background:"#c0392b",
+    color:"white",
+    cursor:"pointer",
+    fontSize:13
   }
 
 };
