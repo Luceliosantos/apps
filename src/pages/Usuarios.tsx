@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { supabase } from "../supabase";
 import { Pagina } from "../App";
 
+import { Save, Trash2, Key, UserPlus } from "lucide-react";
+import Button from "../components/ui/Button";
+
 type Props = {
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
 };
@@ -251,12 +254,12 @@ export default function Usuarios({ setPagina }: Props) {
 
           <h2>Administração de Usuários</h2>
 
-          <button
-            style={styles.button}
+          <Button
+            variant="secondary"
             onClick={() => setPagina("menu")}
           >
             Voltar
-          </button>
+          </Button>
 
         </div>
 
@@ -280,12 +283,12 @@ export default function Usuarios({ setPagina }: Props) {
               style={styles.input}
             />
 
-            <button
-              style={styles.button}
+            <Button
+              icon={<UserPlus size={18}/>}
               onClick={cadastrarUsuario}
             >
               Cadastrar
-            </button>
+            </Button>
 
           </div>
 
@@ -304,9 +307,7 @@ export default function Usuarios({ setPagina }: Props) {
                 <th key={s} style={styles.th}>{s}</th>
               ))}
 
-              <th style={styles.th}>Salvar</th>
-              <th style={styles.th}>Excluir</th>
-              <th style={styles.th}>Senha</th>
+              <th style={styles.th}>Ações</th>
 
             </tr>
 
@@ -375,34 +376,35 @@ export default function Usuarios({ setPagina }: Props) {
 
                 <td style={styles.td}>
 
-                  <button
-                    style={styles.button}
-                    onClick={() => salvarUsuario(u.id)}
-                  >
-                    Aplicar
-                  </button>
+                  <div className="flex gap-2">
 
-                </td>
+                    <Button
+                      size="sm"
+                      onClick={() => salvarUsuario(u.id)}
+                      icon={<Save size={14}/>}
+                    >
+                      Salvar
+                    </Button>
 
-                <td style={styles.td}>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => resetarSenha(u.id, u.matricula)}
+                      icon={<Key size={14}/>}
+                    >
+                      Senha
+                    </Button>
 
-                  <button
-                    style={styles.deleteButton}
-                    onClick={() => excluirUsuario(u.id)}
-                  >
-                    Excluir
-                  </button>
+                    <Button
+                      size="sm"
+                      variant="danger"
+                      onClick={() => excluirUsuario(u.id)}
+                      icon={<Trash2 size={14}/>}
+                    >
+                      Excluir
+                    </Button>
 
-                </td>
-
-                <td style={styles.td}>
-
-                  <button
-                    style={styles.resetButton}
-                    onClick={() => resetarSenha(u.id, u.matricula)}
-                  >
-                    Resetar
-                  </button>
+                  </div>
 
                 </td>
 
@@ -494,36 +496,6 @@ const styles:{[key:string]:React.CSSProperties} = {
     borderRadius:5,
     border:"1px solid #ccc",
     minWidth:90
-  },
-
-  button:{
-    padding:"7px 12px",
-    borderRadius:8,
-    border:"1px solid #1e3c72",
-    background:"#1e3c72",
-    color:"white",
-    cursor:"pointer",
-    whiteSpace:"nowrap"
-  },
-
-  deleteButton:{
-    padding:"7px 12px",
-    borderRadius:8,
-    border:"1px solid #c0392b",
-    background:"#c0392b",
-    color:"white",
-    cursor:"pointer",
-    whiteSpace:"nowrap"
-  },
-
-  resetButton:{
-    padding:"7px 12px",
-    borderRadius:8,
-    border:"1px solid #e67e22",
-    background:"#e67e22",
-    color:"white",
-    cursor:"pointer",
-    whiteSpace:"nowrap"
   }
 
 };
