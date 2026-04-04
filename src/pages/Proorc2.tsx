@@ -38,6 +38,7 @@ export default function Proorc2({ setPagina }:Props){
 
   },[nota])
 
+
   useEffect(()=>{
 
     if(!nota) return
@@ -45,6 +46,7 @@ export default function Proorc2({ setPagina }:Props){
     carregarNota()
 
   },[nota])
+
 
   useEffect(()=>{
 
@@ -60,6 +62,7 @@ export default function Proorc2({ setPagina }:Props){
     buscarMateriais()
 
   },[codigo])
+
 
 
   async function buscarNotas(){
@@ -79,15 +82,16 @@ export default function Proorc2({ setPagina }:Props){
   }
 
 
+
   async function buscarMateriais(){
 
     const { data } = await supabase
 
       .from("vw_proorc_materiais")
 
-      .select("*")
+      .select("codigo, descricao, tipo")
 
-      .ilike("codigo",`${codigo}%`)
+      .ilike("codigo",`%${codigo}%`)
 
       .limit(10)
 
@@ -96,9 +100,11 @@ export default function Proorc2({ setPagina }:Props){
   }
 
 
+
   async function selecionarMaterial(cod:string){
 
     setCodigo(cod)
+
     setMateriaisSug([])
 
     const { data } = await supabase
@@ -136,6 +142,7 @@ export default function Proorc2({ setPagina }:Props){
   }
 
 
+
   async function carregarNota(){
 
     const { data } = await supabase
@@ -163,6 +170,7 @@ export default function Proorc2({ setPagina }:Props){
     setExplodido(exp || [])
 
   }
+
 
 
   async function salvar(){
@@ -214,6 +222,7 @@ export default function Proorc2({ setPagina }:Props){
   }
 
 
+
   async function excluir(id:string){
 
     await supabase
@@ -229,15 +238,19 @@ export default function Proorc2({ setPagina }:Props){
   }
 
 
+
   function editar(linha:any){
 
     setCodigo(linha.codigo)
+
     setQuantidade(linha.quantidade)
+
     setAplicacao(linha.aplicacao)
 
     setEditando(linha.id)
 
   }
+
 
 
   function formatarData(data?:string){
@@ -251,6 +264,7 @@ export default function Proorc2({ setPagina }:Props){
   }
 
 
+
   const podeSalvar =
 
     nota &&
@@ -259,11 +273,14 @@ export default function Proorc2({ setPagina }:Props){
     aplicacao
 
 
+
   return(
 
     <div style={styles.container}>
 
       <div style={styles.overlay}>
+
+
 
         <div style={styles.header}>
 
@@ -282,6 +299,7 @@ export default function Proorc2({ setPagina }:Props){
           </button>
 
         </div>
+
 
 
         <div style={styles.card}>
@@ -313,6 +331,7 @@ export default function Proorc2({ setPagina }:Props){
                   onClick={()=>{
 
                     setNota(n.nota)
+
                     setNotasSug([])
 
                   }}
@@ -332,279 +351,390 @@ export default function Proorc2({ setPagina }:Props){
         </div>
 
 
-        <div style={styles.linhaCadastro}>
 
-          <input
+        <div style={styles.boxCadastro}>
 
-            style={styles.material}
 
-            placeholder="material ou kit"
 
-            value={codigo}
+          <div style={styles.linhaCadastro}>
 
-            onChange={(e)=>setCodigo(e.target.value)}
 
-          />
 
-          {materiaisSug.length>0 &&(
+            <input
 
-            <div style={styles.sugestoes}>
+              style={styles.material}
 
-              {materiaisSug.map(m=>(
+              placeholder="material ou kit"
 
-                <div
+              value={codigo}
 
-                  key={m.codigo}
+              onChange={(e)=>setCodigo(e.target.value)}
 
-                  style={styles.itemSug}
+            />
 
-                  onClick={()=>selecionarMaterial(m.codigo)}
 
-                >
 
-                  {m.codigo} - {m.descricao}
+            {materiaisSug.length>0 &&(
 
-                </div>
+              <div style={styles.sugestoes}>
 
-              ))}
+                {materiaisSug.map(m=>(
+
+                  <div
+
+                    key={m.codigo}
+
+                    style={styles.itemSug}
+
+                    onClick={()=>selecionarMaterial(m.codigo)}
+
+                  >
+
+                    {m.codigo} - {m.descricao}
+
+                  </div>
+
+                ))}
+
+              </div>
+
+            )}
+
+
+
+            <input
+
+              style={styles.qtd}
+
+              type="number"
+
+              placeholder="qtd"
+
+              value={quantidade}
+
+              onChange={(e)=>setQuantidade(e.target.value)}
+
+            />
+
+
+
+            <select
+
+              style={styles.aplicacao}
+
+              value={aplicacao}
+
+              onChange={(e)=>setAplicacao(e.target.value)}
+
+            >
+
+              <option value="N">N</option>
+              <option value="U">U</option>
+              <option value="S">S</option>
+
+            </select>
+
+
+
+            <button
+
+              style={styles.salvar}
+
+              disabled={!podeSalvar}
+
+              onClick={salvar}
+
+            >
+
+              {editando ? "alterar" : "gravar"}
+
+            </button>
+
+
+
+          </div>
+
+
+
+          {material && (
+
+            <div style={styles.materialInfo}>
+
+              {material.descricao} ({material.tipo})
 
             </div>
 
           )}
 
 
-          <input
 
-            style={styles.qtd}
+          {estrutura.length > 0 && (
 
-            type="number"
-
-            placeholder="qtd"
-
-            value={quantidade}
-
-            onChange={(e)=>setQuantidade(e.target.value)}
-
-          />
+            <div style={styles.subBox}>
 
 
-          <select
 
-            style={styles.aplicacao}
-
-            value={aplicacao}
-
-            onChange={(e)=>setAplicacao(e.target.value)}
-
-          >
-
-            <option value="N">N</option>
-            <option value="U">U</option>
-            <option value="S">S</option>
-
-          </select>
+              <strong>estrutura do kit</strong>
 
 
-          <button
 
-            style={styles.salvar}
-
-            disabled={!podeSalvar}
-
-            onClick={salvar}
-
-          >
-
-            {editando ? "alterar" : "gravar"}
-
-          </button>
-
-        </div>
+              <table style={styles.tabelaPadrao}>
 
 
-        {material && (
 
-          <div style={styles.materialInfo}>
-
-            {material.descricao} ({material.tipo})
-
-          </div>
-
-        )}
+                <thead>
 
 
-        {estrutura.length > 0 && (
 
-          <div style={styles.card}>
+                  <tr>
 
-            <strong>estrutura do kit</strong>
+                    <th style={styles.thPadrao}>codigo</th>
+                    <th style={styles.thPadrao}>descricao</th>
+                    <th style={styles.thPadrao}>qtd</th>
+
+                  </tr>
+
+
+
+                </thead>
+
+
+
+                <tbody>
+
+
+
+                  {estrutura.map(i => (
+
+                    <tr key={i.codigo_item}>
+
+
+
+                      <td style={styles.tdPadrao}>{i.codigo_item}</td>
+
+                      <td style={styles.tdPadrao}>{i.item}</td>
+
+                      <td style={styles.tdPadrao}>{i.quantidade}</td>
+
+
+
+                    </tr>
+
+                  ))}
+
+
+
+                </tbody>
+
+
+
+              </table>
+
+
+
+            </div>
+
+          )}
+
+
+
+          <div style={styles.subBox}>
+
+
+
+            <strong>registros cadastrados</strong>
+
+
 
             <table style={styles.tabelaPadrao}>
 
+
+
               <thead>
+
+
 
                 <tr>
 
-                  <th>codigo</th>
-                  <th>descricao</th>
-                  <th>qtd</th>
+
+
+                  <th style={styles.thPadrao}>codigo</th>
+                  <th style={styles.thPadrao}>descricao</th>
+                  <th style={styles.thPadrao}>qtd</th>
+                  <th style={styles.thPadrao}>apl</th>
+
+                  <th style={styles.thPadrao}>criado por</th>
+                  <th style={styles.thPadrao}>data criação</th>
+
+                  <th style={styles.thPadrao}>editado por</th>
+                  <th style={styles.thPadrao}>data edição</th>
+
+                  <th style={styles.thPadrao}></th>
+
+
 
                 </tr>
 
+
+
               </thead>
+
+
 
               <tbody>
 
-                {estrutura.map(i => (
 
-                  <tr key={i.codigo_item}>
 
-                    <td>{i.codigo_item}</td>
+                {cadastro.map(x => (
 
-                    <td>{i.item}</td>
+                  <tr key={x.id}>
 
-                    <td>{i.quantidade}</td>
+
+
+                    <td style={styles.tdPadrao}>{x.codigo}</td>
+
+                    <td style={styles.tdPadrao}>{x.descricao}</td>
+
+                    <td style={styles.tdPadrao}>{x.quantidade}</td>
+
+                    <td style={styles.tdPadrao}>{x.aplicacao}</td>
+
+                    <td style={styles.tdPadrao}>{x.criado_por}</td>
+
+                    <td style={styles.tdPadrao}>{formatarData(x.created_at)}</td>
+
+                    <td style={styles.tdPadrao}>{x.editado_por}</td>
+
+                    <td style={styles.tdPadrao}>{formatarData(x.updated_at)}</td>
+
+
+
+                    <td style={styles.tdPadrao}>
+
+
+
+                      <button
+
+                        style={styles.btnGrid}
+
+                        onClick={()=>editar(x)}
+
+                      >
+
+                        editar
+
+                      </button>
+
+
+
+                      <button
+
+                        style={styles.btnExcluir}
+
+                        onClick={()=>excluir(x.id)}
+
+                      >
+
+                        excluir
+
+                      </button>
+
+
+
+                    </td>
+
+
 
                   </tr>
 
                 ))}
 
+
+
               </tbody>
+
+
 
             </table>
 
+
+
           </div>
 
-        )}
 
-
-        <div style={styles.card}>
-
-          <strong>registros cadastrados</strong>
-
-          <table style={styles.tabelaPadrao}>
-
-            <thead>
-
-              <tr>
-
-                <th>codigo</th>
-                <th>descricao</th>
-                <th>qtd</th>
-                <th>apl</th>
-
-                <th>criado por</th>
-                <th>data criação</th>
-
-                <th>editado por</th>
-                <th>data edição</th>
-
-                <th></th>
-
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              {cadastro.map(x => (
-
-                <tr key={x.id}>
-
-                  <td>{x.codigo}</td>
-
-                  <td>{x.descricao}</td>
-
-                  <td>{x.quantidade}</td>
-
-                  <td>{x.aplicacao}</td>
-
-                  <td>{x.criado_por}</td>
-
-                  <td>{formatarData(x.created_at)}</td>
-
-                  <td>{x.editado_por}</td>
-
-                  <td>{formatarData(x.updated_at)}</td>
-
-                  <td>
-
-                    <button
-
-                      style={styles.btnGrid}
-
-                      onClick={()=>editar(x)}
-
-                    >
-
-                      editar
-
-                    </button>
-
-                    <button
-
-                      style={styles.btnExcluir}
-
-                      onClick={()=>excluir(x.id)}
-
-                    >
-
-                      excluir
-
-                    </button>
-
-                  </td>
-
-                </tr>
-
-              ))}
-
-            </tbody>
-
-          </table>
 
         </div>
 
 
+
         <div style={styles.card}>
+
+
 
           <strong>itens consolidados</strong>
 
+
+
           <table style={styles.tabelaPadrao}>
+
+
 
             <thead>
 
+
+
               <tr>
 
-                <th>codigo</th>
-                <th>descricao</th>
-                <th>total</th>
+
+
+                <th style={styles.thPadrao}>codigo</th>
+                <th style={styles.thPadrao}>descricao</th>
+                <th style={styles.thPadrao}>total</th>
+
+
 
               </tr>
 
+
+
             </thead>
 
+
+
             <tbody>
+
+
 
               {explodido.map(x => (
 
                 <tr key={x.codigo}>
 
-                  <td>{x.codigo}</td>
 
-                  <td>{x.descricao}</td>
 
-                  <td>{x.quantidade}</td>
+                  <td style={styles.tdPadrao}>{x.codigo}</td>
+
+                  <td style={styles.tdPadrao}>{x.descricao}</td>
+
+                  <td style={styles.tdPadrao}>{x.quantidade}</td>
+
+
 
                 </tr>
 
               ))}
 
+
+
             </tbody>
+
+
 
           </table>
 
+
+
         </div>
+
 
 
       </div>
@@ -614,6 +744,7 @@ export default function Proorc2({ setPagina }:Props){
   )
 
 }
+
 
 
 const styles:any = {
@@ -630,6 +761,8 @@ const styles:any = {
 
   },
 
+
+
   overlay:{
 
     minHeight:"100vh",
@@ -642,6 +775,8 @@ const styles:any = {
 
   },
 
+
+
   header:{
 
     display:"flex",
@@ -653,6 +788,8 @@ const styles:any = {
     marginBottom:20
 
   },
+
+
 
   voltar:{
 
@@ -670,6 +807,8 @@ const styles:any = {
 
   },
 
+
+
   card:{
 
     background:"white",
@@ -684,6 +823,50 @@ const styles:any = {
 
   },
 
+
+
+  boxCadastro:{
+
+    background:"white",
+
+    color:"black",
+
+    padding:14,
+
+    borderRadius:14,
+
+    marginBottom:14,
+
+    boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
+
+  },
+
+
+
+  subBox:{
+
+    marginTop:10,
+
+    paddingTop:10,
+
+    borderTop:"1px solid #eee"
+
+  },
+
+
+
+  materialInfo:{
+
+    marginTop:6,
+
+    fontSize:13,
+
+    color:"#555"
+
+  },
+
+
+
   linhaCadastro:{
 
     display:"flex",
@@ -696,6 +879,8 @@ const styles:any = {
 
   },
 
+
+
   inputNota:{
 
     width:200,
@@ -704,11 +889,19 @@ const styles:any = {
 
   },
 
+
+
   material:{ width:"25%" },
+
+
 
   qtd:{ width:"8%" },
 
+
+
   aplicacao:{ width:"8%" },
+
+
 
   salvar:{
 
@@ -726,29 +919,45 @@ const styles:any = {
 
   },
 
+
+
   sugestoes:{
 
     background:"white",
 
     border:"1px solid #ccc",
 
+    borderRadius:8,
+
     position:"absolute",
 
     zIndex:999,
 
-    width:"300px"
+    width:"420px",
+
+    maxHeight:220,
+
+    overflowY:"auto",
+
+    boxShadow:"0 4px 12px rgba(0,0,0,0.25)"
 
   },
+
+
 
   itemSug:{
 
-    padding:6,
+    padding:8,
 
     cursor:"pointer",
 
-    borderBottom:"1px solid #eee"
+    borderBottom:"1px solid #eee",
+
+    fontSize:13
 
   },
+
+
 
   tabelaPadrao:{
 
@@ -756,9 +965,41 @@ const styles:any = {
 
     borderCollapse:"collapse",
 
-    fontSize:13
+    fontSize:13,
+
+    marginTop:6
 
   },
+
+
+
+  thPadrao:{
+
+    border:"1px solid #bcd4f6",
+
+    background:"#e8f1ff",
+
+    padding:"6px",
+
+    fontWeight:"bold",
+
+    textAlign:"center"
+
+  },
+
+
+
+  tdPadrao:{
+
+    border:"1px solid #d6e4ff",
+
+    padding:"6px",
+
+    textAlign:"center"
+
+  },
+
+
 
   btnGrid:{
 
@@ -777,6 +1018,8 @@ const styles:any = {
     cursor:"pointer"
 
   },
+
+
 
   btnExcluir:{
 
