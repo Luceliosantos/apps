@@ -339,11 +339,37 @@ export default function Proorc2({ setPagina }:Props){
           <div style={styles.gridCadastro}>
 
             <input
-              placeholder="material ou kit"
-              style={styles.input}
-              value={codigo}
-              onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
-            />
+  placeholder="material ou kit"
+  style={styles.input}
+  value={codigo}
+  onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
+
+  onKeyDown={async (e)=>{
+
+    if(e.key === "Enter" || e.key === "Tab"){
+
+      e.preventDefault()
+
+      await confirmarCodigoDigitado()
+
+      setMateriaisSug([])
+
+    }
+
+  }}
+
+  onBlur={async ()=>{
+
+    if(!material && codigo){
+
+      await confirmarCodigoDigitado()
+
+      setMateriaisSug([])
+
+    }
+
+  }}
+/>
 
             <input
               placeholder="qtd"
