@@ -343,15 +343,6 @@ export default function Proorc2({ setPagina }:Props){
               style={styles.input}
               value={codigo}
               onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
-              onKeyDown={(e)=>{
-
-                if(e.key === "Enter" || e.key === "Tab"){
-
-                  confirmarCodigoDigitado()
-
-                }
-
-              }}
             />
 
             <input
@@ -383,11 +374,73 @@ export default function Proorc2({ setPagina }:Props){
 
           </div>
 
+          {materiaisSug.length>0 &&(
+
+            <div style={styles.sugestoesFixas}>
+
+              {materiaisSug.map(m=>(
+
+                <div
+                  key={m.codigo}
+                  style={styles.itemSug}
+                  onClick={()=>selecionarMaterial(m.codigo)}
+                >
+                  {m.codigo} - {m.descricao}
+                </div>
+
+              ))}
+
+            </div>
+
+          )}
+
           {material && (
 
             <div style={styles.infoMaterial}>
 
               {material.descricao} ({material.tipo})
+
+            </div>
+
+          )}
+
+          {estrutura.length>0 &&(
+
+            <div style={styles.tableContainer}>
+
+              <strong>estrutura do kit</strong>
+
+              <table style={styles.table}>
+
+                <thead>
+
+                  <tr>
+
+                    <th style={styles.th}>codigo</th>
+                    <th style={styles.th}>descricao</th>
+                    <th style={styles.th}>qtd</th>
+
+                  </tr>
+
+                </thead>
+
+                <tbody>
+
+                  {estrutura.map(i=>(
+
+                    <tr key={i.codigo_item}>
+
+                      <td style={styles.td}>{i.codigo_item}</td>
+                      <td style={styles.td}>{i.item}</td>
+                      <td style={styles.td}>{i.quantidade}</td>
+
+                    </tr>
+
+                  ))}
+
+                </tbody>
+
+              </table>
 
             </div>
 
@@ -403,10 +456,12 @@ export default function Proorc2({ setPagina }:Props){
 
               <tr>
 
-                <th style={styles.th}>Código</th>
-                <th style={styles.th}>Descrição</th>
-                <th style={styles.th}>Qtd</th>
-                <th style={styles.th}>Apl</th>
+                <th style={styles.th}>codigo</th>
+                <th style={styles.th}>descricao</th>
+                <th style={styles.th}>qtd</th>
+                <th style={styles.th}>apl</th>
+                <th style={styles.th}>criado</th>
+                <th style={styles.th}>editado</th>
                 <th style={styles.th}></th>
 
               </tr>
@@ -425,13 +480,21 @@ export default function Proorc2({ setPagina }:Props){
                   <td style={styles.td}>{x.aplicacao}</td>
 
                   <td style={styles.td}>
+                    {formatarData(x.created_at)}
+                  </td>
+
+                  <td style={styles.td}>
+                    {formatarData(x.updated_at)}
+                  </td>
+
+                  <td style={styles.td}>
 
                     <button
                       {...propsBotao()}
                       style={styles.button}
                       onClick={()=>editar(x)}
                     >
-                      Editar
+                      editar
                     </button>
 
                     <button
@@ -439,7 +502,7 @@ export default function Proorc2({ setPagina }:Props){
                       style={styles.buttonDanger}
                       onClick={()=>excluir(x.id)}
                     >
-                      Excluir
+                      excluir
                     </button>
 
                   </td>
@@ -462,9 +525,9 @@ export default function Proorc2({ setPagina }:Props){
 
               <tr>
 
-                <th style={styles.th}>Código</th>
-                <th style={styles.th}>Descrição</th>
-                <th style={styles.th}>Total</th>
+                <th style={styles.th}>codigo</th>
+                <th style={styles.th}>descricao</th>
+                <th style={styles.th}>total</th>
 
               </tr>
 
@@ -498,7 +561,7 @@ export default function Proorc2({ setPagina }:Props){
 
 }
 
-const styles:any = {
+const styles:any={
 
 container:{
 minHeight:"100vh",
@@ -510,7 +573,7 @@ backgroundPosition:"center"
 overlay:{
 minHeight:"100vh",
 backgroundColor:"rgba(0,0,0,0.55)",
-padding:"20px"
+padding:20
 },
 
 header:{
@@ -525,8 +588,7 @@ panel:{
 background:"rgba(255,255,255,0.1)",
 padding:15,
 borderRadius:10,
-marginBottom:20,
-backdropFilter:"blur(4px)"
+marginBottom:20
 },
 
 gridCadastro:{
@@ -538,8 +600,7 @@ gap:10
 input:{
 padding:"8px 10px",
 borderRadius:8,
-border:"1px solid #ccc",
-fontSize:14
+border:"1px solid #ccc"
 },
 
 button:{
@@ -548,21 +609,19 @@ borderRadius:8,
 border:"1px solid rgba(255,255,255,0.35)",
 backgroundColor:"rgba(255,255,255,0.15)",
 color:"white",
-cursor:"pointer",
-boxShadow:"0 2px 4px rgba(0,0,0,0.3)"
+cursor:"pointer"
 },
 
 buttonDanger:{
 padding:"8px 12px",
 borderRadius:8,
-border:"1px solid rgba(255,255,255,0.35)",
 backgroundColor:"rgba(192,57,43,0.7)",
 color:"white",
-cursor:"pointer"
+border:"none"
 },
 
 tableContainer:{
-backgroundColor:"white",
+background:"white",
 borderRadius:10,
 padding:10,
 marginBottom:20,
@@ -576,19 +635,14 @@ borderCollapse:"collapse"
 
 th:{
 border:"1px solid #ccc",
-padding:"6px 8px",
-backgroundColor:"#f2f2f2"
+background:"#f2f2f2",
+padding:6
 },
 
 td:{
 border:"1px solid #ccc",
-padding:"6px 8px",
+padding:6,
 textAlign:"center"
-},
-
-infoMaterial:{
-marginTop:8,
-color:"white"
 },
 
 sugestoesFixas:{
@@ -605,6 +659,11 @@ itemSug:{
 padding:6,
 borderBottom:"1px solid #eee",
 cursor:"pointer"
+},
+
+infoMaterial:{
+color:"white",
+marginTop:6
 }
 
 }
