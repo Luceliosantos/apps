@@ -268,25 +268,27 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
         </div>
 
-        <div style={styles.card}>
+        <div style={styles.grupoNota}>
 
-          nota
+  <span style={styles.labelNota}>
+    NOTA
+  </span>
 
-          <input
-            style={styles.inputNota}
-            value={nota}
-            onChange={(e)=>validarNota(e.target.value)}
-          />
+  <input
+    style={styles.inputConsulta}
+    value={nota}
+    onChange={(e)=>validarNota(e.target.value)}
+  />
 
-          {erroNota && !notaValida &&(
+  {erroNota && !notaValida &&(
 
-            <div style={styles.erro}>
-              {erroNota}
-            </div>
+    <div style={styles.erroNota}>
+      {erroNota}
+    </div>
 
-          )}
+  )}
 
-        </div>
+</div>
 
         {notaValida && (
 
@@ -536,6 +538,36 @@ marginBottom:20
 boasVindas:{
 fontSize:18,
 fontWeight:"bold"
+},
+grupoNota:{
+display:"flex",
+alignItems:"center",
+gap:10,
+backgroundColor:"white",
+padding:"8px 12px",
+borderRadius:8,
+marginBottom:12,
+width:"fit-content"
+},
+
+labelNota:{
+fontWeight:"bold",
+fontSize:14
+},
+
+inputConsulta:{
+padding:"8px 10px",
+borderRadius:8,
+border:"1px solid #ccc",
+fontSize:14,
+width:180,
+textAlign:"center"
+},
+
+erroNota:{
+fontSize:12,
+color:"#c0392b",
+marginLeft:10
 },
 voltar:{
 padding:"8px 14px",
