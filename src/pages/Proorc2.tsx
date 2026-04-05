@@ -96,13 +96,41 @@ export default function Proorc2({ setPagina }:Props){
 
       .select("codigo, descricao, tipo")
 
-      .ilike("codigo",`%${codigo}%`)
+      .ilike("codigo",`${codigo}%`)
 
       .order("codigo")
 
       .limit(20)
 
     setMateriaisSug(data || [])
+
+  }
+
+
+
+  async function confirmarCodigoDigitado(){
+
+    if(!codigo) return
+
+    const { data } = await supabase
+
+      .from("vw_proorc_materiais")
+
+      .select("*")
+
+      .ilike("codigo",`${codigo}%`)
+
+      .order("codigo")
+
+      .limit(1)
+
+      .maybeSingle()
+
+    if(data){
+
+      selecionarMaterial(data.codigo)
+
+    }
 
   }
 
@@ -182,6 +210,16 @@ export default function Proorc2({ setPagina }:Props){
 
   async function salvar(){
 
+    if(!material){
+
+      await confirmarCodigoDigitado()
+
+    }
+
+    if(!material) return
+
+
+
     if(editando){
 
       await supabase
@@ -231,6 +269,8 @@ export default function Proorc2({ setPagina }:Props){
     setQuantidade("")
 
     setAplicacao("N")
+
+    setMaterial(null)
 
 
 
@@ -302,19 +342,13 @@ export default function Proorc2({ setPagina }:Props){
 
     <div style={styles.container}>
 
-
-
       <div style={styles.overlay}>
 
 
 
         <div style={styles.header}>
 
-
-
           <h2>PROORC 2.0</h2>
-
-
 
           <button
 
@@ -328,19 +362,13 @@ export default function Proorc2({ setPagina }:Props){
 
           </button>
 
-
-
         </div>
 
 
 
         <div style={styles.card}>
 
-
-
           nota
-
-
 
           <input
 
@@ -356,15 +384,9 @@ export default function Proorc2({ setPagina }:Props){
 
           {notasSug.length>0 &&(
 
-
-
             <div style={styles.sugestoesFixas}>
 
-
-
               {notasSug.map(n=>(
-
-
 
                 <div
 
@@ -382,27 +404,15 @@ export default function Proorc2({ setPagina }:Props){
 
                 >
 
-
-
                   {n.nota}
-
-
 
                 </div>
 
-
-
               ))}
-
-
 
             </div>
 
-
-
           )}
-
-
 
         </div>
 
@@ -424,7 +434,17 @@ export default function Proorc2({ setPagina }:Props){
 
               value={codigo}
 
-              onChange={(e)=>setCodigo(e.target.value)}
+              onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
+
+              onKeyDown={(e)=>{
+
+                if(e.key === "Enter" || e.key === "Tab"){
+
+                  confirmarCodigoDigitado()
+
+                }
+
+              }}
 
             />
 
@@ -432,15 +452,9 @@ export default function Proorc2({ setPagina }:Props){
 
             {materiaisSug.length>0 &&(
 
-
-
               <div style={styles.sugestoesFixas}>
 
-
-
                 {materiaisSug.map(m=>(
-
-
 
                   <div
 
@@ -452,23 +466,13 @@ export default function Proorc2({ setPagina }:Props){
 
                   >
 
-
-
                     {m.codigo} - {m.descricao}
-
-
 
                   </div>
 
-
-
                 ))}
 
-
-
               </div>
-
-
 
             )}
 
@@ -500,15 +504,9 @@ export default function Proorc2({ setPagina }:Props){
 
             >
 
-
-
               <option value="N">N</option>
-
               <option value="U">U</option>
-
               <option value="S">S</option>
-
-
 
             </select>
 
@@ -524,11 +522,7 @@ export default function Proorc2({ setPagina }:Props){
 
             >
 
-
-
               {editando ? "alterar" : "gravar"}
-
-
 
             </button>
 
@@ -540,19 +534,11 @@ export default function Proorc2({ setPagina }:Props){
 
           {material && (
 
-
-
             <div style={styles.materialInfo}>
-
-
 
               {material.descricao} ({material.tipo})
 
-
-
             </div>
-
-
 
           )}
 
@@ -560,87 +546,43 @@ export default function Proorc2({ setPagina }:Props){
 
           {estrutura.length > 0 && (
 
-
-
             <div style={styles.subBox}>
-
-
 
               <strong>estrutura do kit</strong>
 
-
-
               <table style={styles.tabelaPadrao}>
-
-
 
                 <thead>
 
-
-
                   <tr>
 
-
-
                     <th style={styles.thPadrao}>codigo</th>
-
                     <th style={styles.thPadrao}>descricao</th>
-
                     <th style={styles.thPadrao}>qtd</th>
-
-
 
                   </tr>
 
-
-
                 </thead>
-
-
 
                 <tbody>
 
-
-
                   {estrutura.map(i => (
-
-
 
                     <tr key={i.codigo_item}>
 
-
-
                       <td style={styles.tdPadrao}>{i.codigo_item}</td>
-
-
-
                       <td style={styles.tdPadrao}>{i.item}</td>
-
-
-
                       <td style={styles.tdPadrao}>{i.quantidade}</td>
-
-
 
                     </tr>
 
-
-
                   ))}
-
-
 
                 </tbody>
 
-
-
               </table>
 
-
-
             </div>
-
-
 
           )}
 
@@ -648,157 +590,75 @@ export default function Proorc2({ setPagina }:Props){
 
           <div style={styles.subBox}>
 
-
-
             <strong>registros cadastrados</strong>
-
-
 
             <table style={styles.tabelaPadrao}>
 
-
-
               <thead>
-
-
 
                 <tr>
 
-
-
                   <th style={styles.thPadrao}>codigo</th>
-
                   <th style={styles.thPadrao}>descricao</th>
-
                   <th style={styles.thPadrao}>qtd</th>
-
                   <th style={styles.thPadrao}>apl</th>
 
-
-
                   <th style={styles.thPadrao}>criado por</th>
-
                   <th style={styles.thPadrao}>data criação</th>
 
-
-
                   <th style={styles.thPadrao}>editado por</th>
-
                   <th style={styles.thPadrao}>data edição</th>
-
-
 
                   <th style={styles.thPadrao}></th>
 
-
-
                 </tr>
-
-
 
               </thead>
 
-
-
               <tbody>
-
-
 
                 {cadastro.map(x => (
 
-
-
                   <tr key={x.id}>
 
-
-
                     <td style={styles.tdPadrao}>{x.codigo}</td>
-
-
-
                     <td style={styles.tdPadrao}>{x.descricao}</td>
-
-
-
                     <td style={styles.tdPadrao}>{x.quantidade}</td>
-
-
-
                     <td style={styles.tdPadrao}>{x.aplicacao}</td>
 
-
-
                     <td style={styles.tdPadrao}>{x.criado_por}</td>
-
-
-
                     <td style={styles.tdPadrao}>{formatarData(x.created_at)}</td>
 
-
-
                     <td style={styles.tdPadrao}>{x.editado_por}</td>
-
-
-
                     <td style={styles.tdPadrao}>{formatarData(x.updated_at)}</td>
-
-
 
                     <td style={styles.tdPadrao}>
 
-
-
                       <button
-
                         style={styles.btnGrid}
-
                         onClick={()=>editar(x)}
-
                       >
-
                         editar
-
                       </button>
-
-
 
                       <button
-
                         style={styles.btnExcluir}
-
                         onClick={()=>excluir(x.id)}
-
                       >
-
                         excluir
-
                       </button>
-
-
 
                     </td>
 
-
-
                   </tr>
-
-
 
                 ))}
 
-
-
               </tbody>
-
-
 
             </table>
 
-
-
           </div>
-
-
 
         </div>
 
@@ -806,91 +666,43 @@ export default function Proorc2({ setPagina }:Props){
 
         <div style={styles.card}>
 
-
-
           <strong>itens consolidados</strong>
-
-
 
           <table style={styles.tabelaPadrao}>
 
-
-
             <thead>
-
-
 
               <tr>
 
-
-
                 <th style={styles.thPadrao}>codigo</th>
-
-
-
                 <th style={styles.thPadrao}>descricao</th>
-
-
-
                 <th style={styles.thPadrao}>total</th>
-
-
 
               </tr>
 
-
-
             </thead>
-
-
 
             <tbody>
 
-
-
               {explodido.map(x => (
-
-
 
                 <tr key={x.codigo}>
 
-
-
                   <td style={styles.tdPadrao}>{x.codigo}</td>
-
-
-
                   <td style={styles.tdPadrao}>{x.descricao}</td>
-
-
-
                   <td style={styles.tdPadrao}>{x.quantidade}</td>
-
-
 
                 </tr>
 
-
-
               ))}
-
-
 
             </tbody>
 
-
-
           </table>
-
-
 
         </div>
 
-
-
       </div>
-
-
 
     </div>
 
@@ -902,512 +714,150 @@ export default function Proorc2({ setPagina }:Props){
 
 const styles:any = {
 
-
-
-  container:{
-
-
-
-    minHeight:"100vh",
-
-
-
-    backgroundImage:"url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')",
-
-
-
-    backgroundSize:"cover",
-
-
-
-    backgroundPosition:"center"
-
-
-
-  },
-
-
-
-  overlay:{
-
-
-
-    minHeight:"100vh",
-
-
-
-    background:"rgba(0,0,0,0.75)",
-
-
-
-    padding:20,
-
-
-
-    color:"white"
-
-
-
-  },
-
-
-
-  header:{
-
-
-
-    display:"flex",
-
-
-
-    justifyContent:"space-between",
-
-
-
-    alignItems:"center",
-
-
-
-    marginBottom:20
-
-
-
-  },
-
-
-
-  voltar:{
-
-
-
-    padding:"8px 14px",
-
-
-
-    background:"#c0392b",
-
-
-
-    border:"none",
-
-
-
-    borderRadius:6,
-
-
-
-    color:"white",
-
-
-
-    cursor:"pointer"
-
-
-
-  },
-
-
-
-  card:{
-
-
-
-    background:"white",
-
-
-
-    color:"black",
-
-
-
-    padding:12,
-
-
-
-    borderRadius:8,
-
-
-
-    marginBottom:12
-
-
-
-  },
-
-
-
-  boxCadastro:{
-
-
-
-    background:"white",
-
-
-
-    color:"black",
-
-
-
-    padding:14,
-
-
-
-    borderRadius:14,
-
-
-
-    marginBottom:14,
-
-
-
-    boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
-
-
-
-  },
-
-
-
-  subBox:{
-
-
-
-    marginTop:10,
-
-
-
-    paddingTop:10,
-
-
-
-    borderTop:"1px solid #eee"
-
-
-
-  },
-
-
-
-  materialInfo:{
-
-
-
-    marginTop:6,
-
-
-
-    fontSize:13,
-
-
-
-    color:"#555"
-
-
-
-  },
-
-
-
-  linhaCadastro:{
-
-
-
-    display:"flex",
-
-
-
-    gap:6,
-
-
-
-    marginBottom:10,
-
-
-
-    alignItems:"center",
-
-
-
-    position:"relative"
-
-
-
-  },
-
-
-
-  inputNota:{
-
-
-
-    width:200,
-
-
-
-    padding:6
-
-
-
-  },
-
-
-
-  material:{ width:"25%" },
-
-
-
-  qtd:{ width:"8%" },
-
-
-
-  aplicacao:{ width:"8%" },
-
-
-
-  salvar:{
-
-
-
-    padding:"6px 10px",
-
-
-
-    background:"#1e3c72",
-
-
-
-    color:"white",
-
-
-
-    border:"none",
-
-
-
-    borderRadius:6,
-
-
-
-    cursor:"pointer"
-
-
-
-  },
-
-
-
-  sugestoesFixas:{
-
-
-
-    position:"absolute",
-
-
-
-    top:"36px",
-
-
-
-    width:"40vw",
-
-
-
-    maxHeight:"190px",
-
-
-
-    overflowY:"auto",
-
-
-
-    background:"white",
-
-
-
-    border:"1px solid #ccc",
-
-
-
-    borderRadius:8,
-
-
-
-    zIndex:1000,
-
-
-
-    boxShadow:"0 4px 12px rgba(0,0,0,0.25)"
-
-
-
-  },
-
-
-
-  itemSug:{
-
-
-
-    padding:"6px 10px",
-
-
-
-    borderBottom:"1px solid #eee",
-
-
-
-    cursor:"pointer",
-
-
-
-    fontSize:13,
-
-
-
-    textAlign:"left"
-
-
-
-  },
-
-
-
-  tabelaPadrao:{
-
-
-
-    width:"100%",
-
-
-
-    borderCollapse:"collapse",
-
-
-
-    fontSize:13,
-
-
-
-    marginTop:6
-
-
-
-  },
-
-
-
-  thPadrao:{
-
-
-
-    border:"1px solid #bcd4f6",
-
-
-
-    background:"#e8f1ff",
-
-
-
-    padding:"6px",
-
-
-
-    fontWeight:"bold",
-
-
-
-    textAlign:"center"
-
-
-
-  },
-
-
-
-  tdPadrao:{
-
-
-
-    border:"1px solid #d6e4ff",
-
-
-
-    padding:"6px",
-
-
-
-    textAlign:"center"
-
-
-
-  },
-
-
-
-  btnGrid:{
-
-
-
-    background:"#34495e",
-
-
-
-    color:"white",
-
-
-
-    border:"none",
-
-
-
-    padding:"4px 8px",
-
-
-
-    borderRadius:4,
-
-
-
-    marginRight:4,
-
-
-
-    cursor:"pointer"
-
-
-
-  },
-
-
-
-  btnExcluir:{
-
-
-
-    background:"#c0392b",
-
-
-
-    color:"white",
-
-
-
-    border:"none",
-
-
-
-    padding:"4px 8px",
-
-
-
-    borderRadius:4,
-
-
-
-    cursor:"pointer"
-
-
-
-  }
+container:{
+minHeight:"100vh",
+backgroundImage:"url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')",
+backgroundSize:"cover",
+backgroundPosition:"center"
+},
+
+overlay:{
+minHeight:"100vh",
+background:"rgba(0,0,0,0.75)",
+padding:20,
+color:"white"
+},
+
+header:{
+display:"flex",
+justifyContent:"space-between",
+alignItems:"center",
+marginBottom:20
+},
+
+voltar:{
+padding:"8px 14px",
+background:"#c0392b",
+border:"none",
+borderRadius:6,
+color:"white",
+cursor:"pointer"
+},
+
+card:{
+background:"white",
+color:"black",
+padding:12,
+borderRadius:8,
+marginBottom:12
+},
+
+boxCadastro:{
+background:"white",
+color:"black",
+padding:14,
+borderRadius:14,
+marginBottom:14,
+boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
+},
+
+subBox:{
+marginTop:10,
+paddingTop:10,
+borderTop:"1px solid #eee"
+},
+
+materialInfo:{
+marginTop:6,
+fontSize:13,
+color:"#555"
+},
+
+linhaCadastro:{
+display:"flex",
+gap:6,
+marginBottom:10,
+alignItems:"center",
+position:"relative"
+},
+
+inputNota:{
+width:200,
+padding:6
+},
+
+material:{ width:"25%" },
+qtd:{ width:"8%" },
+aplicacao:{ width:"8%" },
+
+salvar:{
+padding:"6px 10px",
+background:"#1e3c72",
+color:"white",
+border:"none",
+borderRadius:6,
+cursor:"pointer"
+},
+
+sugestoesFixas:{
+position:"absolute",
+top:"36px",
+width:"40vw",
+maxHeight:"190px",
+overflowY:"auto",
+background:"white",
+border:"1px solid #ccc",
+borderRadius:8,
+zIndex:1000,
+boxShadow:"0 4px 12px rgba(0,0,0,0.25)"
+},
+
+itemSug:{
+padding:"6px 10px",
+borderBottom:"1px solid #eee",
+cursor:"pointer",
+fontSize:13,
+textAlign:"left"
+},
+
+tabelaPadrao:{
+width:"100%",
+borderCollapse:"collapse",
+fontSize:13,
+marginTop:6
+},
+
+thPadrao:{
+border:"1px solid #bcd4f6",
+background:"#e8f1ff",
+padding:"6px",
+fontWeight:"bold",
+textAlign:"center"
+},
+
+tdPadrao:{
+border:"1px solid #d6e4ff",
+padding:"6px",
+textAlign:"center"
+},
+
+btnGrid:{
+background:"#34495e",
+color:"white",
+border:"none",
+padding:"4px 8px",
+borderRadius:4,
+marginRight:4,
+cursor:"pointer"
+},
+
+btnExcluir:{
+background:"#c0392b",
+color:"white",
+border:"none",
+padding:"4px 8px",
+borderRadius:4,
+cursor:"pointer"
+}
 
 }
