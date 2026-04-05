@@ -9,6 +9,9 @@ type Props = {
 export default function Proorc2({ setPagina }:Props){
 
   const [nota,setNota] = useState("")
+  const [notaValida,setNotaValida] = useState(false)
+  const [erroNota,setErroNota] = useState("mínimo 10 dígitos numéricos")
+
   const [notasSug,setNotasSug] = useState<any[]>([])
 
   const [codigo,setCodigo] = useState("")
@@ -25,26 +28,40 @@ export default function Proorc2({ setPagina }:Props){
 
   const [editando,setEditando] = useState<string | null>(null)
 
-  useEffect(()=>{
+  function validarNota(valor:string){
 
-    if(nota.length < 2){
+    setNota(valor)
 
-      setNotasSug([])
+    if(valor.length < 10){
+
+      setNotaValida(false)
+      setErroNota("mínimo 10 dígitos numéricos")
       return
 
     }
 
-    buscarNotas()
+    const primeiros10 = valor.substring(0,10)
 
-  },[nota])
+    if(!/^\d{10}$/.test(primeiros10)){
+
+      setNotaValida(false)
+      setErroNota("os 10 primeiros caracteres devem ser numéricos")
+      return
+
+    }
+
+    setErroNota("")
+    setNotaValida(true)
+
+  }
 
   useEffect(()=>{
 
-    if(!nota) return
+    if(!notaValida) return
 
     carregarNota()
 
-  },[nota])
+  },[notaValida])
 
   useEffect(()=>{
 
@@ -61,18 +78,6 @@ export default function Proorc2({ setPagina }:Props){
     buscarMateriais()
 
   },[codigo])
-
-  async function buscarNotas(){
-
-    const { data } = await supabase
-      .from("vw_proorc_notas")
-      .select("nota")
-      .ilike("nota",`${nota}%`)
-      .limit(10)
-
-    setNotasSug(data || [])
-
-  }
 
   async function buscarMateriais(){
 
@@ -234,7 +239,7 @@ export default function Proorc2({ setPagina }:Props){
   }
 
   const podeSalvar =
-    nota &&
+    notaValida &&
     codigo &&
     quantidade &&
     aplicacao
@@ -304,29 +309,14 @@ export default function Proorc2({ setPagina }:Props){
             placeholder="nota"
             style={styles.input}
             value={nota}
-            onChange={(e)=>setNota(e.target.value)}
+            onChange={(e)=>validarNota(e.target.value)}
           />
 
-          {notasSug.length>0 &&(
+          {erroNota && !notaValida &&(
 
-            <div style={styles.sugestoesFixas}>
+            <div style={styles.erro}>
 
-              {notasSug.map(n=>(
-
-                <div
-                  key={n.nota}
-                  style={styles.itemSug}
-                  onClick={()=>{
-
-                    setNota(n.nota)
-                    setNotasSug([])
-
-                  }}
-                >
-                  {n.nota}
-                </div>
-
-              ))}
+              {erroNota}
 
             </div>
 
@@ -334,42 +324,43 @@ export default function Proorc2({ setPagina }:Props){
 
         </div>
 
+        {notaValida && (
+
+        <>
+
         <div style={styles.panel}>
 
           <div style={styles.gridCadastro}>
 
             <input
-  placeholder="material ou kit"
-  style={styles.input}
-  value={codigo}
-  onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
+              placeholder="material ou kit"
+              style={styles.input}
+              value={codigo}
 
-  onKeyDown={async (e)=>{
+              onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
 
-    if(e.key === "Enter" || e.key === "Tab"){
+              onKeyDown={async (e)=>{
 
-      e.preventDefault()
+                if(e.key === "Enter" || e.key === "Tab"){
 
-      await confirmarCodigoDigitado()
+                  await confirmarCodigoDigitado()
+                  setMateriaisSug([])
 
-      setMateriaisSug([])
+                }
 
-    }
+              }}
 
-  }}
+              onBlur={async ()=>{
 
-  onBlur={async ()=>{
+                if(!material && codigo){
 
-    if(!material && codigo){
+                  await confirmarCodigoDigitado()
+                  setMateriaisSug([])
 
-      await confirmarCodigoDigitado()
+                }
 
-      setMateriaisSug([])
-
-    }
-
-  }}
-/>
+              }}
+            />
 
             <input
               placeholder="qtd"
@@ -430,49 +421,49 @@ export default function Proorc2({ setPagina }:Props){
 
           )}
 
-          {estrutura.length>0 &&(
+        </div>
 
-            <div style={styles.tableContainer}>
+        {estrutura.length>0 &&(
 
-              <strong>estrutura do kit</strong>
+        <div style={styles.tableContainer}>
 
-              <table style={styles.table}>
+          <strong>estrutura do kit</strong>
 
-                <thead>
+          <table style={styles.table}>
 
-                  <tr>
+            <thead>
 
-                    <th style={styles.th}>codigo</th>
-                    <th style={styles.th}>descricao</th>
-                    <th style={styles.th}>qtd</th>
+              <tr>
 
-                  </tr>
+                <th style={styles.th}>codigo</th>
+                <th style={styles.th}>descricao</th>
+                <th style={styles.th}>qtd</th>
 
-                </thead>
+              </tr>
 
-                <tbody>
+            </thead>
 
-                  {estrutura.map(i=>(
+            <tbody>
 
-                    <tr key={i.codigo_item}>
+              {estrutura.map(i=>(
 
-                      <td style={styles.td}>{i.codigo_item}</td>
-                      <td style={styles.td}>{i.item}</td>
-                      <td style={styles.td}>{i.quantidade}</td>
+                <tr key={i.codigo_item}>
 
-                    </tr>
+                  <td style={styles.td}>{i.codigo_item}</td>
+                  <td style={styles.td}>{i.item}</td>
+                  <td style={styles.td}>{i.quantidade}</td>
 
-                  ))}
+                </tr>
 
-                </tbody>
+              ))}
 
-              </table>
+            </tbody>
 
-            </div>
-
-          )}
+          </table>
 
         </div>
+
+        )}
 
         <div style={styles.tableContainer}>
 
@@ -486,8 +477,8 @@ export default function Proorc2({ setPagina }:Props){
                 <th style={styles.th}>descricao</th>
                 <th style={styles.th}>qtd</th>
                 <th style={styles.th}>apl</th>
-                <th style={styles.th}>criado</th>
-                <th style={styles.th}>editado</th>
+                <th style={styles.th}>data criação</th>
+                <th style={styles.th}>data edição</th>
                 <th style={styles.th}></th>
 
               </tr>
@@ -578,6 +569,10 @@ export default function Proorc2({ setPagina }:Props){
           </table>
 
         </div>
+
+        </>
+
+        )}
 
       </div>
 
@@ -690,6 +685,12 @@ cursor:"pointer"
 infoMaterial:{
 color:"white",
 marginTop:6
+},
+
+erro:{
+color:"#ffb3b3",
+marginTop:6,
+fontSize:13
 }
 
 }
