@@ -3,8 +3,8 @@ import { supabase } from "../supabase"
 import { Pagina } from "../App"
 
 type Props = {
-  usuario:{
-    nome:string
+  usuario?:{
+    nome?:string
   }
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>
 }
@@ -241,15 +241,6 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
   }
 
-  function formatarData(data?:string){
-
-    if(!data) return ""
-
-    return new Date(data)
-      .toLocaleString("pt-BR")
-
-  }
-
   const podeSalvar =
     notaValida &&
     codigo &&
@@ -265,7 +256,7 @@ export default function Proorc2({ usuario,setPagina }:Props){
         <div style={styles.header}>
 
           <div style={styles.boasVindas}>
-            {saudacao()}, {usuario.nome}
+            {saudacao()}, {usuario?.nome || ""}
           </div>
 
           <button
@@ -390,33 +381,22 @@ export default function Proorc2({ usuario,setPagina }:Props){
               <strong>estrutura do kit</strong>
 
               <table style={styles.tabelaPadrao}>
-
                 <thead>
-
                   <tr>
-
                     <th style={styles.thPadrao}>codigo</th>
                     <th style={styles.thPadrao}>descricao</th>
                     <th style={styles.thPadrao}>qtd</th>
-
                   </tr>
-
                 </thead>
 
                 <tbody>
-
                   {estrutura.map(i => (
-
                     <tr key={i.codigo_item}>
-
                       <td style={styles.tdPadrao}>{i.codigo_item}</td>
                       <td style={styles.tdPadrao}>{i.item}</td>
                       <td style={styles.tdPadrao}>{i.quantidade}</td>
-
                     </tr>
-
                   ))}
-
                 </tbody>
 
               </table>
@@ -535,33 +515,28 @@ export default function Proorc2({ usuario,setPagina }:Props){
 }
 
 const styles:any = {
-
 container:{
 minHeight:"100vh",
 backgroundImage:"url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')",
 backgroundSize:"cover",
 backgroundPosition:"center"
 },
-
 overlay:{
 minHeight:"100vh",
 background:"rgba(0,0,0,0.75)",
 padding:20,
 color:"white"
 },
-
 header:{
 display:"flex",
 justifyContent:"space-between",
 alignItems:"center",
 marginBottom:20
 },
-
 boasVindas:{
 fontSize:18,
 fontWeight:"bold"
 },
-
 voltar:{
 padding:"8px 14px",
 background:"#c0392b",
@@ -570,7 +545,6 @@ borderRadius:6,
 color:"white",
 cursor:"pointer"
 },
-
 card:{
 background:"white",
 color:"black",
@@ -578,7 +552,6 @@ padding:12,
 borderRadius:8,
 marginBottom:12
 },
-
 boxCadastro:{
 background:"white",
 color:"black",
@@ -587,13 +560,11 @@ borderRadius:14,
 marginBottom:14,
 boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
-
 subBox:{
 marginTop:10,
 paddingTop:10,
 borderTop:"1px solid #eee"
 },
-
 linhaCadastro:{
 display:"flex",
 gap:6,
@@ -601,16 +572,13 @@ marginBottom:10,
 alignItems:"center",
 position:"relative"
 },
-
 inputNota:{
 width:200,
 padding:6
 },
-
 material:{ width:"25%" },
 qtd:{ width:"8%" },
 aplicacao:{ width:"8%" },
-
 salvar:{
 padding:"6px 10px",
 background:"#1e3c72",
@@ -619,7 +587,6 @@ border:"none",
 borderRadius:6,
 cursor:"pointer"
 },
-
 sugestoesFixas:{
 position:"absolute",
 top:"36px",
@@ -631,21 +598,18 @@ border:"1px solid #ccc",
 borderRadius:8,
 zIndex:1000
 },
-
 itemSug:{
 padding:"6px 10px",
 borderBottom:"1px solid #eee",
 cursor:"pointer",
 fontSize:13
 },
-
 tabelaPadrao:{
 width:"100%",
 borderCollapse:"collapse",
 fontSize:13,
 marginTop:6
 },
-
 thPadrao:{
 border:"1px solid #bcd4f6",
 background:"#e8f1ff",
@@ -653,7 +617,6 @@ padding:"6px",
 fontWeight:"bold",
 textAlign:"center"
 },
-
 thBlue:{
 border:"1px solid #9ec5fe",
 background:"#cfe2ff",
@@ -661,13 +624,11 @@ padding:"6px",
 fontWeight:"bold",
 textAlign:"center"
 },
-
 tdPadrao:{
 border:"1px solid #d6e4ff",
 padding:"6px",
 textAlign:"center"
 },
-
 btnGrid:{
 background:"#34495e",
 color:"white",
@@ -677,7 +638,6 @@ borderRadius:4,
 marginRight:4,
 cursor:"pointer"
 },
-
 btnExcluir:{
 background:"#c0392b",
 color:"white",
@@ -686,11 +646,9 @@ padding:"4px 8px",
 borderRadius:4,
 cursor:"pointer"
 },
-
 erro:{
 color:"#ffb3b3",
 marginTop:6,
 fontSize:13
 }
-
 }
