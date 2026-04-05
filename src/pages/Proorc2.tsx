@@ -12,8 +12,6 @@ export default function Proorc2({ setPagina }:Props){
   const [notaValida,setNotaValida] = useState(false)
   const [erroNota,setErroNota] = useState("mínimo 10 dígitos numéricos")
 
-  const [notasSug,setNotasSug] = useState<any[]>([])
-
   const [codigo,setCodigo] = useState("")
   const [materiaisSug,setMateriaisSug] = useState<any[]>([])
 
