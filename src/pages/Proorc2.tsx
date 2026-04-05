@@ -13,7 +13,7 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
   const [nota,setNota] = useState("")
   const [notaValida,setNotaValida] = useState(false)
-  const [erroNota,setErroNota] = useState("mínimo 10 dígitos numéricos")
+  const [erroNota,setErroNota] = useState("")
 
   const [codigo,setCodigo] = useState("")
   const [materiaisSug,setMateriaisSug] = useState<any[]>([])
@@ -544,7 +544,7 @@ display:"flex",
 alignItems:"center",
 gap:10,
 backgroundColor:"white",
-padding:"8px 12px",
+padding:"6px 10px",
 borderRadius:8,
 marginBottom:12,
 width:"fit-content"
@@ -556,8 +556,8 @@ fontSize:14
 },
 
 inputConsulta:{
-padding:"8px 10px",
-borderRadius:8,
+padding:"6px 8px",
+borderRadius:6,
 border:"1px solid #ccc",
 fontSize:14,
 width:180,
@@ -567,7 +567,7 @@ textAlign:"center"
 erroNota:{
 fontSize:12,
 color:"#c0392b",
-marginLeft:10
+marginLeft:8
 },
 voltar:{
 padding:"8px 14px",
