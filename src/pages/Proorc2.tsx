@@ -241,6 +241,15 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
   }
 
+  function formatarData(data?:string){
+
+    if(!data) return ""
+
+    return new Date(data)
+      .toLocaleString("pt-BR")
+
+  }
+
   const podeSalvar =
     notaValida &&
     codigo &&
@@ -260,19 +269,20 @@ export default function Proorc2({ usuario,setPagina }:Props){
           </div>
 
           <button
-            style={styles.buttonDanger}
+            style={styles.voltar}
             onClick={()=>setPagina("menu")}
           >
-            Voltar
+            voltar
           </button>
 
         </div>
 
-        <div style={styles.panel}>
+        <div style={styles.card}>
+
+          nota
 
           <input
-            placeholder="nota"
-            style={styles.input}
+            style={styles.inputNota}
             value={nota}
             onChange={(e)=>validarNota(e.target.value)}
           />
@@ -291,13 +301,13 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
         <>
 
-        <div style={styles.panel}>
+        <div style={styles.boxCadastro}>
 
-          <div style={styles.gridCadastro}>
+          <div style={styles.linhaCadastro}>
 
             <input
+              style={styles.material}
               placeholder="material ou kit"
-              style={styles.input}
               value={codigo}
 
               onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
@@ -325,58 +335,168 @@ export default function Proorc2({ usuario,setPagina }:Props){
               }}
             />
 
+            {materiaisSug.length>0 &&(
+
+              <div style={styles.sugestoesFixas}>
+
+                {materiaisSug.map(m=>(
+
+                  <div
+                    key={m.codigo}
+                    style={styles.itemSug}
+                    onClick={()=>selecionarMaterial(m.codigo)}
+                  >
+                    {m.codigo} - {m.descricao}
+                  </div>
+
+                ))}
+
+              </div>
+
+            )}
+
             <input
-              placeholder="qtd"
+              style={styles.qtd}
               type="number"
-              style={styles.input}
+              placeholder="qtd"
               value={quantidade}
               onChange={(e)=>setQuantidade(e.target.value)}
             />
 
+            <select
+              style={styles.aplicacao}
+              value={aplicacao}
+              onChange={(e)=>setAplicacao(e.target.value)}
+            >
+              <option value="N">N</option>
+              <option value="U">U</option>
+              <option value="S">S</option>
+            </select>
+
             <button
-              style={styles.button}
+              style={styles.salvar}
               disabled={!podeSalvar}
               onClick={salvar}
             >
-              {editando ? "Alterar" : "Gravar"}
+              {editando ? "alterar" : "gravar"}
             </button>
 
           </div>
 
-          {materiaisSug.length>0 &&(
+          {estrutura.length > 0 && (
 
-            <div style={styles.sugestoesFixas}>
+            <div style={styles.subBox}>
 
-              {materiaisSug.map(m=>(
+              <strong>estrutura do kit</strong>
 
-                <div
-                  key={m.codigo}
-                  style={styles.itemSug}
-                  onClick={()=>selecionarMaterial(m.codigo)}
-                >
-                  {m.codigo} - {m.descricao}
-                </div>
+              <table style={styles.tabelaPadrao}>
 
-              ))}
+                <thead>
+
+                  <tr>
+
+                    <th style={styles.thPadrao}>codigo</th>
+                    <th style={styles.thPadrao}>descricao</th>
+                    <th style={styles.thPadrao}>qtd</th>
+
+                  </tr>
+
+                </thead>
+
+                <tbody>
+
+                  {estrutura.map(i => (
+
+                    <tr key={i.codigo_item}>
+
+                      <td style={styles.tdPadrao}>{i.codigo_item}</td>
+                      <td style={styles.tdPadrao}>{i.item}</td>
+                      <td style={styles.tdPadrao}>{i.quantidade}</td>
+
+                    </tr>
+
+                  ))}
+
+                </tbody>
+
+              </table>
 
             </div>
 
           )}
 
+          <div style={styles.subBox}>
+
+            <strong>registros cadastrados</strong>
+
+            <table style={styles.tabelaPadrao}>
+
+              <thead>
+
+                <tr>
+
+                  <th style={styles.thBlue}>CODIGO</th>
+                  <th style={styles.thBlue}>DESCRIÇÃO</th>
+                  <th style={styles.thBlue}>QTD</th>
+                  <th style={styles.thBlue}></th>
+
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+                {cadastro.map(x => (
+
+                  <tr key={x.id}>
+
+                    <td style={styles.tdPadrao}>{x.codigo}</td>
+                    <td style={styles.tdPadrao}>{x.descricao}</td>
+                    <td style={styles.tdPadrao}>{x.quantidade}</td>
+
+                    <td style={styles.tdPadrao}>
+
+                      <button
+                        style={styles.btnGrid}
+                        onClick={()=>editar(x)}
+                      >
+                        alterar
+                      </button>
+
+                      <button
+                        style={styles.btnExcluir}
+                        onClick={()=>excluir(x.id)}
+                      >
+                        excluir
+                      </button>
+
+                    </td>
+
+                  </tr>
+
+                ))}
+
+              </tbody>
+
+            </table>
+
+          </div>
+
         </div>
 
-        <div style={styles.tableContainer}>
+        <div style={styles.card}>
 
-          <table style={styles.table}>
+          <strong>itens consolidados</strong>
+
+          <table style={styles.tabelaPadrao}>
 
             <thead>
 
               <tr>
 
-                <th style={styles.thBlue}>CODIGO</th>
-                <th style={styles.thBlue}>DESCRIÇÃO</th>
-                <th style={styles.thBlue}>QTD</th>
-                <th style={styles.thBlue}></th>
+                <th style={styles.thPadrao}>codigo</th>
+                <th style={styles.thPadrao}>descricao</th>
+                <th style={styles.thPadrao}>total</th>
 
               </tr>
 
@@ -384,31 +504,13 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
             <tbody>
 
-              {cadastro.map(x=>(
+              {explodido.map(x => (
 
-                <tr key={x.id}>
+                <tr key={x.codigo}>
 
-                  <td style={styles.td}>{x.codigo}</td>
-                  <td style={styles.td}>{x.descricao}</td>
-                  <td style={styles.td}>{x.quantidade}</td>
-
-                  <td style={styles.td}>
-
-                    <button
-                      style={styles.button}
-                      onClick={()=>editar(x)}
-                    >
-                      alterar
-                    </button>
-
-                    <button
-                      style={styles.buttonDanger}
-                      onClick={()=>excluir(x.id)}
-                    >
-                      excluir
-                    </button>
-
-                  </td>
+                  <td style={styles.tdPadrao}>{x.codigo}</td>
+                  <td style={styles.tdPadrao}>{x.descricao}</td>
+                  <td style={styles.tdPadrao}>{x.quantidade}</td>
 
                 </tr>
 
@@ -432,7 +534,7 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
 }
 
-const styles:any={
+const styles:any = {
 
 container:{
 minHeight:"100vh",
@@ -443,16 +545,16 @@ backgroundPosition:"center"
 
 overlay:{
 minHeight:"100vh",
-backgroundColor:"rgba(0,0,0,0.55)",
-padding:20
+background:"rgba(0,0,0,0.75)",
+padding:20,
+color:"white"
 },
 
 header:{
 display:"flex",
 justifyContent:"space-between",
 alignItems:"center",
-color:"white",
-marginBottom:25
+marginBottom:20
 },
 
 boasVindas:{
@@ -460,79 +562,128 @@ fontSize:18,
 fontWeight:"bold"
 },
 
-panel:{
-background:"rgba(255,255,255,0.1)",
-padding:15,
-borderRadius:10,
-marginBottom:20
-},
-
-gridCadastro:{
-display:"grid",
-gridTemplateColumns:"1fr 120px 120px",
-gap:10
-},
-
-input:{
-padding:"8px 10px",
-borderRadius:8,
-border:"1px solid #ccc"
-},
-
-button:{
-padding:"8px 12px",
-borderRadius:8,
-border:"1px solid rgba(255,255,255,0.35)",
-backgroundColor:"rgba(255,255,255,0.15)",
+voltar:{
+padding:"8px 14px",
+background:"#c0392b",
+border:"none",
+borderRadius:6,
 color:"white",
 cursor:"pointer"
 },
 
-buttonDanger:{
-padding:"8px 12px",
-borderRadius:8,
-backgroundColor:"rgba(192,57,43,0.7)",
-color:"white",
-border:"none"
-},
-
-tableContainer:{
+card:{
 background:"white",
-borderRadius:10,
-padding:10,
-marginBottom:20
+color:"black",
+padding:12,
+borderRadius:8,
+marginBottom:12
 },
 
-table:{
-width:"100%",
-borderCollapse:"collapse"
+boxCadastro:{
+background:"white",
+color:"black",
+padding:14,
+borderRadius:14,
+marginBottom:14,
+boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
 
-thBlue:{
-background:"#cfe2ff",
-padding:6,
-border:"1px solid #9ec5fe"
+subBox:{
+marginTop:10,
+paddingTop:10,
+borderTop:"1px solid #eee"
 },
 
-td:{
-border:"1px solid #ccc",
-padding:6,
-textAlign:"center"
+linhaCadastro:{
+display:"flex",
+gap:6,
+marginBottom:10,
+alignItems:"center",
+position:"relative"
+},
+
+inputNota:{
+width:200,
+padding:6
+},
+
+material:{ width:"25%" },
+qtd:{ width:"8%" },
+aplicacao:{ width:"8%" },
+
+salvar:{
+padding:"6px 10px",
+background:"#1e3c72",
+color:"white",
+border:"none",
+borderRadius:6,
+cursor:"pointer"
 },
 
 sugestoesFixas:{
 position:"absolute",
+top:"36px",
+width:"40vw",
+maxHeight:"190px",
+overflowY:"auto",
 background:"white",
 border:"1px solid #ccc",
 borderRadius:8,
-zIndex:1000,
-maxHeight:200,
-overflowY:"auto"
+zIndex:1000
 },
 
 itemSug:{
-padding:6,
+padding:"6px 10px",
 borderBottom:"1px solid #eee",
+cursor:"pointer",
+fontSize:13
+},
+
+tabelaPadrao:{
+width:"100%",
+borderCollapse:"collapse",
+fontSize:13,
+marginTop:6
+},
+
+thPadrao:{
+border:"1px solid #bcd4f6",
+background:"#e8f1ff",
+padding:"6px",
+fontWeight:"bold",
+textAlign:"center"
+},
+
+thBlue:{
+border:"1px solid #9ec5fe",
+background:"#cfe2ff",
+padding:"6px",
+fontWeight:"bold",
+textAlign:"center"
+},
+
+tdPadrao:{
+border:"1px solid #d6e4ff",
+padding:"6px",
+textAlign:"center"
+},
+
+btnGrid:{
+background:"#34495e",
+color:"white",
+border:"none",
+padding:"4px 8px",
+borderRadius:4,
+marginRight:4,
+cursor:"pointer"
+},
+
+btnExcluir:{
+background:"#c0392b",
+color:"white",
+border:"none",
+padding:"4px 8px",
+borderRadius:4,
 cursor:"pointer"
 },
 
