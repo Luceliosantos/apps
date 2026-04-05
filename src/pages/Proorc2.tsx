@@ -3,10 +3,13 @@ import { supabase } from "../supabase"
 import { Pagina } from "../App"
 
 type Props = {
+  usuario:{
+    nome:string
+  }
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>
 }
 
-export default function Proorc2({ setPagina }:Props){
+export default function Proorc2({ usuario,setPagina }:Props){
 
   const [nota,setNota] = useState("")
   const [notaValida,setNotaValida] = useState(false)
@@ -25,6 +28,17 @@ export default function Proorc2({ setPagina }:Props){
   const [explodido,setExplodido] = useState<any[]>([])
 
   const [editando,setEditando] = useState<string | null>(null)
+
+  function saudacao(){
+
+    const hora = new Date().getHours()
+
+    if(hora < 12) return "Bom dia"
+    if(hora < 18) return "Boa tarde"
+
+    return "Boa noite"
+
+  }
 
   function validarNota(valor:string){
 
@@ -227,59 +241,11 @@ export default function Proorc2({ setPagina }:Props){
 
   }
 
-  function formatarData(data?:string){
-
-    if(!data) return ""
-
-    return new Date(data)
-      .toLocaleString("pt-BR")
-
-  }
-
   const podeSalvar =
     notaValida &&
     codigo &&
     quantidade &&
     aplicacao
-
-  const efeitoHover = {
-    backgroundColor:"rgba(255,255,255,0.25)"
-  }
-
-  const efeitoClick = {
-    transform:"translateY(2px)",
-    boxShadow:"none"
-  }
-
-  function aplicarHover(e:any){
-    Object.assign(e.currentTarget.style, efeitoHover)
-  }
-
-  function removerHover(e:any){
-    e.currentTarget.style.backgroundColor="rgba(255,255,255,0.15)"
-  }
-
-  function aplicarClick(e:any){
-    Object.assign(e.currentTarget.style, efeitoClick)
-  }
-
-  function removerClick(e:any){
-    e.currentTarget.style.transform="translateY(0px)"
-  }
-
-  function propsBotao(){
-
-    return {
-
-      onMouseEnter:aplicarHover,
-      onMouseLeave:removerHover,
-      onMouseDown:aplicarClick,
-      onMouseUp:removerClick,
-      onMouseOut:removerClick
-
-    }
-
-  }
 
   return(
 
@@ -289,10 +255,11 @@ export default function Proorc2({ setPagina }:Props){
 
         <div style={styles.header}>
 
-          <h2>PROORC 2.0</h2>
+          <div style={styles.boasVindas}>
+            {saudacao()}, {usuario.nome}
+          </div>
 
           <button
-            {...propsBotao()}
             style={styles.buttonDanger}
             onClick={()=>setPagina("menu")}
           >
@@ -313,9 +280,7 @@ export default function Proorc2({ setPagina }:Props){
           {erroNota && !notaValida &&(
 
             <div style={styles.erro}>
-
               {erroNota}
-
             </div>
 
           )}
@@ -368,18 +333,7 @@ export default function Proorc2({ setPagina }:Props){
               onChange={(e)=>setQuantidade(e.target.value)}
             />
 
-            <select
-              style={styles.input}
-              value={aplicacao}
-              onChange={(e)=>setAplicacao(e.target.value)}
-            >
-              <option value="N">N</option>
-              <option value="U">U</option>
-              <option value="S">S</option>
-            </select>
-
             <button
-              {...propsBotao()}
               style={styles.button}
               disabled={!podeSalvar}
               onClick={salvar}
@@ -409,59 +363,7 @@ export default function Proorc2({ setPagina }:Props){
 
           )}
 
-          {material && (
-
-            <div style={styles.infoMaterial}>
-
-              {material.descricao} ({material.tipo})
-
-            </div>
-
-          )}
-
         </div>
-
-        {estrutura.length>0 &&(
-
-        <div style={styles.tableContainer}>
-
-          <strong>estrutura do kit</strong>
-
-          <table style={styles.table}>
-
-            <thead>
-
-              <tr>
-
-                <th style={styles.th}>codigo</th>
-                <th style={styles.th}>descricao</th>
-                <th style={styles.th}>qtd</th>
-
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              {estrutura.map(i=>(
-
-                <tr key={i.codigo_item}>
-
-                  <td style={styles.td}>{i.codigo_item}</td>
-                  <td style={styles.td}>{i.item}</td>
-                  <td style={styles.td}>{i.quantidade}</td>
-
-                </tr>
-
-              ))}
-
-            </tbody>
-
-          </table>
-
-        </div>
-
-        )}
 
         <div style={styles.tableContainer}>
 
@@ -471,13 +373,10 @@ export default function Proorc2({ setPagina }:Props){
 
               <tr>
 
-                <th style={styles.th}>codigo</th>
-                <th style={styles.th}>descricao</th>
-                <th style={styles.th}>qtd</th>
-                <th style={styles.th}>apl</th>
-                <th style={styles.th}>data criação</th>
-                <th style={styles.th}>data edição</th>
-                <th style={styles.th}></th>
+                <th style={styles.thBlue}>CODIGO</th>
+                <th style={styles.thBlue}>DESCRIÇÃO</th>
+                <th style={styles.thBlue}>QTD</th>
+                <th style={styles.thBlue}></th>
 
               </tr>
 
@@ -492,28 +391,17 @@ export default function Proorc2({ setPagina }:Props){
                   <td style={styles.td}>{x.codigo}</td>
                   <td style={styles.td}>{x.descricao}</td>
                   <td style={styles.td}>{x.quantidade}</td>
-                  <td style={styles.td}>{x.aplicacao}</td>
-
-                  <td style={styles.td}>
-                    {formatarData(x.created_at)}
-                  </td>
-
-                  <td style={styles.td}>
-                    {formatarData(x.updated_at)}
-                  </td>
 
                   <td style={styles.td}>
 
                     <button
-                      {...propsBotao()}
                       style={styles.button}
                       onClick={()=>editar(x)}
                     >
-                      editar
+                      alterar
                     </button>
 
                     <button
-                      {...propsBotao()}
                       style={styles.buttonDanger}
                       onClick={()=>excluir(x.id)}
                     >
@@ -521,42 +409,6 @@ export default function Proorc2({ setPagina }:Props){
                     </button>
 
                   </td>
-
-                </tr>
-
-              ))}
-
-            </tbody>
-
-          </table>
-
-        </div>
-
-        <div style={styles.tableContainer}>
-
-          <table style={styles.table}>
-
-            <thead>
-
-              <tr>
-
-                <th style={styles.th}>codigo</th>
-                <th style={styles.th}>descricao</th>
-                <th style={styles.th}>total</th>
-
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              {explodido.map(x=>(
-
-                <tr key={x.codigo}>
-
-                  <td style={styles.td}>{x.codigo}</td>
-                  <td style={styles.td}>{x.descricao}</td>
-                  <td style={styles.td}>{x.quantidade}</td>
 
                 </tr>
 
@@ -603,6 +455,11 @@ color:"white",
 marginBottom:25
 },
 
+boasVindas:{
+fontSize:18,
+fontWeight:"bold"
+},
+
 panel:{
 background:"rgba(255,255,255,0.1)",
 padding:15,
@@ -612,7 +469,7 @@ marginBottom:20
 
 gridCadastro:{
 display:"grid",
-gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))",
+gridTemplateColumns:"1fr 120px 120px",
 gap:10
 },
 
@@ -643,8 +500,7 @@ tableContainer:{
 background:"white",
 borderRadius:10,
 padding:10,
-marginBottom:20,
-overflowX:"auto"
+marginBottom:20
 },
 
 table:{
@@ -652,10 +508,10 @@ width:"100%",
 borderCollapse:"collapse"
 },
 
-th:{
-border:"1px solid #ccc",
-background:"#f2f2f2",
-padding:6
+thBlue:{
+background:"#cfe2ff",
+padding:6,
+border:"1px solid #9ec5fe"
 },
 
 td:{
@@ -678,11 +534,6 @@ itemSug:{
 padding:6,
 borderBottom:"1px solid #eee",
 cursor:"pointer"
-},
-
-infoMaterial:{
-color:"white",
-marginTop:6
 },
 
 erro:{
