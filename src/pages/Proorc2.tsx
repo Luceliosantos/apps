@@ -9,6 +9,7 @@ type Props = {
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>
 }
 
+
 export default function Proorc2({ usuario,setPagina }:Props){
 
   const [nota,setNota] = useState("")
