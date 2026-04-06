@@ -450,6 +450,7 @@ if(pagina === "proorc"){
   return(
 
     <Proorc2
+      usuario={usuario}
       setPagina={setPagina}
     />
 
