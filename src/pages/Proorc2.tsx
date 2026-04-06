@@ -469,39 +469,67 @@ DESCRIÇÃO
 
           <table style={styles.tabelaPadrao}>
 
-            <thead>
-              <tr>
-                <th style={{...styles.thPadrao,...styles.colCodigo}}>
-codigo
-</th>
+<thead>
 
-<th style={{...styles.thPadrao,...styles.colDescricao}}>
-descricao
+<tr>
+
+<th style={{...styles.thPadrao,...styles.colCodigo}}>
+CODIGO
 </th>
 
 <th style={{...styles.thPadrao,...styles.colQtd}}>
-total
+QNT
 </th>
-              </tr>
-            </thead>
 
-            <tbody>
+<th style={styles.thPadrao}>
+AP
+</th>
 
-              {explodido.map(x => (
+<th style={styles.thPadrao}>
+VIAB
+</th>
 
-                <tr key={x.codigo}>
+<th style={{...styles.thPadrao,...styles.colDescricao}}>
+DESCRIÇÃO
+</th>
 
-                  <td style={styles.tdPadrao}>{x.codigo}</td>
-                  <td style={styles.tdPadrao}>{x.descricao}</td>
-                  <td style={styles.tdPadrao}>{x.quantidade}</td>
+</tr>
 
-                </tr>
+</thead>
 
-              ))}
+<tbody>
 
-            </tbody>
+{explodido.map((x,i)=> (
 
-          </table>
+<tr key={i}>
+
+<td style={styles.tdPadrao}>
+{x.codigo}
+</td>
+
+<td style={styles.tdPadrao}>
+{x.quantidade}
+</td>
+
+<td style={styles.tdPadrao}>
+{x.aplicacao}
+</td>
+
+<td style={styles.tdPadrao}>
+SIM
+</td>
+
+<td style={styles.tdPadrao}>
+{x.descricao}
+</td>
+
+</tr>
+
+))}
+
+</tbody>
+
+</table>
 
         </div>
 
