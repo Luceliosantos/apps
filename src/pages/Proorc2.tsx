@@ -540,14 +540,15 @@ fontSize:18,
 fontWeight:"bold"
 },
 grupoNota:{
-display:"flex",
-alignItems:"center",
-gap:10,
-backgroundColor:"white",
-padding:"6px 10px",
-borderRadius:8,
-marginBottom:12,
-minWidth:"380px"
+  display:"flex",
+  alignItems:"center",
+  justifyContent:"center",
+  gap:10,
+  backgroundColor:"white",
+  padding:"6px 10px",
+  borderRadius:8,
+  marginBottom:12,
+  width:"220px"
 },
 
 labelNota:{
