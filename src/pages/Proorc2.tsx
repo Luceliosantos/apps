@@ -565,8 +565,8 @@ cursor:"pointer"
 card:{
 background:"white",
 color:"black",
-padding:"12px 18px",
-borderRadius:12,
+padding:"12px 16px",
+borderRadius:10,
 marginBottom:12,
 display:"inline-block"
 },
@@ -574,7 +574,7 @@ display:"inline-block"
 cardPequeno:{
 background:"white",
 color:"black",
-padding:"14px 18px",
+padding:"14px 16px",
 borderRadius:14,
 marginBottom:14,
 display:"inline-block",
@@ -584,7 +584,7 @@ boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 cardMedio:{
 background:"white",
 color:"black",
-padding:"14px 18px",
+padding:"14px 16px",
 borderRadius:14,
 marginBottom:14,
 display:"inline-block",
@@ -659,8 +659,7 @@ fontSize:13
 },
 
 tabelaPadrao:{
-width:"auto",
-minWidth:500,
+width:"max-content",
 borderCollapse:"collapse",
 fontSize:13,
 marginTop:6
