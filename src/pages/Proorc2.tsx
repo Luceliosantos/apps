@@ -565,32 +565,29 @@ cursor:"pointer"
 card:{
 background:"white",
 color:"black",
-padding:12,
-borderRadius:8,
+padding:"12px 18px",
+borderRadius:12,
 marginBottom:12,
-width:"fit-content",
-minWidth:900
+display:"inline-block"
 },
 
 cardPequeno:{
 background:"white",
 color:"black",
-padding:14,
+padding:"14px 18px",
 borderRadius:14,
 marginBottom:14,
-width:"fit-content",
-minWidth:520,
+display:"inline-block",
 boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
 
 cardMedio:{
 background:"white",
 color:"black",
-padding:14,
+padding:"14px 18px",
 borderRadius:14,
 marginBottom:14,
-width:"fit-content",
-minWidth:700,
+display:"inline-block",
 boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
 
