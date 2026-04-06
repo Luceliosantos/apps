@@ -577,30 +577,36 @@ cursor:"pointer"
 card:{
 background:"white",
 color:"black",
-padding:"12px 16px",
-borderRadius:10,
-marginBottom:12,
-display:"inline-block"
+padding:"14px 18px",
+borderRadius:14,
+marginBottom:18,
+display:"block",
+width:"fit-content",
+boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
+borderTop:"4px solid #4da3ff"
 },
 
 cardPequeno:{
 background:"white",
 color:"black",
-padding:"14px 16px",
+padding:"14px 18px",
 borderRadius:14,
-marginBottom:14,
-display:"inline-block",
+marginBottom:18,
+display:"block",
+width:"fit-content",
 boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
 
 cardMedio:{
 background:"white",
 color:"black",
-padding:"14px 16px",
+padding:"14px 18px",
 borderRadius:14,
-marginBottom:14,
-display:"inline-block",
-boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
+marginBottom:18,
+display:"block",
+width:"fit-content",
+boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
+borderTop:"4px solid #4da3ff"
 },
 
 subBox:{
