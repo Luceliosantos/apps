@@ -553,7 +553,7 @@ grupoNota:{
 labelNota:{
 fontWeight:"bold",
 fontSize:14
-color:"#000"
+color:"black"
 },
 
 inputConsulta:{
