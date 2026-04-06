@@ -354,6 +354,35 @@ export default function Proorc2({ usuario,setPagina }:Props){
         <>
         <div style={styles.cardPequeno}>
 
+
+          {estrutura.length > 0 && (
+
+  <div style={styles.subBox}>
+    <strong>estrutura do kit</strong>
+
+    <table style={styles.tabelaPadrao}>
+      <thead>
+        <tr>
+          <th style={styles.thPadrao}>codigo</th>
+          <th style={styles.thPadrao}>descricao</th>
+          <th style={styles.thPadrao}>qtd</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {estrutura.map(i => (
+          <tr key={i.codigo_item}>
+            <td style={styles.tdPadrao}>{i.codigo_item}</td>
+            <td style={styles.tdPadrao}>{i.item}</td>
+            <td style={styles.tdPadrao}>{i.quantidade}</td>
+          </tr>
+        ))}
+      </tbody>
+
+    </table>
+  </div>
+
+)}
           <div style={styles.linhaCadastro}>
 
             <input
