@@ -277,25 +277,27 @@ export default function Proorc2({ usuario,setPagina }:Props){
           <input
             style={styles.inputConsulta}
             value={nota}
-            onChange={(e)=>validarNota(e.target.value)}
+            onChange={(e)=>setNota(e.target.value)}
+
+            onKeyDown={(e)=>{
+              if(e.key==="Enter" || e.key==="Tab"){
+                validarNota(nota)
+              }
+            }}
+
+            onBlur={()=>validarNota(nota)}
           />
 
           {erroNota && !notaValida &&(
-
             <div style={styles.erroNota}>
               {erroNota}
             </div>
-
           )}
 
         </div>
 
         {notaValida && (
-
         <>
-
-        {/* CARD DIGITAÇÃO */}
-
         <div style={styles.cardPequeno}>
 
           <div style={styles.linhaCadastro}>
@@ -307,34 +309,23 @@ export default function Proorc2({ usuario,setPagina }:Props){
               onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
 
               onKeyDown={async (e)=>{
-
                 if(e.key === "Enter" || e.key === "Tab"){
-
                   await confirmarCodigoDigitado()
                   setMateriaisSug([])
-
                 }
-
               }}
 
               onBlur={async ()=>{
-
                 if(!material && codigo){
-
                   await confirmarCodigoDigitado()
                   setMateriaisSug([])
-
                 }
-
               }}
             />
 
             {materiaisSug.length>0 &&(
-
               <div style={styles.sugestoesFixas}>
-
                 {materiaisSug.map(m=>(
-
                   <div
                     key={m.codigo}
                     style={styles.itemSug}
@@ -342,11 +333,8 @@ export default function Proorc2({ usuario,setPagina }:Props){
                   >
                     {m.codigo} - {m.descricao}
                   </div>
-
                 ))}
-
               </div>
-
             )}
 
             <input
@@ -380,7 +368,6 @@ export default function Proorc2({ usuario,setPagina }:Props){
           {estrutura.length > 0 && (
 
             <div style={styles.subBox}>
-
               <strong>estrutura do kit</strong>
 
               <table style={styles.tabelaPadrao}>
@@ -403,14 +390,10 @@ export default function Proorc2({ usuario,setPagina }:Props){
                 </tbody>
 
               </table>
-
             </div>
-
           )}
 
         </div>
-
-        {/* CARD REGISTROS */}
 
         <div style={styles.cardMedio}>
 
@@ -419,16 +402,12 @@ export default function Proorc2({ usuario,setPagina }:Props){
           <table style={styles.tabelaPadrao}>
 
             <thead>
-
               <tr>
-
                 <th style={styles.thBlue}>CODIGO</th>
                 <th style={styles.thBlue}>DESCRIÇÃO</th>
                 <th style={styles.thBlue}>QTD</th>
                 <th style={styles.thBlue}></th>
-
               </tr>
-
             </thead>
 
             <tbody>
@@ -476,15 +455,11 @@ export default function Proorc2({ usuario,setPagina }:Props){
           <table style={styles.tabelaPadrao}>
 
             <thead>
-
               <tr>
-
                 <th style={styles.thPadrao}>codigo</th>
                 <th style={styles.thPadrao}>descricao</th>
                 <th style={styles.thPadrao}>total</th>
-
               </tr>
-
             </thead>
 
             <tbody>
@@ -508,7 +483,6 @@ export default function Proorc2({ usuario,setPagina }:Props){
         </div>
 
         </>
-
         )}
 
       </div>
@@ -519,7 +493,7 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
 }
 
-const styles:any = {
+const styles:any={
 
 container:{
 minHeight:"100vh",
@@ -593,7 +567,9 @@ background:"white",
 color:"black",
 padding:12,
 borderRadius:8,
-marginBottom:12
+marginBottom:12,
+width:"fit-content",
+minWidth:900
 },
 
 cardPequeno:{
@@ -602,7 +578,8 @@ color:"black",
 padding:14,
 borderRadius:14,
 marginBottom:14,
-width:"650px",
+width:"fit-content",
+minWidth:520,
 boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
 
@@ -612,7 +589,8 @@ color:"black",
 padding:14,
 borderRadius:14,
 marginBottom:14,
-width:"900px",
+width:"fit-content",
+minWidth:700,
 boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
 
@@ -630,9 +608,30 @@ alignItems:"center",
 position:"relative"
 },
 
-material:{ width:"25%" },
-qtd:{ width:"8%" },
-aplicacao:{ width:"8%" },
+material:{
+width:260,
+padding:"6px 8px",
+borderRadius:6,
+border:"1px solid #ccc",
+fontSize:14
+},
+
+qtd:{
+width:80,
+padding:"6px 8px",
+borderRadius:6,
+border:"1px solid #ccc",
+fontSize:14,
+textAlign:"center"
+},
+
+aplicacao:{
+width:70,
+padding:"6px 4px",
+borderRadius:6,
+border:"1px solid #ccc",
+fontSize:14
+},
 
 salvar:{
 padding:"6px 10px",
@@ -663,7 +662,8 @@ fontSize:13
 },
 
 tabelaPadrao:{
-width:"100%",
+width:"auto",
+minWidth:500,
 borderCollapse:"collapse",
 fontSize:13,
 marginTop:6
