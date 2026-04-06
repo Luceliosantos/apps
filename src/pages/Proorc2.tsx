@@ -552,7 +552,7 @@ grupoNota:{
 
 labelNota:{
 fontWeight:"bold",
-fontSize:14
+fontSize:14,
 color:"black"
 },
 
