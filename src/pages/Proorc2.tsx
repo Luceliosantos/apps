@@ -270,31 +270,33 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
         <div style={styles.grupoNota}>
 
-  <span style={styles.labelNota}>
-    NOTA
-  </span>
+          <span style={styles.labelNota}>
+            NOTA
+          </span>
 
-  <input
-    style={styles.inputConsulta}
-    value={nota}
-    onChange={(e)=>validarNota(e.target.value)}
-  />
+          <input
+            style={styles.inputConsulta}
+            value={nota}
+            onChange={(e)=>validarNota(e.target.value)}
+          />
 
-  {erroNota && !notaValida &&(
+          {erroNota && !notaValida &&(
 
-    <div style={styles.erroNota}>
-      {erroNota}
-    </div>
+            <div style={styles.erroNota}>
+              {erroNota}
+            </div>
 
-  )}
+          )}
 
-</div>
+        </div>
 
         {notaValida && (
 
         <>
 
-        <div style={styles.boxCadastro}>
+        {/* CARD DIGITAÇÃO */}
+
+        <div style={styles.cardPequeno}>
 
           <div style={styles.linhaCadastro}>
 
@@ -302,7 +304,6 @@ export default function Proorc2({ usuario,setPagina }:Props){
               style={styles.material}
               placeholder="material ou kit"
               value={codigo}
-
               onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
 
               onKeyDown={async (e)=>{
@@ -407,62 +408,64 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
           )}
 
-          <div style={styles.subBox}>
+        </div>
 
-            <strong>registros cadastrados</strong>
+        {/* CARD REGISTROS */}
 
-            <table style={styles.tabelaPadrao}>
+        <div style={styles.cardMedio}>
 
-              <thead>
+          <strong>registros cadastrados</strong>
 
-                <tr>
+          <table style={styles.tabelaPadrao}>
 
-                  <th style={styles.thBlue}>CODIGO</th>
-                  <th style={styles.thBlue}>DESCRIÇÃO</th>
-                  <th style={styles.thBlue}>QTD</th>
-                  <th style={styles.thBlue}></th>
+            <thead>
+
+              <tr>
+
+                <th style={styles.thBlue}>CODIGO</th>
+                <th style={styles.thBlue}>DESCRIÇÃO</th>
+                <th style={styles.thBlue}>QTD</th>
+                <th style={styles.thBlue}></th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              {cadastro.map(x => (
+
+                <tr key={x.id}>
+
+                  <td style={styles.tdPadrao}>{x.codigo}</td>
+                  <td style={styles.tdPadrao}>{x.descricao}</td>
+                  <td style={styles.tdPadrao}>{x.quantidade}</td>
+
+                  <td style={styles.tdPadrao}>
+
+                    <button
+                      style={styles.btnGrid}
+                      onClick={()=>editar(x)}
+                    >
+                      alterar
+                    </button>
+
+                    <button
+                      style={styles.btnExcluir}
+                      onClick={()=>excluir(x.id)}
+                    >
+                      excluir
+                    </button>
+
+                  </td>
 
                 </tr>
 
-              </thead>
+              ))}
 
-              <tbody>
+            </tbody>
 
-                {cadastro.map(x => (
-
-                  <tr key={x.id}>
-
-                    <td style={styles.tdPadrao}>{x.codigo}</td>
-                    <td style={styles.tdPadrao}>{x.descricao}</td>
-                    <td style={styles.tdPadrao}>{x.quantidade}</td>
-
-                    <td style={styles.tdPadrao}>
-
-                      <button
-                        style={styles.btnGrid}
-                        onClick={()=>editar(x)}
-                      >
-                        alterar
-                      </button>
-
-                      <button
-                        style={styles.btnExcluir}
-                        onClick={()=>excluir(x.id)}
-                      >
-                        excluir
-                      </button>
-
-                    </td>
-
-                  </tr>
-
-                ))}
-
-              </tbody>
-
-            </table>
-
-          </div>
+          </table>
 
         </div>
 
@@ -517,37 +520,42 @@ export default function Proorc2({ usuario,setPagina }:Props){
 }
 
 const styles:any = {
+
 container:{
 minHeight:"100vh",
 backgroundImage:"url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')",
 backgroundSize:"cover",
 backgroundPosition:"center"
 },
+
 overlay:{
 minHeight:"100vh",
 background:"rgba(0,0,0,0.75)",
 padding:20,
 color:"white"
 },
+
 header:{
 display:"flex",
 justifyContent:"space-between",
 alignItems:"center",
 marginBottom:20
 },
+
 boasVindas:{
 fontSize:18,
 fontWeight:"bold"
 },
+
 grupoNota:{
-  display:"flex",
-  alignItems:"center",
-  gap:10,
-  backgroundColor:"white",
-  padding:"6px 10px",
-  borderRadius:8,
-  marginBottom:12,
-  width:"fit-content"
+display:"flex",
+alignItems:"center",
+gap:10,
+backgroundColor:"white",
+padding:"6px 10px",
+borderRadius:8,
+marginBottom:12,
+width:"fit-content"
 },
 
 labelNota:{
@@ -570,6 +578,7 @@ fontSize:12,
 color:"#c0392b",
 marginLeft:8
 },
+
 voltar:{
 padding:"8px 14px",
 background:"#c0392b",
@@ -578,6 +587,7 @@ borderRadius:6,
 color:"white",
 cursor:"pointer"
 },
+
 card:{
 background:"white",
 color:"black",
@@ -585,19 +595,33 @@ padding:12,
 borderRadius:8,
 marginBottom:12
 },
-boxCadastro:{
+
+cardPequeno:{
 background:"white",
 color:"black",
 padding:14,
 borderRadius:14,
 marginBottom:14,
+width:"650px",
 boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
+
+cardMedio:{
+background:"white",
+color:"black",
+padding:14,
+borderRadius:14,
+marginBottom:14,
+width:"900px",
+boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
+},
+
 subBox:{
 marginTop:10,
 paddingTop:10,
 borderTop:"1px solid #eee"
 },
+
 linhaCadastro:{
 display:"flex",
 gap:6,
@@ -605,13 +629,11 @@ marginBottom:10,
 alignItems:"center",
 position:"relative"
 },
-inputNota:{
-width:200,
-padding:6
-},
+
 material:{ width:"25%" },
 qtd:{ width:"8%" },
 aplicacao:{ width:"8%" },
+
 salvar:{
 padding:"6px 10px",
 background:"#1e3c72",
@@ -620,6 +642,7 @@ border:"none",
 borderRadius:6,
 cursor:"pointer"
 },
+
 sugestoesFixas:{
 position:"absolute",
 top:"36px",
@@ -631,18 +654,21 @@ border:"1px solid #ccc",
 borderRadius:8,
 zIndex:1000
 },
+
 itemSug:{
 padding:"6px 10px",
 borderBottom:"1px solid #eee",
 cursor:"pointer",
 fontSize:13
 },
+
 tabelaPadrao:{
 width:"100%",
 borderCollapse:"collapse",
 fontSize:13,
 marginTop:6
 },
+
 thPadrao:{
 border:"1px solid #bcd4f6",
 background:"#e8f1ff",
@@ -650,6 +676,7 @@ padding:"6px",
 fontWeight:"bold",
 textAlign:"center"
 },
+
 thBlue:{
 border:"1px solid #9ec5fe",
 background:"#cfe2ff",
@@ -657,11 +684,13 @@ padding:"6px",
 fontWeight:"bold",
 textAlign:"center"
 },
+
 tdPadrao:{
 border:"1px solid #d6e4ff",
 padding:"6px",
 textAlign:"center"
 },
+
 btnGrid:{
 background:"#34495e",
 color:"white",
@@ -671,6 +700,7 @@ borderRadius:4,
 marginRight:4,
 cursor:"pointer"
 },
+
 btnExcluir:{
 background:"#c0392b",
 color:"white",
@@ -679,9 +709,11 @@ padding:"4px 8px",
 borderRadius:4,
 cursor:"pointer"
 },
+
 erro:{
 color:"#ffb3b3",
 marginTop:6,
 fontSize:13
 }
+
 }
