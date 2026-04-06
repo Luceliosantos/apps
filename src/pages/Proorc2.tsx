@@ -624,7 +624,7 @@ position:"relative"
 },
 
 material:{
-width:260,
+width:156, // 60% de 260
 padding:"6px 8px",
 borderRadius:6,
 border:"1px solid #ccc",
