@@ -470,7 +470,6 @@ DESCRIÇÃO
 <table style={styles.tabelaPadrao}>
 
 <thead>
-
 <tr>
 
 <th style={{...styles.thPadrao,...styles.colCodigo}}>
@@ -494,14 +493,13 @@ DESCRIÇÃO
 </th>
 
 </tr>
-
 </thead>
 
 <tbody>
 
-{explodido.map(x => (
+{explodido.map((x,i) => (
 
-<tr key={x.codigo + "-" + (x.aplicacao || "N")}>
+<tr key={i}>
 
 <td style={styles.tdPadrao}>
 {x.codigo}
