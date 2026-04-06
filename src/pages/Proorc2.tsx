@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { supabase } from "../supabase"
 import { Pagina } from "../App"
 
@@ -14,6 +14,8 @@ export default function Proorc2({ usuario,setPagina }:Props){
   const [nota,setNota] = useState("")
   const [notaValida,setNotaValida] = useState(false)
   const [erroNota,setErroNota] = useState("")
+const notaRef = useRef<HTMLInputElement>(null)
+
 
   const [codigo,setCodigo] = useState("")
   const [materiaisSug,setMateriaisSug] = useState<any[]>([])
@@ -40,6 +42,14 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
   }
 
+useEffect(()=>{
+
+  notaRef.current?.focus()
+
+},[])
+
+
+  
   function validarNota(valor:string){
 
     setNota(valor)
@@ -275,8 +285,9 @@ export default function Proorc2({ usuario,setPagina }:Props){
           </span>
 
           <input
-            style={styles.inputConsulta}
-            value={nota}
+  ref={notaRef}
+  style={styles.inputConsulta}
+  value={nota}
             onChange={(e)=>setNota(e.target.value)}
 
             onKeyDown={(e)=>{
