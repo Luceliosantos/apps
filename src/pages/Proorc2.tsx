@@ -176,11 +176,10 @@ useEffect(()=>{
 
     setCadastro(data || [])
 
-    const { data:exp } = await supabase
-      .from("vw_proorc_cadastro_itens")
-      .select("*")
-      .eq("nota",nota)
-      .order("codigo")
+const { data:exp } = await supabase
+  .from("vw_proorc_cadastro_itens")
+  .select("*")
+  .order("codigo")
 
     setExplodido(exp || [])
 
