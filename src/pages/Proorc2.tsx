@@ -465,7 +465,12 @@ DESCRIÇÃO
 
         <div style={styles.card}>
 
-          <thead>
+<strong>itens consolidados</strong>
+
+<table style={styles.tabelaPadrao}>
+
+<thead>
+
 <tr>
 
 <th style={{...styles.thPadrao,...styles.colCodigo}}>
@@ -489,9 +494,10 @@ DESCRIÇÃO
 </th>
 
 </tr>
+
 </thead>
 
-            <tbody>
+<tbody>
 
 {explodido.map(x => (
 
@@ -523,14 +529,9 @@ SIM
 
 </tbody>
 
-          </table>
+</table>
 
-        </div>
-
-        </>
-        )}
-
-      </div>
+</div>
 
     </div>
 
