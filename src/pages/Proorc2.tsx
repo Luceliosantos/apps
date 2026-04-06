@@ -465,41 +465,63 @@ DESCRIÇÃO
 
         <div style={styles.card}>
 
-          <strong>itens consolidados</strong>
+          <thead>
+<tr>
 
-          <table style={styles.tabelaPadrao}>
-
-            <thead>
-              <tr>
-                <th style={{...styles.thPadrao,...styles.colCodigo}}>
-codigo
-</th>
-
-<th style={{...styles.thPadrao,...styles.colDescricao}}>
-descricao
+<th style={{...styles.thPadrao,...styles.colCodigo}}>
+CODIGO
 </th>
 
 <th style={{...styles.thPadrao,...styles.colQtd}}>
-total
+QNT
 </th>
-              </tr>
-            </thead>
+
+<th style={styles.thPadrao}>
+AP.
+</th>
+
+<th style={styles.thPadrao}>
+VIAB.
+</th>
+
+<th style={{...styles.thPadrao,...styles.colDescricao}}>
+DESCRIÇÃO
+</th>
+
+</tr>
+</thead>
 
             <tbody>
 
-              {explodido.map(x => (
+{explodido.map(x => (
 
-                <tr key={x.codigo}>
+<tr key={x.codigo}>
 
-                  <td style={styles.tdPadrao}>{x.codigo}</td>
-                  <td style={styles.tdPadrao}>{x.descricao}</td>
-                  <td style={styles.tdPadrao}>{x.quantidade}</td>
+<td style={styles.tdPadrao}>
+{x.codigo}
+</td>
 
-                </tr>
+<td style={styles.tdPadrao}>
+{x.quantidade}
+</td>
 
-              ))}
+<td style={styles.tdPadrao}>
+{x.aplicacao || "-"}
+</td>
 
-            </tbody>
+<td style={styles.tdPadrao}>
+SIM
+</td>
+
+<td style={styles.tdPadrao}>
+{x.descricao}
+</td>
+
+</tr>
+
+))}
+
+</tbody>
 
           </table>
 
