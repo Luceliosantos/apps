@@ -547,7 +547,7 @@ backgroundColor:"white",
 padding:"6px 10px",
 borderRadius:8,
 marginBottom:12,
-width:"fit-content"
+width:"35%"
 },
 
 labelNota:{
