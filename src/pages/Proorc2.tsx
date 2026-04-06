@@ -542,18 +542,18 @@ fontWeight:"bold"
 grupoNota:{
   display:"flex",
   alignItems:"center",
-  justifyContent:"center",
   gap:10,
   backgroundColor:"white",
   padding:"6px 10px",
   borderRadius:8,
   marginBottom:12,
-  width:"220px"
+  width:"fit-content"
 },
 
 labelNota:{
 fontWeight:"bold",
 fontSize:14
+color:"#000"
 },
 
 inputConsulta:{
