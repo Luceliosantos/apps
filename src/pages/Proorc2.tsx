@@ -9,7 +9,6 @@ type Props = {
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>
 }
 
-
 export default function Proorc2({ usuario,setPagina }:Props){
 
   const [nota,setNota] = useState("")
@@ -21,7 +20,7 @@ const notaRef = useRef<HTMLInputElement>(null)
   const [codigo,setCodigo] = useState("")
   const [materiaisSug,setMateriaisSug] = useState<any[]>([])
 
-const [material,setMaterial] = useState<any | null>(null)
+  const [material,setMaterial] = useState<any>(null)
   const [estrutura,setEstrutura] = useState<any[]>([])
 
   const [quantidade,setQuantidade] = useState("")
@@ -176,10 +175,11 @@ useEffect(()=>{
 
     setCadastro(data || [])
 
-const { data:exp } = await supabase
-  .from("vw_proorc_cadastro_itens")
-  .select("*")
-  .order("codigo")
+    const { data:exp } = await supabase
+      .from("vw_proorc_cadastro_itens")
+      .select("*")
+      .eq("nota",nota)
+      .order("codigo")
 
     setExplodido(exp || [])
 
@@ -376,9 +376,9 @@ const { data:exp } = await supabase
 
           </div>
 
-{estrutura?.length > 0 && (
+          {estrutura.length > 0 && (
 
-  <div style={styles.subBox}>
+            <div style={styles.subBox}>
               <strong>estrutura do kit</strong>
 
               <table style={styles.tabelaPadrao}>
@@ -465,83 +465,54 @@ DESCRIÇÃO
 
         <div style={styles.card}>
 
-<strong>itens consolidados</strong>
+          <strong>itens consolidados</strong>
 
-<table style={styles.tabelaPadrao}>
+          <table style={styles.tabelaPadrao}>
 
-<thead>
-<tr>
-
-<th style={{...styles.thPadrao,...styles.colCodigo}}>
-CODIGO
-</th>
-
-<th style={{...styles.thPadrao,...styles.colQtd}}>
-QNT
-</th>
-
-<th style={styles.thPadrao}>
-AP.
-</th>
-
-<th style={styles.thPadrao}>
-VIAB.
+            <thead>
+              <tr>
+                <th style={{...styles.thPadrao,...styles.colCodigo}}>
+codigo
 </th>
 
 <th style={{...styles.thPadrao,...styles.colDescricao}}>
-DESCRIÇÃO
+descricao
 </th>
 
-</tr>
-</thead>
+<th style={{...styles.thPadrao,...styles.colQtd}}>
+total
+</th>
+              </tr>
+            </thead>
 
-<tbody>
+            <tbody>
 
-{explodido.map((x,i) => (
+              {explodido.map(x => (
 
-<tr key={i}>
+                <tr key={x.codigo}>
 
-<td style={styles.tdPadrao}>
-{x.codigo}
-</td>
+                  <td style={styles.tdPadrao}>{x.codigo}</td>
+                  <td style={styles.tdPadrao}>{x.descricao}</td>
+                  <td style={styles.tdPadrao}>{x.quantidade}</td>
 
-<td style={styles.tdPadrao}>
-{x.quantidade}
-</td>
+                </tr>
 
-<td style={styles.tdPadrao}>
-{x.aplicacao || "N"}
-</td>
+              ))}
 
-<td style={styles.tdPadrao}>
-SIM
-</td>
+            </tbody>
 
-<td style={styles.tdPadrao}>
-{x.descricao}
-</td>
+          </table>
 
-</tr>
+        </div>
 
-))}
+        </>
+        )}
 
-</tbody>
+      </div>
 
-</table>
+    </div>
 
-</div>
-
-</>
-
-)}
-
-</div>
-
-</div>
-
-</div>
-
-)
+  )
 
 }
 
