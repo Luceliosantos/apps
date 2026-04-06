@@ -21,7 +21,7 @@ const notaRef = useRef<HTMLInputElement>(null)
   const [codigo,setCodigo] = useState("")
   const [materiaisSug,setMateriaisSug] = useState<any[]>([])
 
-  const [material,setMaterial] = useState<any>(null)
+const [material,setMaterial] = useState<any | null>(null)
   const [estrutura,setEstrutura] = useState<any[]>([])
 
   const [quantidade,setQuantidade] = useState("")
@@ -377,9 +377,9 @@ useEffect(()=>{
 
           </div>
 
-          {estrutura.length > 0 && (
+{estrutura?.length > 0 && (
 
-            <div style={styles.subBox}>
+  <div style={styles.subBox}>
               <strong>estrutura do kit</strong>
 
               <table style={styles.tabelaPadrao}>
