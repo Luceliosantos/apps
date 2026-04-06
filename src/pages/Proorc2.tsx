@@ -14,7 +14,6 @@ export default function Proorc2({ usuario,setPagina }:Props){
   const [nota,setNota] = useState("")
   const [notaValida,setNotaValida] = useState(false)
   const [erroNota,setErroNota] = useState("")
-  const [notasSug,setNotasSug] = useState<any[]>([])
 
   const [codigo,setCodigo] = useState("")
   const [materiaisSug,setMateriaisSug] = useState<any[]>([])
@@ -78,19 +77,6 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
   useEffect(()=>{
 
-    if(nota.length < 3){
-
-      setNotasSug([])
-      return
-
-    }
-
-    buscarNotas()
-
-  },[nota])
-
-  useEffect(()=>{
-
     if(codigo.length < 2){
 
       setMaterial(null)
@@ -104,22 +90,6 @@ export default function Proorc2({ usuario,setPagina }:Props){
     buscarMateriais()
 
   },[codigo])
-
-  async function buscarNotas(){
-
-    const { data } = await supabase
-      .from("db_proorc_cadastro")
-      .select("nota")
-      .ilike("nota",`${nota}%`)
-      .order("nota")
-      .limit(20)
-
-    const unicas =
-      [...new Set((data||[]).map(x=>x.nota))]
-
-    setNotasSug(unicas)
-
-  }
 
   async function buscarMateriais(){
 
@@ -307,45 +277,21 @@ export default function Proorc2({ usuario,setPagina }:Props){
           <input
             style={styles.inputConsulta}
             value={nota}
-            onChange={(e)=>{
+            onChange={(e)=>setNota(e.target.value)}
 
-              const v =
-                e.target.value.replace(/\D/g,"")
-
-              setNota(v)
-
+            onKeyDown={(e)=>{
+              if(e.key==="Enter" || e.key==="Tab"){
+                validarNota(nota)
+              }
             }}
+
             onBlur={()=>validarNota(nota)}
           />
 
-          {notasSug.length>0 &&(
-
-            <div style={styles.sugNota}>
-
-              {notasSug.map(n=>(
-                <div
-                  key={n}
-                  style={styles.itemSug}
-                  onClick={()=>{
-                    setNota(n)
-                    validarNota(n)
-                    setNotasSug([])
-                  }}
-                >
-                  {n}
-                </div>
-              ))}
-
-            </div>
-
-          )}
-
           {erroNota && !notaValida &&(
-
             <div style={styles.erroNota}>
               {erroNota}
             </div>
-
           )}
 
         </div>
@@ -354,35 +300,6 @@ export default function Proorc2({ usuario,setPagina }:Props){
         <>
         <div style={styles.cardPequeno}>
 
-
-          {estrutura.length > 0 && (
-
-  <div style={styles.subBox}>
-    <strong>estrutura do kit</strong>
-
-    <table style={styles.tabelaPadrao}>
-      <thead>
-        <tr>
-          <th style={styles.thPadrao}>codigo</th>
-          <th style={styles.thPadrao}>descricao</th>
-          <th style={styles.thPadrao}>qtd</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {estrutura.map(i => (
-          <tr key={i.codigo_item}>
-            <td style={styles.tdPadrao}>{i.codigo_item}</td>
-            <td style={styles.tdPadrao}>{i.item}</td>
-            <td style={styles.tdPadrao}>{i.quantidade}</td>
-          </tr>
-        ))}
-      </tbody>
-
-    </table>
-  </div>
-
-)}
           <div style={styles.linhaCadastro}>
 
             <input
@@ -390,6 +307,20 @@ export default function Proorc2({ usuario,setPagina }:Props){
               placeholder="material ou kit"
               value={codigo}
               onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
+
+              onKeyDown={async (e)=>{
+                if(e.key === "Enter" || e.key === "Tab"){
+                  await confirmarCodigoDigitado()
+                  setMateriaisSug([])
+                }
+              }}
+
+              onBlur={async ()=>{
+                if(!material && codigo){
+                  await confirmarCodigoDigitado()
+                  setMateriaisSug([])
+                }
+              }}
             />
 
             {materiaisSug.length>0 &&(
@@ -433,6 +364,34 @@ export default function Proorc2({ usuario,setPagina }:Props){
             </button>
 
           </div>
+
+          {estrutura.length > 0 && (
+
+            <div style={styles.subBox}>
+              <strong>estrutura do kit</strong>
+
+              <table style={styles.tabelaPadrao}>
+                <thead>
+                  <tr>
+                    <th style={styles.thPadrao}>codigo</th>
+                    <th style={styles.thPadrao}>descricao</th>
+                    <th style={styles.thPadrao}>qtd</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {estrutura.map(i => (
+                    <tr key={i.codigo_item}>
+                      <td style={styles.tdPadrao}>{i.codigo_item}</td>
+                      <td style={styles.tdPadrao}>{i.item}</td>
+                      <td style={styles.tdPadrao}>{i.quantidade}</td>
+                    </tr>
+                  ))}
+                </tbody>
+
+              </table>
+            </div>
+          )}
 
         </div>
 
@@ -563,7 +522,6 @@ fontWeight:"bold"
 },
 
 grupoNota:{
-position:"relative",
 display:"flex",
 alignItems:"center",
 gap:10,
@@ -589,19 +547,6 @@ width:180,
 textAlign:"center"
 },
 
-sugNota:{
-position:"absolute",
-top:"34px",
-left:60,
-width:200,
-maxHeight:180,
-overflowY:"auto",
-background:"white",
-border:"1px solid #ccc",
-borderRadius:8,
-zIndex:1000
-},
-
 erroNota:{
 fontSize:12,
 color:"#c0392b",
@@ -620,12 +565,11 @@ cursor:"pointer"
 card:{
 background:"white",
 color:"black",
-padding:14,
-borderRadius:14,
-marginBottom:14,
+padding:12,
+borderRadius:8,
+marginBottom:12,
 width:"fit-content",
-minWidth:920,
-boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
+minWidth:900
 },
 
 cardPequeno:{
@@ -635,7 +579,7 @@ padding:14,
 borderRadius:14,
 marginBottom:14,
 width:"fit-content",
-minWidth:560,
+minWidth:520,
 boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
 
@@ -646,7 +590,7 @@ padding:14,
 borderRadius:14,
 marginBottom:14,
 width:"fit-content",
-minWidth:760,
+minWidth:700,
 boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
 
