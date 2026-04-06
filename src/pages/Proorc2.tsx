@@ -1,7 +1,3 @@
-// ALTERAÇÕES IMPLEMENTADAS:
-// 1) autocomplete nota
-// 2) largura dos cards acompanhando tabelas
-
 import { useEffect, useState } from "react"
 import { supabase } from "../supabase"
 import { Pagina } from "../App"
@@ -18,7 +14,7 @@ export default function Proorc2({ usuario,setPagina }:Props){
   const [nota,setNota] = useState("")
   const [notaValida,setNotaValida] = useState(false)
   const [erroNota,setErroNota] = useState("")
-  const [notasSug,setNotasSug] = useState<any[]>([]) // NOVO
+  const [notasSug,setNotasSug] = useState<any[]>([])
 
   const [codigo,setCodigo] = useState("")
   const [materiaisSug,setMateriaisSug] = useState<any[]>([])
@@ -311,7 +307,6 @@ export default function Proorc2({ usuario,setPagina }:Props){
           <input
             style={styles.inputConsulta}
             value={nota}
-
             onChange={(e)=>{
 
               const v =
@@ -320,7 +315,6 @@ export default function Proorc2({ usuario,setPagina }:Props){
               setNota(v)
 
             }}
-
             onBlur={()=>validarNota(nota)}
           />
 
@@ -527,6 +521,18 @@ padding:20,
 color:"white"
 },
 
+header:{
+display:"flex",
+justifyContent:"space-between",
+alignItems:"center",
+marginBottom:20
+},
+
+boasVindas:{
+fontSize:18,
+fontWeight:"bold"
+},
+
 grupoNota:{
 position:"relative",
 display:"flex",
@@ -539,37 +545,47 @@ marginBottom:12,
 width:"fit-content"
 },
 
+labelNota:{
+fontWeight:"bold",
+fontSize:14,
+color:"black"
+},
+
+inputConsulta:{
+padding:"6px 8px",
+borderRadius:6,
+border:"1px solid #ccc",
+fontSize:14,
+width:180,
+textAlign:"center"
+},
+
 sugNota:{
 position:"absolute",
 top:"34px",
 left:60,
 width:200,
+maxHeight:180,
+overflowY:"auto",
 background:"white",
 border:"1px solid #ccc",
 borderRadius:8,
-zIndex:1000,
-maxHeight:180,
-overflowY:"auto"
+zIndex:1000
 },
 
-cardPequeno:{
-background:"white",
-color:"black",
-padding:14,
-borderRadius:14,
-marginBottom:14,
-width:"fit-content",
-minWidth:560
+erroNota:{
+fontSize:12,
+color:"#c0392b",
+marginLeft:8
 },
 
-cardMedio:{
-background:"white",
-color:"black",
-padding:14,
-borderRadius:14,
-marginBottom:14,
-width:"fit-content",
-minWidth:760
+voltar:{
+padding:"8px 14px",
+background:"#c0392b",
+border:"none",
+borderRadius:6,
+color:"white",
+cursor:"pointer"
 },
 
 card:{
@@ -579,8 +595,152 @@ padding:14,
 borderRadius:14,
 marginBottom:14,
 width:"fit-content",
-minWidth:920
+minWidth:920,
+boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
 
-// restante igual...
+cardPequeno:{
+background:"white",
+color:"black",
+padding:14,
+borderRadius:14,
+marginBottom:14,
+width:"fit-content",
+minWidth:560,
+boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
+},
+
+cardMedio:{
+background:"white",
+color:"black",
+padding:14,
+borderRadius:14,
+marginBottom:14,
+width:"fit-content",
+minWidth:760,
+boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
+},
+
+subBox:{
+marginTop:10,
+paddingTop:10,
+borderTop:"1px solid #eee"
+},
+
+linhaCadastro:{
+display:"flex",
+gap:6,
+marginBottom:10,
+alignItems:"center",
+position:"relative"
+},
+
+material:{
+width:260,
+padding:"6px 8px",
+borderRadius:6,
+border:"1px solid #ccc",
+fontSize:14
+},
+
+qtd:{
+width:80,
+padding:"6px 8px",
+borderRadius:6,
+border:"1px solid #ccc",
+fontSize:14,
+textAlign:"center"
+},
+
+aplicacao:{
+width:70,
+padding:"6px 4px",
+borderRadius:6,
+border:"1px solid #ccc",
+fontSize:14
+},
+
+salvar:{
+padding:"6px 10px",
+background:"#1e3c72",
+color:"white",
+border:"none",
+borderRadius:6,
+cursor:"pointer"
+},
+
+sugestoesFixas:{
+position:"absolute",
+top:"36px",
+width:"40vw",
+maxHeight:"190px",
+overflowY:"auto",
+background:"white",
+border:"1px solid #ccc",
+borderRadius:8,
+zIndex:1000
+},
+
+itemSug:{
+padding:"6px 10px",
+borderBottom:"1px solid #eee",
+cursor:"pointer",
+fontSize:13
+},
+
+tabelaPadrao:{
+width:"auto",
+minWidth:500,
+borderCollapse:"collapse",
+fontSize:13,
+marginTop:6
+},
+
+thPadrao:{
+border:"1px solid #bcd4f6",
+background:"#e8f1ff",
+padding:"6px",
+fontWeight:"bold",
+textAlign:"center"
+},
+
+thBlue:{
+border:"1px solid #9ec5fe",
+background:"#cfe2ff",
+padding:"6px",
+fontWeight:"bold",
+textAlign:"center"
+},
+
+tdPadrao:{
+border:"1px solid #d6e4ff",
+padding:"6px",
+textAlign:"center"
+},
+
+btnGrid:{
+background:"#34495e",
+color:"white",
+border:"none",
+padding:"4px 8px",
+borderRadius:4,
+marginRight:4,
+cursor:"pointer"
+},
+
+btnExcluir:{
+background:"#c0392b",
+color:"white",
+border:"none",
+padding:"4px 8px",
+borderRadius:4,
+cursor:"pointer"
+},
+
+erro:{
+color:"#ffb3b3",
+marginTop:6,
+fontSize:13
+}
+
 }
