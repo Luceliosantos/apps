@@ -501,7 +501,7 @@ DESCRIÇÃO
 
 {explodido.map(x => (
 
-<tr key={x.codigo}>
+<tr key={x.codigo + "-" + (x.aplicacao || "N")}>
 
 <td style={styles.tdPadrao}>
 {x.codigo}
@@ -512,7 +512,7 @@ DESCRIÇÃO
 </td>
 
 <td style={styles.tdPadrao}>
-{x.aplicacao || "-"}
+{x.aplicacao || "N"}
 </td>
 
 <td style={styles.tdPadrao}>
