@@ -403,9 +403,13 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
             <thead>
               <tr>
-                <th style={styles.thBlue}>CODIGO</th>
-                <th style={styles.thBlue}>DESCRIÇÃO</th>
-                <th style={styles.thBlue}>QTD</th>
+<th style={{...styles.thBlue,...styles.colCodigo}}>CODIGO</th>
+
+<th style={{...styles.thBlue,...styles.colDescricao}}>
+DESCRIÇÃO
+</th>
+
+<th style={{...styles.thBlue,...styles.colQtd}}>QTD</th>
                 <th style={styles.thBlue}></th>
               </tr>
             </thead>
@@ -456,9 +460,17 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
             <thead>
               <tr>
-                <th style={styles.thPadrao}>codigo</th>
-                <th style={styles.thPadrao}>descricao</th>
-                <th style={styles.thPadrao}>total</th>
+                <th style={{...styles.thPadrao,...styles.colCodigo}}>
+codigo
+</th>
+
+<th style={{...styles.thPadrao,...styles.colDescricao}}>
+descricao
+</th>
+
+<th style={{...styles.thPadrao,...styles.colQtd}}>
+total
+</th>
               </tr>
             </thead>
 
@@ -659,10 +671,11 @@ fontSize:13
 },
 
 tabelaPadrao:{
-width:"max-content",
+width:"auto",
 borderCollapse:"collapse",
 fontSize:13,
-marginTop:6
+marginTop:6,
+tableLayout:"fixed"
 },
 
 thPadrao:{
@@ -684,9 +697,22 @@ textAlign:"center"
 tdPadrao:{
 border:"1px solid #d6e4ff",
 padding:"6px",
-textAlign:"center"
+textAlign:"center",
+whiteSpace:"nowrap"
 },
 
+colCodigo:{
+width:90
+},
+
+colDescricao:{
+width:340
+},
+
+colQtd:{
+width:70
+},
+  
 btnGrid:{
 background:"#34495e",
 color:"white",
