@@ -15,7 +15,7 @@ export default function Proorc2({ usuario,setPagina }:Props){
   const [notaValida,setNotaValida] = useState(false)
   const [erroNota,setErroNota] = useState("")
 const notaRef = useRef<HTMLInputElement>(null)
-
+const materialRef = useRef<HTMLInputElement>(null)
 
   const [codigo,setCodigo] = useState("")
   const [materiaisSug,setMateriaisSug] = useState<any[]>([])
@@ -323,7 +323,7 @@ useEffect(()=>{
             <input
   ref={materialRef}
   style={styles.material}
-              placeholder="material ou kit"
+              placeholder="Item ou kit"
               value={codigo}
               onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
 
