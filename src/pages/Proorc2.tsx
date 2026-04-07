@@ -30,7 +30,8 @@ const materialRef = useRef<HTMLInputElement>(null)
   const [explodido,setExplodido] = useState<any[]>([])
 
   const [editando,setEditando] = useState<string | null>(null)
-
+const qtdRef = useRef<HTMLInputElement>(null)
+  
   function saudacao(){
 
     const hora = new Date().getHours()
@@ -327,19 +328,21 @@ useEffect(()=>{
               value={codigo}
               onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
 
-              onKeyDown={async (e)=>{
-                if(e.key === "Enter" || e.key === "Tab"){
-                  await confirmarCodigoDigitado()
-                  setMateriaisSug([])
-                }
-              }}
+onKeyDown={async (e)=>{
+  if(e.key === "Enter" || e.key === "Tab"){
 
-              onBlur={async ()=>{
-                if(!material && codigo){
-                  await confirmarCodigoDigitado()
-                  setMateriaisSug([])
-                }
-              }}
+    e.preventDefault()
+
+    await confirmarCodigoDigitado()
+
+    setMateriaisSug([])
+
+    setTimeout(()=>{
+      qtdRef.current?.focus()
+    },10)
+
+  }
+}}
             />
 
             {materiaisSug.length>0 &&(
@@ -348,7 +351,13 @@ useEffect(()=>{
                   <div
                     key={m.codigo}
                     style={styles.itemSug}
-                    onClick={()=>selecionarMaterial(m.codigo)}
+                    onClick={()=>{
+  selecionarMaterial(m.codigo)
+
+  setTimeout(()=>{
+    qtdRef.current?.focus()
+  },10)
+}}
                   >
                     {m.codigo} - {m.descricao}
                   </div>
@@ -356,13 +365,14 @@ useEffect(()=>{
               </div>
             )}
 
-            <input
-              style={styles.qtd}
-              type="number"
-              placeholder="qtd"
-              value={quantidade}
-              onChange={(e)=>setQuantidade(e.target.value)}
-            />
+<input
+  ref={qtdRef}
+  style={styles.qtd}
+  type="number"
+  placeholder="qtd"
+  value={quantidade}
+  onChange={(e)=>setQuantidade(e.target.value)}
+/>
 
             <select
               style={styles.aplicacao}
