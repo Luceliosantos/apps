@@ -503,6 +503,11 @@ export default function Proorc2({ usuario,setPagina }:Props){
                 </th>
 
                 <th style={{...styles.thBlue,...styles.colQtd}}>QTD</th>
+
+                <th style={styles.thBlue}>
+                AP
+                </th>
+                
                 <th style={styles.thBlue}></th>
               </tr>
             </thead>
@@ -516,7 +521,11 @@ export default function Proorc2({ usuario,setPagina }:Props){
                   <td style={styles.tdPadrao}>{x.codigo}</td>
                   <td style={styles.tdPadrao}>{x.descricao}</td>
                   <td style={styles.tdPadrao}>{x.quantidade}</td>
-
+                  
+                  <td style={styles.tdPadrao}>
+                  {x.aplicacao}
+                  </td>
+                  
                   <td style={styles.tdPadrao}>
 
                     <button
