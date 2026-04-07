@@ -14,8 +14,10 @@ export default function Proorc2({ usuario,setPagina }:Props){
   const [nota,setNota] = useState("")
   const [notaValida,setNotaValida] = useState(false)
   const [erroNota,setErroNota] = useState("")
-const notaRef = useRef<HTMLInputElement>(null)
-const materialRef = useRef<HTMLInputElement>(null)
+
+  const notaRef = useRef<HTMLInputElement>(null)
+  const materialRef = useRef<HTMLInputElement>(null)
+  const qtdRef = useRef<HTMLInputElement>(null)
 
   const [codigo,setCodigo] = useState("")
   const [materiaisSug,setMateriaisSug] = useState<any[]>([])
@@ -30,13 +32,9 @@ const materialRef = useRef<HTMLInputElement>(null)
   const [explodido,setExplodido] = useState<any[]>([])
 
   const [editando,setEditando] = useState<string | null>(null)
-const qtdRef = useRef<HTMLInputElement>(null)
 
-const [indiceSug,setIndiceSug] = useState<number>(-1)
+  const [indiceSug,setIndiceSug] = useState<number>(-1)
 
-
-
-  
   function saudacao(){
 
     const hora = new Date().getHours()
@@ -48,25 +46,12 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
 
   }
 
-useEffect(()=>{
+  useEffect(()=>{
 
-  if(codigo.length < 2){
+    notaRef.current?.focus()
 
-    setMaterial(null)
-    setEstrutura([])
-    setMateriaisSug([])
-    setIndiceSug(-1)
+  },[])
 
-    return
-
-  }
-
-  buscarMateriais()
-
-},[codigo])
-
-
-  
   function validarNota(valor:string){
 
     setNota(valor)
@@ -94,7 +79,7 @@ useEffect(()=>{
 
   }
 
-  (()=>{
+  useEffect(()=>{
 
     if(!notaValida) return
 
@@ -102,13 +87,14 @@ useEffect(()=>{
 
   },[notaValida])
 
-  (()=>{
+  useEffect(()=>{
 
     if(codigo.length < 2){
 
       setMaterial(null)
       setEstrutura([])
       setMateriaisSug([])
+      setIndiceSug(-1)
 
       return
 
@@ -204,56 +190,56 @@ useEffect(()=>{
 
   async function salvar(){
 
-  if(!material){
-    await confirmarCodigoDigitado()
+    if(!material){
+
+      await confirmarCodigoDigitado()
+
+    }
+
+    if(!material) return
+
+    if(editando){
+
+      await supabase
+        .from("db_proorc_cadastro")
+        .update({
+          quantidade:Number(quantidade),
+          aplicacao
+        })
+        .eq("id",editando)
+
+      setEditando(null)
+
+    }
+    else{
+
+      await supabase.rpc(
+        "fn_proorc_cadastrar",
+        {
+          p_nota: nota,
+          p_codigo: material.codigo,
+          p_quantidade: Number(quantidade),
+          p_aplicacao: aplicacao
+        }
+      )
+
+    }
+
+    setCodigo("")
+    setQuantidade("")
+    setAplicacao("N")
+    setMaterial(null)
+    setEstrutura([])
+    setMateriaisSug([])
+    setIndiceSug(-1)
+
+    carregarNota()
+
+    setTimeout(()=>{
+      materialRef.current?.focus()
+    },50)
+
   }
-
-  if(!material) return
-
-  if(editando){
-
-    await supabase
-      .from("db_proorc_cadastro")
-      .update({
-        quantidade:Number(quantidade),
-        aplicacao
-      })
-      .eq("id",editando)
-
-    setEditando(null)
-
-  }
-  else{
-
-    await supabase.rpc(
-      "fn_proorc_cadastrar",
-      {
-        p_nota: nota,
-        p_codigo: material.codigo,
-        p_quantidade: Number(quantidade),
-        p_aplicacao: aplicacao
-      }
-    )
-
-  }
-
-  // limpa campos
-  setCodigo("")
-  setQuantidade("")
-  setAplicacao("N")
-  setMaterial(null)
-  setEstrutura([])
-  setMateriaisSug([])
-
-  // recarrega dados
-  carregarNota()
-
-  // foco novamente no campo material
-  setTimeout(()=>{
-    materialRef.current?.focus()
-  },50)
-
-}
 
   async function excluir(id:string){
 
@@ -309,62 +295,16 @@ useEffect(()=>{
           </span>
 
           <input
-  ref={notaRef}
-  style={styles.inputConsulta}
-  value={nota}
+            ref={notaRef}
+            style={styles.inputConsulta}
+            value={nota}
             onChange={(e)=>setNota(e.target.value)}
 
-onKeyDown={async (e)=>{
-
-  // seta para baixo
-  if(e.key === "ArrowDown"){
-
-    e.preventDefault()
-
-    setIndiceSug(i=>
-      Math.min(i+1, materiaisSug.length-1)
-    )
-
-    return
-  }
-
-  // seta para cima
-  if(e.key === "ArrowUp"){
-
-    e.preventDefault()
-
-    setIndiceSug(i=>
-      Math.max(i-1, 0)
-    )
-
-    return
-  }
-
-  // enter ou tab seleciona item
-  if(e.key === "Enter" || e.key === "Tab"){
-
-    e.preventDefault()
-
-    let codSelecionado = codigo
-
-    if(indiceSug >= 0 && materiaisSug[indiceSug]){
-
-      codSelecionado = materiaisSug[indiceSug].codigo
-
-    }
-
-    await selecionarMaterial(codSelecionado)
-
-    setMateriaisSug([])
-    setIndiceSug(-1)
-
-    setTimeout(()=>{
-      qtdRef.current?.focus()
-    },10)
-
-  }
-
-}}
+            onKeyDown={(e)=>{
+              if(e.key==="Enter" || e.key==="Tab"){
+                validarNota(nota)
+              }
+            }}
 
             onBlur={()=>validarNota(nota)}
           />
@@ -384,64 +324,119 @@ onKeyDown={async (e)=>{
           <div style={styles.linhaCadastro}>
 
             <input
-  ref={materialRef}
-  style={styles.material}
+              ref={materialRef}
+              style={styles.material}
               placeholder="Item ou kit"
               value={codigo}
               onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
 
-onKeyDown={async (e)=>{
-  if(e.key === "Enter" || e.key === "Tab"){
+              onKeyDown={async (e)=>{
 
-    e.preventDefault()
+                if(e.key==="ArrowDown"){
 
-    await confirmarCodigoDigitado()
+                  e.preventDefault()
 
-    setMateriaisSug([])
+                  setIndiceSug(i=>
+                    Math.min(i+1, materiaisSug.length-1)
+                  )
 
-    setTimeout(()=>{
-      qtdRef.current?.focus()
-    },10)
+                  return
+                }
 
-  }
-}}
+                if(e.key==="ArrowUp"){
+
+                  e.preventDefault()
+
+                  setIndiceSug(i=>
+                    Math.max(i-1,0)
+                  )
+
+                  return
+                }
+
+                if(e.key==="Enter" || e.key==="Tab"){
+
+                  e.preventDefault()
+
+                  let codSelecionado = codigo
+
+                  if(indiceSug>=0 && materiaisSug[indiceSug]){
+
+                    codSelecionado = materiaisSug[indiceSug].codigo
+
+                  }
+
+                  await selecionarMaterial(codSelecionado)
+
+                  setMateriaisSug([])
+                  setIndiceSug(-1)
+
+                  setTimeout(()=>{
+                    qtdRef.current?.focus()
+                  },10)
+
+                }
+
+              }}
+
+              onBlur={async ()=>{
+                if(!material && codigo){
+                  await confirmarCodigoDigitado()
+                  setMateriaisSug([])
+                }
+              }}
             />
 
             {materiaisSug.length>0 &&(
+
               <div style={styles.sugestoesFixas}>
-                {{materiaisSug.map((m,i)=>(
-  <div
-    key={m.codigo}
 
-    style={{
-      ...styles.itemSug,
-      background:i===indiceSug ? "#e8f1ff" : "white"
-    }}
+                {materiaisSug.map((m,i)=>{
 
-    onClick={()=>{
-      selecionarMaterial(m.codigo)
+                  const selecionado = i === indiceSug
 
-      setTimeout(()=>{
-        qtdRef.current?.focus()
-      },10)
-    }}
-  >
-    {m.codigo} - {m.descricao}
-  </div>
-))}
-                  </div>
-                ))}
+                  return(
+
+                    <div
+                      key={m.codigo}
+
+                      style={{
+                        ...styles.itemSug,
+                        background: selecionado ? "#e8f1ff" : "white"
+                      }}
+
+                      onClick={()=>{
+
+                        selecionarMaterial(m.codigo)
+
+                        setMateriaisSug([])
+                        setIndiceSug(-1)
+
+                        setTimeout(()=>{
+                          qtdRef.current?.focus()
+                        },10)
+
+                      }}
+                    >
+                      {m.codigo} - {m.descricao}
+                    </div>
+
+                  )
+
+                })}
+
               </div>
+
             )}
 
-<input
-  ref={qtdRef}
-  style={styles.qtd}
-  type="number"
-  placeholder="qtd"
-  value={quantidade}
-  onChange={(e)=>setQuantidade(e.target.value)}
-/>
+            <input
+              ref={qtdRef}
+              style={styles.qtd}
+              type="number"
+              placeholder="qtd"
+              value={quantidade}
+              onChange={(e)=>setQuantidade(e.target.value)}
+            />
 
             <select
               style={styles.aplicacao}
@@ -501,13 +496,13 @@ onKeyDown={async (e)=>{
 
             <thead>
               <tr>
-<th style={{...styles.thBlue,...styles.colCodigo}}>CODIGO</th>
+                <th style={{...styles.thBlue,...styles.colCodigo}}>CODIGO</th>
 
-<th style={{...styles.thBlue,...styles.colDescricao}}>
-DESCRIÇÃO
-</th>
+                <th style={{...styles.thBlue,...styles.colDescricao}}>
+                  DESCRIÇÃO
+                </th>
 
-<th style={{...styles.thBlue,...styles.colQtd}}>QTD</th>
+                <th style={{...styles.thBlue,...styles.colQtd}}>QTD</th>
                 <th style={styles.thBlue}></th>
               </tr>
             </thead>
@@ -750,7 +745,7 @@ position:"relative"
 },
 
 material:{
-width:156, // 60% de 260
+width:156,
 padding:"6px 8px",
 borderRadius:6,
 border:"1px solid #ccc",
@@ -844,7 +839,7 @@ width:340
 colQtd:{
 width:70
 },
-  
+
 btnGrid:{
 background:"#34495e",
 color:"white",
