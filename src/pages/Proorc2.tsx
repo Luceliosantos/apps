@@ -31,6 +31,7 @@ const materialRef = useRef<HTMLInputElement>(null)
 
   const [editando,setEditando] = useState<string | null>(null)
 const qtdRef = useRef<HTMLInputElement>(null)
+  const [indiceSug,setIndiceSug] = useState<number>(-1)
   
   function saudacao(){
 
@@ -45,9 +46,20 @@ const qtdRef = useRef<HTMLInputElement>(null)
 
 useEffect(()=>{
 
-  notaRef.current?.focus()
+  if(codigo.length < 2){
 
-},[])
+    setMaterial(null)
+    setEstrutura([])
+    setMateriaisSug([])
+    setIndiceSug(-1)
+
+    return
+
+  }
+
+  buscarMateriais()
+
+},[codigo])
 
 
   
@@ -78,7 +90,7 @@ useEffect(()=>{
 
   }
 
-  useEffect(()=>{
+  (()=>{
 
     if(!notaValida) return
 
@@ -86,7 +98,7 @@ useEffect(()=>{
 
   },[notaValida])
 
-  useEffect(()=>{
+  (()=>{
 
     if(codigo.length < 2){
 
@@ -298,11 +310,57 @@ useEffect(()=>{
   value={nota}
             onChange={(e)=>setNota(e.target.value)}
 
-            onKeyDown={(e)=>{
-              if(e.key==="Enter" || e.key==="Tab"){
-                validarNota(nota)
-              }
-            }}
+onKeyDown={async (e)=>{
+
+  // seta para baixo
+  if(e.key === "ArrowDown"){
+
+    e.preventDefault()
+
+    setIndiceSug(i=>
+      Math.min(i+1, materiaisSug.length-1)
+    )
+
+    return
+  }
+
+  // seta para cima
+  if(e.key === "ArrowUp"){
+
+    e.preventDefault()
+
+    setIndiceSug(i=>
+      Math.max(i-1, 0)
+    )
+
+    return
+  }
+
+  // enter ou tab seleciona item
+  if(e.key === "Enter" || e.key === "Tab"){
+
+    e.preventDefault()
+
+    let codSelecionado = codigo
+
+    if(indiceSug >= 0 && materiaisSug[indiceSug]){
+
+      codSelecionado = materiaisSug[indiceSug].codigo
+
+    }
+
+    await selecionarMaterial(codSelecionado)
+
+    setMateriaisSug([])
+    setIndiceSug(-1)
+
+    setTimeout(()=>{
+      qtdRef.current?.focus()
+    },10)
+
+  }
+
+}}
 
             onBlur={()=>validarNota(nota)}
           />
@@ -347,19 +405,26 @@ onKeyDown={async (e)=>{
 
             {materiaisSug.length>0 &&(
               <div style={styles.sugestoesFixas}>
-                {materiaisSug.map(m=>(
-                  <div
-                    key={m.codigo}
-                    style={styles.itemSug}
-                    onClick={()=>{
-  selecionarMaterial(m.codigo)
+                {{materiaisSug.map((m,i)=>(
+  <div
+    key={m.codigo}
 
-  setTimeout(()=>{
-    qtdRef.current?.focus()
-  },10)
-}}
-                  >
-                    {m.codigo} - {m.descricao}
+    style={{
+      ...styles.itemSug,
+      background:i===indiceSug ? "#e8f1ff" : "white"
+    }}
+
+    onClick={()=>{
+      selecionarMaterial(m.codigo)
+
+      setTimeout(()=>{
+        qtdRef.current?.focus()
+      },10)
+    }}
+  >
+    {m.codigo} - {m.descricao}
+  </div>
+))}
                   </div>
                 ))}
               </div>
