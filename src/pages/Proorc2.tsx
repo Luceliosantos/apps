@@ -187,49 +187,56 @@ useEffect(()=>{
 
   async function salvar(){
 
-    if(!material){
+  if(!material){
+    await confirmarCodigoDigitado()
+  }
 
-      await confirmarCodigoDigitado()
+  if(!material) return
 
-    }
+  if(editando){
 
-    if(!material) return
+    await supabase
+      .from("db_proorc_cadastro")
+      .update({
+        quantidade:Number(quantidade),
+        aplicacao
+      })
+      .eq("id",editando)
 
-    if(editando){
-
-      await supabase
-        .from("db_proorc_cadastro")
-        .update({
-          quantidade:Number(quantidade),
-          aplicacao
-        })
-        .eq("id",editando)
-
-      setEditando(null)
-
-    }
-    else{
-
-      await supabase.rpc(
-        "fn_proorc_cadastrar",
-        {
-          p_nota: nota,
-          p_codigo: material.codigo,
-          p_quantidade: Number(quantidade),
-          p_aplicacao: aplicacao
-        }
-      )
-
-    }
-
-    setCodigo("")
-    setQuantidade("")
-    setAplicacao("N")
-    setMaterial(null)
-
-    carregarNota()
+    setEditando(null)
 
   }
+  else{
+
+    await supabase.rpc(
+      "fn_proorc_cadastrar",
+      {
+        p_nota: nota,
+        p_codigo: material.codigo,
+        p_quantidade: Number(quantidade),
+        p_aplicacao: aplicacao
+      }
+    )
+
+  }
+
+  // limpa campos
+  setCodigo("")
+  setQuantidade("")
+  setAplicacao("N")
+  setMaterial(null)
+  setEstrutura([])
+  setMateriaisSug([])
+
+  // recarrega dados
+  carregarNota()
+
+  // foco novamente no campo material
+  setTimeout(()=>{
+    materialRef.current?.focus()
+  },50)
+
+}
 
   async function excluir(id:string){
 
@@ -314,7 +321,8 @@ useEffect(()=>{
           <div style={styles.linhaCadastro}>
 
             <input
-              style={styles.material}
+  ref={materialRef}
+  style={styles.material}
               placeholder="material ou kit"
               value={codigo}
               onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
