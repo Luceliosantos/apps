@@ -31,7 +31,11 @@ const materialRef = useRef<HTMLInputElement>(null)
 
   const [editando,setEditando] = useState<string | null>(null)
 const qtdRef = useRef<HTMLInputElement>(null)
-  const [indiceSug,setIndiceSug] = useState<number>(-1)
+
+const [indiceSug,setIndiceSug] = useState<number>(-1)
+
+
+
   
   function saudacao(){
 
