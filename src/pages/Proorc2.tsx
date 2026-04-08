@@ -583,9 +583,6 @@ QNT
 AP
 </th>
 
-<th style={styles.thPadrao}>
-VIAB
-</th>
 
 <th style={{...styles.thPadrao,...styles.colDescricao}}>
 DESCRIÇÃO
@@ -613,9 +610,6 @@ DESCRIÇÃO
 {x.aplicacao}
 </td>
 
-<td style={styles.tdPadrao}>
-SIM
-</td>
 
 <td style={styles.tdPadrao}>
 {x.descricao}
