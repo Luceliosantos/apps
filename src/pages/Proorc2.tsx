@@ -909,13 +909,17 @@ cursor:"pointer"
 },
 
 linhaS:{
-background:"#ffd6d6"
+background:"#F8CBAD"
 },
 
 linhaU:{
-background:"#ffe8cc"
+background:"#F4B183"
 },
 
+linhaN:{
+background:"#C6E0B4"
+},
+  
 erro:{
 color:"#ffb3b3",
 marginTop:6,
