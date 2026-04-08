@@ -272,13 +272,14 @@ function validarNota(valor:string){
     },50)
 
   }
-async function buscarNotas(){
+async function buscarNotas(valor:string){
 
   const { data } = await supabase
     .from("vw_proorc_cadastro")
     .select("nota")
-    .ilike("nota",`${nota}%`)
-    .limit(10)
+    .ilike("nota", `${valor.trim()}%`)
+    .order("nota")
+    .limit(20)
 
   const listaUnica =
     [...new Set((data || []).map(x=>x.nota))]
@@ -429,7 +430,7 @@ function exportarPDF(){
             style={styles.inputConsulta}
             value={nota}
 
-            onChange={(e)=>{
+           onChange={(e)=>{
 
   const valor = e.target.value
 
@@ -451,7 +452,7 @@ function exportarPDF(){
 
   }
 
-  buscarNotas()
+  buscarNotas(valor)
 
 }}
 
