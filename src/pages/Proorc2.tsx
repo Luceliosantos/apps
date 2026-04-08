@@ -915,16 +915,17 @@ cursor:"pointer"
 },
 
 linhaS:{
-background:"#E06666",
-color:"#000"
+color:"#C00000",
+fontWeight:600
 },
 
 linhaU:{
-background:"#F4B183"
+color:"#C65911",
+fontWeight:600
 },
 
 linhaN:{
-background:"#C6E0B4"
+color:"#548235"
 },
   
 erro:{
