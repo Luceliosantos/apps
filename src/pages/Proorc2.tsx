@@ -914,7 +914,7 @@ borderRadius:4,
 cursor:"pointer"
 },
 
-linhaS:{
+linhaS:{ 
 color:"#C00000",
 fontWeight:600
 },
