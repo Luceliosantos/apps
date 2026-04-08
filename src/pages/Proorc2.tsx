@@ -933,15 +933,17 @@ color:"black"
 },
 
 sugestoesNota:{
-position:"absolute",
-marginTop:4,
-width:180,
-maxHeight:150,
-overflowY:"auto",
-background:"white",
-border:"1px solid #ccc",
-borderRadius:8,
-zIndex:1000
+  position:"absolute",
+  top:"100%",
+  left:0,
+  marginTop:4,
+  width:"100%",
+  maxHeight:150,
+  overflowY:"auto",
+  background:"white",
+  border:"1px solid #ccc",
+  borderRadius:8,
+  zIndex:1000
 },
 
 inputConsulta:{
