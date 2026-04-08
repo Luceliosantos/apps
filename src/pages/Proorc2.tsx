@@ -35,12 +35,14 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
   const [cadastro,setCadastro] = useState<any[]>([])
   const [explodido,setExplodido] = useState<any[]>([])
-const [infoNota,setInfoNota] = useState<{
-  criadoPor?:string
-  criadoEm?:string
-  editadoPor?:string
-  editadoEm?:string
-}>({})
+
+  const [infoNota,setInfoNota] = useState<{
+    criadoPor?:string
+    criadoEm?:string
+    editadoPor?:string
+    editadoEm?:string
+  }>({})
+
   const [editando,setEditando] = useState<string | null>(null)
 
   function saudacao(){
@@ -54,60 +56,58 @@ const [infoNota,setInfoNota] = useState<{
 
   }
 
-useEffect(()=>{
+  useEffect(()=>{
 
-  if(nota.length < 3){
+    if(nota.length < 3){
 
-    setNotasSug([])
-    setIndiceNotaSug(-1)
-    return
+      setNotasSug([])
+      setIndiceNotaSug(-1)
+      return
+
+    }
+
+    if(nota.length >= 10){
+
+      setNotasSug([])
+      return
+
+    }
+
+    buscarNotas(nota)
+
+  },[nota])
+
+  useEffect(()=>{
+
+    setTimeout(()=>{
+      notaRef.current?.focus()
+    },100)
+
+  },[])
+
+  function validarNota(valor:string){
+
+    setNota(valor)
+
+    if(valor.length < 10){
+
+      setNotaValida(false)
+      return
+
+    }
+
+    const primeiros10 = valor.substring(0,10)
+
+    if(!/^\d{10}$/.test(primeiros10)){
+
+      setNotaValida(false)
+      return
+
+    }
+
+    setNotaValida(true)
 
   }
-
-  // não buscar quando já for uma nota completa
-  if(nota.length >= 10){
-
-    setNotasSug([])
-    return
-
-  }
-
-  buscarNotas(nota)
-
-},[nota])
-
-useEffect(()=>{
-
-  setTimeout(()=>{
-    notaRef.current?.focus()
-  },100)
-
-},[])
-
-  
-function validarNota(valor:string){
-
-  setNota(valor)
-
-  if(valor.length < 10){
-
-    setNotaValida(false)
-    return
-
-  }
-
-  const primeiros10 = valor.substring(0,10)
-
-  if(!/^\d{10}$/.test(primeiros10)){
-
-    setNotaValida(false)
-    return
-
-  }
-
-  setNotaValida(true)
-
-}
 
   useEffect(()=>{
 
@@ -123,20 +123,6 @@ function validarNota(valor:string){
 
   },[notaValida,nota])
 
-  useEffect(()=>{
-
-  if(nota.length < 3){
-
-    setNotasSug([])
-    setIndiceNotaSug(-1)
-    return
-
-  }
-
-  buscarNotas(nota)
-
-},[nota])
-  
   useEffect(()=>{
 
     if(codigo.length < 2){
@@ -244,24 +230,24 @@ function validarNota(valor:string){
       .select("usuario, created_at, updated_at")
       .eq("nota",nota)
       .order("created_at",{ascending:true})
-    
+
     if(info && info.length){
-    
+
       const primeiro = info[0]
       const ultimo = info[info.length-1]
-    
+
       setInfoNota({
-    
+
         criadoPor: primeiro.usuario,
         criadoEm: primeiro.created_at,
-    
+
         editadoPor: ultimo.usuario,
         editadoEm: ultimo.updated_at || ultimo.created_at
-    
+
       })
-    
+
     }
-    
+
   }
 
   async function salvar(){
@@ -271,21 +257,6 @@ function validarNota(valor:string){
       await confirmarCodigoDigitado()
 
     }
-
-function formatarData(data?:string){
-
-  if(!data) return ""
-
-  const d = new Date(data)
-
-  return d.toLocaleDateString("pt-BR")
-  +" às "+
-  d.toLocaleTimeString("pt-BR",{
-    hour:"2-digit",
-    minute:"2-digit"
-  })
-
-}
 
     if(!material) return
 
@@ -331,24 +302,41 @@ function formatarData(data?:string){
     },50)
 
   }
-async function buscarNotas(valor:string){
 
-  const { data } = await supabase
-    .from("vw_proorc_cadastro")
-    .select("nota")
-    .limit(20)
+  function formatarData(data?:string){
 
-  const listaFiltrada =
-    (data || [])
-      .map(x => x.nota)
-      .filter(n => n.startsWith(valor))
+    if(!data) return ""
 
-  const listaUnica =
-    [...new Set(listaFiltrada)]
+    const d = new Date(data)
 
-  setNotasSug(listaUnica)
+    return d.toLocaleDateString("pt-BR")
+    +" às "+
+    d.toLocaleTimeString("pt-BR",{
+      hour:"2-digit",
+      minute:"2-digit"
+    })
 
-}
+  }
+
+  async function buscarNotas(valor:string){
+
+    const { data } = await supabase
+      .from("vw_proorc_cadastro")
+      .select("nota")
+      .limit(20)
+
+    const listaFiltrada =
+      (data || [])
+        .map(x => x.nota)
+        .filter(n => n.startsWith(valor))
+
+    const listaUnica =
+      [...new Set(listaFiltrada)]
+
+    setNotasSug(listaUnica)
+
+  }
+
   async function excluir(id:string){
 
     await supabase
@@ -379,92 +367,89 @@ async function buscarNotas(valor:string){
     quantidade &&
     aplicacao
 
-function selecionarNota(n:string){
+  function selecionarNota(n:string){
 
-  setNota(n)
+    setNota(n)
 
-  setNotasSug([])
-  setIndiceNotaSug(-1)
+    setNotasSug([])
+    setIndiceNotaSug(-1)
 
-  validarNota(n)
+    validarNota(n)
 
-  setTimeout(()=>{
-    materialRef.current?.focus()
-  },50)
+    setTimeout(()=>{
+      materialRef.current?.focus()
+    },50)
 
-}
-function dadosExportacao(){
+  }
+    function dadosExportacao(){
 
-  return explodido.map(x => ({
+    return explodido.map(x => ({
 
-    CODIGO: x.codigo,
-    QUANTIDADE: x.quantidade,
-    PONTO: "1",
-    APLICACAO: x.aplicacao,
-    VIABILIDADE: "SIM",
-    TIPO: "I",
-    DESCRICAO: x.descricao
+      CODIGO: x.codigo,
+      QUANTIDADE: x.quantidade,
+      PONTO: "1",
+      APLICACAO: x.aplicacao,
+      VIABILIDADE: "SIM",
+      TIPO: "I",
+      DESCRICAO: x.descricao
 
-  }))
+    }))
 
-}
+  }
 
-function exportarExcel(){
+  function exportarExcel(){
 
-  const dados = dadosExportacao()
+    const dados = dadosExportacao()
 
-  const ws = XLSX.utils.json_to_sheet(dados)
+    const ws = XLSX.utils.json_to_sheet(dados)
 
-  const wb = XLSX.utils.book_new()
+    const wb = XLSX.utils.book_new()
 
-  XLSX.utils.book_append_sheet(wb, ws, "PROORC")
+    XLSX.utils.book_append_sheet(wb, ws, "PROORC")
 
-  XLSX.writeFile(wb, `proorc_${nota}.xlsx`)
+    XLSX.writeFile(wb, `proorc_${nota}.xlsx`)
 
-}
+  }
 
-function exportarPDF(){
+  function exportarPDF(){
 
-  const dados = dadosExportacao()
+    const dados = dadosExportacao()
 
-  const doc = new jsPDF()
+    const doc = new jsPDF()
 
-  autoTable(doc,{
-    head:[[
-      "CODIGO",
-      "QUANTIDADE",
-      "PONTO",
-      "APLICAÇÃO",
-      "VIABILIDADE",
-      "TIPO",
-      "DESCRIÇÃO"
-    ]],
-    body:dados.map(x => [
+    autoTable(doc,{
+      head:[[
+        "CODIGO",
+        "QUANTIDADE",
+        "PONTO",
+        "APLICAÇÃO",
+        "VIABILIDADE",
+        "TIPO",
+        "DESCRIÇÃO"
+      ]],
+      body:dados.map(x => [
 
-      x.CODIGO,
-      x.QUANTIDADE,
-      x.PONTO,
-      x.APLICACAO,
-      x.VIABILIDADE,
-      x.TIPO,
-      x.DESCRICAO
+        x.CODIGO,
+        x.QUANTIDADE,
+        x.PONTO,
+        x.APLICACAO,
+        x.VIABILIDADE,
+        x.TIPO,
+        x.DESCRICAO
 
-    ]),
-    styles:{
-      fontSize:8
-    },
-    headStyles:{
-      fillColor:[30,60,114]
-    }
-  })
+      ]),
+      styles:{
+        fontSize:8
+      },
+      headStyles:{
+        fillColor:[30,60,114]
+      }
+    })
 
-  doc.save(`proorc_${nota}.pdf`)
+    doc.save(`proorc_${nota}.pdf`)
 
-}
+  }
 
-
-
-  
   return(
 
     <div style={styles.container}>
@@ -472,52 +457,39 @@ function exportarPDF(){
       <div style={styles.overlay}>
 
         <div style={styles.header}>
-  
-  <div style={styles.boasVindas}>
-    {saudacao()}, {usuario?.nome || ""}
-  </div>
-
-  <div style={styles.headerDireita}>
-
-    {infoNota.criadoPor && (
-
-      <div style={styles.infoNota}>
-
-        <div>
-          Criada por <strong>{infoNota.criadoPor}</strong>
-          {" "}em {formatarData(infoNota.criadoEm)}
-        </div>
-
-        <div>
-          Editada por <strong>{infoNota.editadoPor}</strong>
-          {" "}em {formatarData(infoNota.editadoEm)}
-        </div>
-
-      </div>
-
-    )}
-
-    <button
-      style={styles.voltar}
-      onClick={()=>setPagina("menu")}
-    >
-      voltar
-    </button>
-
-  </div>
-
-</div>
 
           <div style={styles.boasVindas}>
             {saudacao()}, {usuario?.nome || ""}
           </div>
 
-          <button
-            style={styles.voltar}
-            onClick={()=>setPagina("menu")}
-          >
-            voltar
-          </button>
+          <div style={styles.headerDireita}>
+
+            {infoNota?.criadoPor && (
+
+              <div style={styles.infoNota}>
+
+                <div>
+                  Criada por <strong>{infoNota.criadoPor}</strong>{" "}
+                  em {formatarData(infoNota.criadoEm)}
+                </div>
+
+                <div>
+                  Editada por <strong>{infoNota.editadoPor}</strong>{" "}
+                  em {formatarData(infoNota.editadoEm)}
+                </div>
+
+              </div>
+
+            )}
+
+            <button
+              style={styles.voltar}
+              onClick={()=>setPagina("menu")}
+            >
+              voltar
+            </button>
+
+          </div>
 
         </div>
 
@@ -532,465 +504,467 @@ function exportarPDF(){
             style={styles.inputConsulta}
             value={nota}
 
-           onChange={(e)=>{
+            onChange={(e)=>{
 
-  const valor = e.target.value
+              const valor = e.target.value
 
-  setNota(valor)
+              setNota(valor)
 
-  setCadastro([])
-  setExplodido([])
-  setCodigo("")
-  setMaterial(null)
-  setEstrutura([])
-  setQuantidade("")
-  setAplicacao("N")
+              setCadastro([])
+              setExplodido([])
+              setCodigo("")
+              setMaterial(null)
+              setEstrutura([])
+              setQuantidade("")
+              setAplicacao("N")
 
-  if(valor.length < 3){
+              if(valor.length < 3){
 
-    setNotasSug([])
-    setIndiceNotaSug(-1)
-    return
+                setNotasSug([])
+                setIndiceNotaSug(-1)
+                return
 
-  }
+              }
 
-  buscarNotas(valor)
+              buscarNotas(valor)
 
-}}
+            }}
 
             onKeyDown={(e)=>{
 
-  if(notasSug.length){
+              if(notasSug.length){
 
-    if(e.key==="ArrowDown"){
+                if(e.key==="ArrowDown"){
 
-      e.preventDefault()
+                  e.preventDefault()
 
-      setIndiceNotaSug(prev =>
-        prev < notasSug.length-1 ? prev+1 : 0
-      )
+                  setIndiceNotaSug(prev =>
+                    prev < notasSug.length-1 ? prev+1 : 0
+                  )
 
-      return
-    }
+                  return
+                }
 
-    if(e.key==="ArrowUp"){
+                if(e.key==="ArrowUp"){
 
-      e.preventDefault()
+                  e.preventDefault()
 
-      setIndiceNotaSug(prev =>
-        prev > 0 ? prev-1 : notasSug.length-1
-      )
+                  setIndiceNotaSug(prev =>
+                    prev > 0 ? prev-1 : notasSug.length-1
+                  )
 
-      return
-    }
+                  return
+                }
 
-    if(e.key==="Enter"){
+                if(e.key==="Enter"){
 
-  e.preventDefault()
+                  e.preventDefault()
 
-  const indice =
-    indiceNotaSug >= 0
-    ? indiceNotaSug
-    : 0
+                  const indice =
+                    indiceNotaSug >= 0
+                    ? indiceNotaSug
+                    : 0
 
-  const item = notasSug[indice]
+                  const item = notasSug[indice]
 
-  if(item){
+                  if(item){
 
-    selecionarNota(item)
+                    selecionarNota(item)
 
-  }
+                  }
 
-  return
-}
+                  return
+                }
 
-  }
+              }
 
-  if(e.key==="Tab"){
+              if(e.key==="Tab"){
 
-    validarNota(nota)
+                validarNota(nota)
 
-  }
+              }
 
-}}
+            }}
 
             onBlur={()=>validarNota(nota)}
 
           />
-{notasSug.length>0 && nota.length < 10 && (
 
-<div style={styles.sugestoesNota}>
+          {notasSug.length>0 && nota.length < 10 && (
 
-{notasSug.map((n,i)=>(
+            <div style={styles.sugestoesNota}>
 
-<div
-key={n}
-style={{
-...styles.itemSug,
-background:i===indiceNotaSug
-? "#e8f1ff"
-: "white"
-}}
-onMouseDown={()=>selecionarNota(n)}
->
+              {notasSug.map((n,i)=>(
 
-{n}
+                <div
+                  key={n}
+                  style={{
+                    ...styles.itemSug,
+                    background:i===indiceNotaSug
+                    ? "#e8f1ff"
+                    : "white"
+                  }}
+                  onMouseDown={()=>selecionarNota(n)}
+                >
 
-</div>
+                  {n}
 
-))}
+                </div>
 
-</div>
+              ))}
 
-)}
+            </div>
+
+          )}
+
         </div>
 
         {notaValida && (
 
-<div style={styles.gridPrincipal}>
+          <div style={styles.gridPrincipal}>
 
-  <div>
+            <div>
 
-    <div style={styles.cardPequeno}>
+              <div style={styles.cardPequeno}>
 
-      <div style={styles.linhaCadastro}>
+                <div style={styles.linhaCadastro}>
 
-{materiaisSug.length > 0 && (
+                  {materiaisSug.length > 0 && (
 
-  <div style={styles.sugestoesFixas}>
+                    <div style={styles.sugestoesFixas}>
 
-    {materiaisSug.map((m,i)=> (
+                      {materiaisSug.map((m,i)=> (
 
-      <div
-        key={m.codigo}
-        style={{
-          ...styles.itemSug,
-          background:i===indiceSug ? "#e8f1ff" : "white"
-        }}
-        onMouseDown={()=>selecionarMaterial(m.codigo)}
-      >
+                        <div
+                          key={m.codigo}
+                          style={{
+                            ...styles.itemSug,
+                            background:i===indiceSug ? "#e8f1ff" : "white"
+                          }}
+                          onMouseDown={()=>selecionarMaterial(m.codigo)}
+                        >
 
-        {m.codigo} - {m.descricao}
+                          {m.codigo} - {m.descricao}
+
+                        </div>
+
+                      ))}
+
+                    </div>
+
+                  )}
+
+                  <input
+                    ref={materialRef}
+                    style={styles.material}
+                    placeholder="Item ou kit"
+                    value={codigo}
+
+                    onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
+
+                    onKeyDown={(e)=>{
+
+                      if(materiaisSug.length===0) return
+
+                      if(e.key==="ArrowDown"){
+
+                        e.preventDefault()
+
+                        setIndiceSug(prev=>
+                          prev < materiaisSug.length-1 ? prev+1 : 0
+                        )
+
+                      }
+
+                      if(e.key==="ArrowUp"){
+
+                        e.preventDefault()
+
+                        setIndiceSug(prev=>
+                          prev > 0 ? prev-1 : materiaisSug.length-1
+                        )
+
+                      }
+
+                      if(e.key==="Enter"){
+
+                        e.preventDefault()
+
+                        const item =
+                          indiceSug>=0
+                          ? materiaisSug[indiceSug]
+                          : materiaisSug[0]
+
+                        if(item){
+
+                          selecionarMaterial(item.codigo)
+
+                        }
+
+                      }
+
+                      if(e.key==="Tab"){
+
+                        const item =
+                          indiceSug>=0
+                          ? materiaisSug[indiceSug]
+                          : materiaisSug[0]
+
+                        if(item){
+
+                          selecionarMaterial(item.codigo)
+
+                        }
+
+                      }
+
+                    }}
+
+                  />
+
+                  <input
+                    ref={qtdRef}
+                    style={styles.qtd}
+                    type="number"
+                    placeholder="qtd"
+                    value={quantidade}
+                    onChange={(e)=>setQuantidade(e.target.value)}
+                  />
+
+                  <select
+                    style={styles.aplicacao}
+                    value={aplicacao}
+                    onChange={(e)=>setAplicacao(e.target.value)}
+                  >
+                    <option value="N">N</option>
+                    <option value="U">U</option>
+                    <option value="S">S</option>
+                  </select>
+
+                  <button
+                    style={styles.salvar}
+                    disabled={!podeSalvar}
+                    onClick={salvar}
+                  >
+                    {editando ? "alterar" : "gravar"}
+                  </button>
+
+                </div>
+
+                {estrutura.length > 0 && (
+
+                  <div style={styles.subBox}>
+
+                    <strong>estrutura do kit</strong>
+
+                    <table style={styles.tabelaCompacta}>
+
+                      <thead>
+
+                        <tr>
+
+                          <th style={styles.thPadrao}>codigo</th>
+                          <th style={styles.thPadrao}>descricao</th>
+                          <th style={styles.thPadrao}>qtd</th>
+
+                        </tr>
+
+                      </thead>
+
+                      <tbody>
+
+                        {estrutura.map(i => (
+
+                          <tr key={i.codigo_item}>
+
+                            <td style={styles.tdPadrao}>{i.codigo_item}</td>
+                            <td style={styles.tdPadrao}>{i.item}</td>
+                            <td style={styles.tdPadrao}>{i.quantidade}</td>
+
+                          </tr>
+
+                        ))}
+
+                      </tbody>
+
+                    </table>
+
+                  </div>
+
+                )}
+
+              </div>
+
+              <div style={styles.cardMedioGrid}>
+
+                <strong>REGISTROS CADASTRADOS</strong>
+
+                <table style={styles.tabelaPadrao}>
+
+                  <thead>
+
+                    <tr>
+
+                      <th style={{...styles.thBlue,...styles.colCodigo}}>CODIGO</th>
+                      <th style={{...styles.thBlue,...styles.colDescricao}}>DESCRIÇÃO</th>
+                      <th style={{...styles.thBlue,...styles.colQtd}}>QTD</th>
+                      <th style={styles.thBlue}>AP</th>
+                      <th style={styles.thBlue}>AÇÕES</th>
+
+                    </tr>
+
+                  </thead>
+
+                  <tbody>
+
+                    {cadastro.map(x => (
+
+                      <tr key={x.id}>
+
+                        <td style={styles.tdPadrao}>{x.codigo}</td>
+
+                        <td style={styles.tdPadrao}>{x.descricao}</td>
+
+                        <td style={styles.tdPadrao}>
+                          {x.aplicacao === "U"
+                          ? Math.abs(x.quantidade)
+                          : x.quantidade}
+                        </td>
+
+                        <td style={styles.tdPadrao}>
+                          {x.aplicacao}
+                        </td>
+
+                        <td style={styles.tdPadrao}>
+
+                          <button
+                            style={styles.btnGrid}
+                            onClick={()=>editar(x)}
+                          >
+                            alterar
+                          </button>
+
+                          <button
+                            style={styles.btnExcluir}
+                            onClick={()=>excluir(x.id)}
+                          >
+                            excluir
+                          </button>
+
+                        </td>
+
+                      </tr>
+
+                    ))}
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </div>
+
+            <div style={styles.cardGrid}>
+
+              <div style={styles.headerTabela}>
+
+                <strong>LISTA PARA PROORC</strong>
+
+                <div>
+
+                  <button
+                    style={styles.btnExport}
+                    onClick={exportarExcel}
+                  >
+                    EXCEL
+                  </button>
+
+                  <button
+                    style={styles.btnExportPdf}
+                    onClick={exportarPDF}
+                  >
+                    PDF
+                  </button>
+
+                </div>
+
+              </div>
+
+              <table style={styles.tabelaCompacta}>
+
+                <thead>
+
+                  <tr>
+
+                    <th style={{...styles.thPadrao,...styles.colCodigo}}>
+                      CODIGO
+                    </th>
+
+                    <th style={{...styles.thPadrao,...styles.colQtd}}>
+                      QNT
+                    </th>
+
+                    <th style={{...styles.thPadrao,...styles.colAp}}>
+                      AP
+                    </th>
+
+                    <th style={{...styles.thPadrao,...styles.colDescricao}}>
+                      DESCRIÇÃO
+                    </th>
+
+                  </tr>
+
+                </thead>
+
+                <tbody>
+
+                  {explodido.map(x => (
+
+                    <tr
+                      key={x.id}
+                      style={
+                        x.aplicacao==="S"
+                        ? styles.linhaS
+                        : undefined
+                      }
+                    >
+
+                      <td style={styles.tdPadrao}>
+                        {x.codigo}
+                      </td>
+
+                      <td style={styles.tdPadrao}>
+                        {x.quantidade}
+                      </td>
+
+                      <td style={{...styles.tdPadrao,...styles.colAp}}>
+                        {x.aplicacao}
+                      </td>
+
+                      <td style={styles.tdPadrao}>
+                        {x.descricao}
+                      </td>
+
+                    </tr>
+
+                  ))}
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </div>
+
+        )}
 
       </div>
-
-    ))}
-
-  </div>
-
-)}
-
-        <input
-          ref={materialRef}
-          style={styles.material}
-          placeholder="Item ou kit"
-          value={codigo}
-
-          onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
-
-          onKeyDown={(e)=>{
-
-            if(materiaisSug.length===0) return
-
-            if(e.key==="ArrowDown"){
-
-              e.preventDefault()
-
-              setIndiceSug(prev=>
-                prev < materiaisSug.length-1 ? prev+1 : 0
-              )
-
-            }
-
-            if(e.key==="ArrowUp"){
-
-              e.preventDefault()
-
-              setIndiceSug(prev=>
-                prev > 0 ? prev-1 : materiaisSug.length-1
-              )
-
-            }
-
-            if(e.key==="Enter"){
-
-              e.preventDefault()
-
-              const item =
-                indiceSug>=0
-                ? materiaisSug[indiceSug]
-                : materiaisSug[0]
-
-              if(item){
-
-                selecionarMaterial(item.codigo)
-
-              }
-
-            }
-
-            if(e.key==="Tab"){
-
-              const item =
-                indiceSug>=0
-                ? materiaisSug[indiceSug]
-                : materiaisSug[0]
-
-              if(item){
-
-                selecionarMaterial(item.codigo)
-
-              }
-
-            }
-
-          }}
-
-        />
-
-        <input
-          ref={qtdRef}
-          style={styles.qtd}
-          type="number"
-          placeholder="qtd"
-          value={quantidade}
-          onChange={(e)=>setQuantidade(e.target.value)}
-        />
-
-        <select
-          style={styles.aplicacao}
-          value={aplicacao}
-          onChange={(e)=>setAplicacao(e.target.value)}
-        >
-          <option value="N">N</option>
-          <option value="U">U</option>
-          <option value="S">S</option>
-        </select>
-
-        <button
-          style={styles.salvar}
-          disabled={!podeSalvar}
-          onClick={salvar}
-        >
-          {editando ? "alterar" : "gravar"}
-        </button>
-
-      </div>
-
-      {estrutura.length > 0 && (
-
-        <div style={styles.subBox}>
-
-          <strong>estrutura do kit</strong>
-
-          <table style={styles.tabelaCompacta}>
-
-            <thead>
-
-              <tr>
-
-                <th style={styles.thPadrao}>codigo</th>
-                <th style={styles.thPadrao}>descricao</th>
-                <th style={styles.thPadrao}>qtd</th>
-
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              {estrutura.map(i => (
-
-                <tr key={i.codigo_item}>
-
-                  <td style={styles.tdPadrao}>{i.codigo_item}</td>
-                  <td style={styles.tdPadrao}>{i.item}</td>
-                  <td style={styles.tdPadrao}>{i.quantidade}</td>
-
-                </tr>
-
-              ))}
-
-            </tbody>
-
-          </table>
-
-        </div>
-
-      )}
 
     </div>
 
-    <div style={styles.cardMedioGrid}>
-
-      <strong>REGISTROS CADASTRADOS</strong>
-
-      <table style={styles.tabelaPadrao}>
-
-        <thead>
-
-          <tr>
-
-            <th style={{...styles.thBlue,...styles.colCodigo}}>CODIGO</th>
-            <th style={{...styles.thBlue,...styles.colDescricao}}>DESCRIÇÃO</th>
-            <th style={{...styles.thBlue,...styles.colQtd}}>QTD</th>
-            <th style={styles.thBlue}>AP</th>
-            <th style={styles.thBlue}>AÇÕES</th>
-
-          </tr>
-
-        </thead>
-
-        <tbody>
-
-          {cadastro.map(x => (
-
-<tr key={x.id}>
-
-<td style={styles.tdPadrao}>{x.codigo}</td>
-
-<td style={styles.tdPadrao}>{x.descricao}</td>
-
-<td style={styles.tdPadrao}>
-{x.aplicacao === "U"
-? Math.abs(x.quantidade)
-: x.quantidade}
-</td>
-
-<td style={styles.tdPadrao}>
-{x.aplicacao}
-</td>
-
-<td style={styles.tdPadrao}>
-
-<button
-style={styles.btnGrid}
-onClick={()=>editar(x)}
->
-alterar
-</button>
-
-<button
-style={styles.btnExcluir}
-onClick={()=>excluir(x.id)}
->
-excluir
-</button>
-
-</td>
-
-</tr>
-
-))}
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-<div style={styles.cardGrid}>
-
-<div style={styles.headerTabela}>
-
-<strong>LISTA PARA PROORC</strong>
-
-<div>
-
-<button
-style={styles.btnExport}
-onClick={exportarExcel}
->
-EXCEL
-</button>
-
-<button
-style={styles.btnExportPdf}
-onClick={exportarPDF}
->
-PDF
-</button>
-
-</div>
-
-</div>
-
-<table style={styles.tabelaCompacta}>
-
-<thead>
-
-<tr>
-
-<th style={{...styles.thPadrao,...styles.colCodigo}}>
-CODIGO
-</th>
-
-<th style={{...styles.thPadrao,...styles.colQtd}}>
-QNT
-</th>
-
-<th style={{...styles.thPadrao,...styles.colAp}}>
-AP
-</th>
-
-<th style={{...styles.thPadrao,...styles.colDescricao}}>
-DESCRIÇÃO
-</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-{explodido.map(x => (
-
-<tr
-key={x.id}
-style={
-x.aplicacao==="S"
-? styles.linhaS
-: undefined
-}
->
-
-<td style={styles.tdPadrao}>
-{x.codigo}
-</td>
-
-<td style={styles.tdPadrao}>
-{x.quantidade}
-</td>
-
-<td style={{...styles.tdPadrao,...styles.colAp}}>
-{x.aplicacao}
-</td>
-
-<td style={styles.tdPadrao}>
-{x.descricao}
-</td>
-
-</tr>
-
-))}
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-)}
-
-</div>
-
-</div>
-
-)
+  )
 
 }
 
@@ -1041,17 +1015,17 @@ color:"black"
 },
 
 sugestoesNota:{
-  position:"absolute",
-  top:"100%",
-  left:0,
-  marginTop:4,
-  width:"100%",
-  maxHeight:150,
-  overflowY:"auto",
-  background:"white",
-  border:"1px solid #ccc",
-  borderRadius:8,
-  zIndex:1000
+position:"absolute",
+top:"100%",
+left:0,
+marginTop:4,
+width:"100%",
+maxHeight:150,
+overflowY:"auto",
+background:"white",
+border:"1px solid #ccc",
+borderRadius:8,
+zIndex:1000
 },
 
 inputConsulta:{
@@ -1092,17 +1066,17 @@ fontSize:12
 },
 
 headerDireita:{
-  display:"flex",
-  flexDirection:"column",
-  alignItems:"flex-end",
-  gap:6
+display:"flex",
+flexDirection:"column",
+alignItems:"flex-end",
+gap:6
 },
 
 infoNota:{
-  fontSize:12,
-  textAlign:"right",
-  lineHeight:1.4,
-  opacity:0.9
+fontSize:12,
+textAlign:"right",
+lineHeight:1.4,
+opacity:0.9
 },
 
 voltar:{
@@ -1208,11 +1182,11 @@ zIndex:1000
 },
 
 itemSug:{
-  padding:"6px 10px",
-  borderBottom:"1px solid #eee",
-  cursor:"pointer",
-  fontSize:13,
-  color:"#000"
+padding:"6px 10px",
+borderBottom:"1px solid #eee",
+cursor:"pointer",
+fontSize:13,
+color:"#000"
 },
 
 tabelaPadrao:{
