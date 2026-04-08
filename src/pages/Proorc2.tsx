@@ -404,31 +404,31 @@ return(
 
     {notasSug.length>0 && (
 
-      <div style={styles.sugestoesNota}>
+  <div style={styles.sugestoesNota}>
 
-        {notasSug.map((n,i)=>(
+    {notasSug.map((n,i)=>(
 
-          <div
-            key={n}
-            style={{
-              ...styles.itemSug,
-              background:
-                i===indiceNotaSug
-                ? "#e8f1ff"
-                : "white"
-            }}
-            onMouseDown={()=>selecionarNota(n)}
-          >
+      <div
+        key={n}
+        style={{
+          ...styles.itemSug,
+          background:
+            i===indiceNotaSug
+            ? "#e8f1ff"
+            : "white"
+        }}
+        onMouseDown={()=>selecionarNota(n)}
+      >
 
-            {n}
-
-          </div>
-
-        ))}
+        {n}
 
       </div>
 
-    )}
+    ))}
+
+  </div>
+
+)}
 
   </div>
 
@@ -436,7 +436,9 @@ return(
 
 </div>
 
-</div>
+)
+
+}
 
 const styles:any={
 
