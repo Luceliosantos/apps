@@ -20,7 +20,7 @@ export default function Proorc2({ usuario,setPagina }:Props){
   const qtdRef = useRef<HTMLInputElement>(null)
 
   const [codigo,setCodigo] = useState("")
-  const [materiaisSug,setMateriaisSug] = useState<any[]>([])
+
 
   const [material,setMaterial] = useState<any>(null)
   const [estrutura,setEstrutura] = useState<any[]>([])
@@ -33,7 +33,7 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
   const [editando,setEditando] = useState<string | null>(null)
 
-  const [indiceSug,setIndiceSug] = useState<number>(-1)
+
 
   function saudacao(){
 
@@ -93,8 +93,6 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
       setMaterial(null)
       setEstrutura([])
-      setMateriaisSug([])
-      setIndiceSug(-1)
 
       return
 
