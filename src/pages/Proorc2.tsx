@@ -318,36 +318,269 @@ export default function Proorc2({ usuario,setPagina }:Props){
         </div>
 
         {notaValida && (
+
 <div style={styles.gridPrincipal}>
 
+  {/* COLUNA ESQUERDA */}
   <div>
 
     <div style={styles.cardPequeno}>
-      ...
-    </div>
 
-    <div style={styles.cardMedioGrid}>
-      ...
-    </div>
+      <div style={styles.linhaCadastro}>
 
-  </div>
+        <input
+          ref={materialRef}
+          style={styles.material}
+          placeholder="Item ou kit"
+          value={codigo}
+          onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
+        />
 
+        <input
+          ref={qtdRef}
+          style={styles.qtd}
+          type="number"
+          placeholder="qtd"
+          value={quantidade}
+          onChange={(e)=>setQuantidade(e.target.value)}
+        />
 
-  <div style={styles.cardGrid}>
-    ...
-  </div>
+        <select
+          style={styles.aplicacao}
+          value={aplicacao}
+          onChange={(e)=>setAplicacao(e.target.value)}
+        >
+          <option value="N">N</option>
+          <option value="U">U</option>
+          <option value="S">S</option>
+        </select>
 
-</div>
-)}
-
+        <button
+          style={styles.salvar}
+          disabled={!podeSalvar}
+          onClick={salvar}
+        >
+          {editando ? "alterar" : "gravar"}
+        </button>
 
       </div>
 
+      {estrutura.length > 0 && (
+
+        <div style={styles.subBox}>
+
+          <strong>estrutura do kit</strong>
+
+          <table style={styles.tabelaCompacta}>
+
+            <thead>
+
+              <tr>
+
+                <th style={styles.thPadrao}>
+                  codigo
+                </th>
+
+                <th style={styles.thPadrao}>
+                  descricao
+                </th>
+
+                <th style={styles.thPadrao}>
+                  qtd
+                </th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              {estrutura.map(i => (
+
+                <tr key={i.codigo_item}>
+
+                  <td style={styles.tdPadrao}>
+                    {i.codigo_item}
+                  </td>
+
+                  <td style={styles.tdPadrao}>
+                    {i.item}
+                  </td>
+
+                  <td style={styles.tdPadrao}>
+                    {i.quantidade}
+                  </td>
+
+                </tr>
+
+              ))}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      )}
+
     </div>
 
-  )
 
-}
+
+    <div style={styles.cardMedioGrid}>
+
+      <strong>registros cadastrados</strong>
+
+      <table style={styles.tabelaPadrao}>
+
+        <thead>
+
+          <tr>
+
+            <th style={{...styles.thBlue,...styles.colCodigo}}>
+              CODIGO
+            </th>
+
+            <th style={{...styles.thBlue,...styles.colDescricao}}>
+              DESCRIÇÃO
+            </th>
+
+            <th style={{...styles.thBlue,...styles.colQtd}}>
+              QTD
+            </th>
+
+            <th style={styles.thBlue}>
+              AP
+            </th>
+
+            <th style={styles.thBlue}></th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          {cadastro.map(x => (
+
+            <tr key={x.id}>
+
+              <td style={styles.tdPadrao}>
+                {x.codigo}
+              </td>
+
+              <td style={styles.tdPadrao}>
+                {x.descricao}
+              </td>
+
+              <td style={styles.tdPadrao}>
+                {x.aplicacao === "U"
+                  ? Math.abs(x.quantidade)
+                  : x.quantidade}
+              </td>
+
+              <td style={styles.tdPadrao}>
+                {x.aplicacao}
+              </td>
+
+              <td style={styles.tdPadrao}>
+
+                <button
+                  style={styles.btnGrid}
+                  onClick={()=>editar(x)}
+                >
+                  alterar
+                </button>
+
+                <button
+                  style={styles.btnExcluir}
+                  onClick={()=>excluir(x.id)}
+                >
+                  excluir
+                </button>
+
+              </td>
+
+            </tr>
+
+          ))}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+
+  {/* COLUNA DIREITA */}
+  <div style={styles.cardGrid}>
+
+    <strong>itens consolidados</strong>
+
+    <table style={styles.tabelaCompacta}>
+
+      <thead>
+
+        <tr>
+
+          <th style={{...styles.thPadrao,...styles.colCodigo}}>
+            CODIGO
+          </th>
+
+          <th style={{...styles.thPadrao,...styles.colQtd}}>
+            QNT
+          </th>
+
+          <th style={styles.thPadrao}>
+            AP
+          </th>
+
+          <th style={{...styles.thPadrao,...styles.colDescricao}}>
+            DESCRIÇÃO
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        {explodido.map((x,i)=> (
+
+          <tr key={i}>
+
+            <td style={styles.tdPadrao}>
+              {x.codigo}
+            </td>
+
+            <td style={styles.tdPadrao}>
+              {x.quantidade}
+            </td>
+
+            <td style={styles.tdPadrao}>
+              {x.aplicacao}
+            </td>
+
+            <td style={styles.tdPadrao}>
+              {x.descricao}
+            </td>
+
+          </tr>
+
+        ))}
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+)}
 
 const styles:any={
 
