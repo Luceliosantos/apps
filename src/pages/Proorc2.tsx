@@ -841,6 +841,11 @@ width:180,
 textAlign:"center"
 },
 
+linhaS:{
+color:"#C00000",
+fontWeight:600
+},
+
 headerTabela:{
 display:"flex",
 justifyContent:"space-between",
