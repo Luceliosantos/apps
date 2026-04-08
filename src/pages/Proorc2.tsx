@@ -485,8 +485,6 @@ export default function Proorc2({ usuario,setPagina }:Props){
               </table>
         </div>
 
-        </div>
-
         </>
 
         </div>
