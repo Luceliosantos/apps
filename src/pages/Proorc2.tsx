@@ -63,15 +63,13 @@ useEffect(()=>{
 
 },[nota])
 
+useEffect(()=>{
 
+  setTimeout(()=>{
+    notaRef.current?.focus()
+  },100)
 
-
-
-
-
-
-
-
+},[])
 
   
 function validarNota(valor:string){
@@ -333,10 +331,15 @@ async function buscarNotas(valor:string){
 function selecionarNota(n:string){
 
   setNota(n)
+
   setNotasSug([])
   setIndiceNotaSug(-1)
 
   validarNota(n)
+
+  setTimeout(()=>{
+    materialRef.current?.focus()
+  },50)
 
 }
 function dadosExportacao(){
@@ -497,22 +500,23 @@ function exportarPDF(){
 
     if(e.key==="Enter"){
 
-      e.preventDefault()
+  e.preventDefault()
 
-      const indice =
-        indiceNotaSug >= 0
-        ? indiceNotaSug
-        : 0
+  const indice =
+    indiceNotaSug >= 0
+    ? indiceNotaSug
+    : 0
 
-      const item = notasSug[indice]
+  const item = notasSug[indice]
 
-      if(item){
+  if(item){
 
-        selecionarNota(item)
-      }
+    selecionarNota(item)
 
-      return
-    }
+  }
+
+  return
+}
 
   }
 
