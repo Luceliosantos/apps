@@ -489,8 +489,6 @@ export default function Proorc2({ usuario,setPagina }:Props){
             )}
         </div>
 
-        <>
-
         <div style={styles.cardMedioGrid}>
 
           <strong>registros cadastrados</strong>
@@ -625,10 +623,9 @@ DESCRIÇÃO
 
 </table>
 
-        </div>
+       </div>
 </div>
-        </>
-        )}
+)}
 
       </div>
 
