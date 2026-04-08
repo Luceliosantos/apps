@@ -287,12 +287,15 @@ async function buscarNotas(valor:string){
   const { data } = await supabase
     .from("vw_proorc_cadastro")
     .select("nota")
-    .ilike("nota", `%${valor}%`)
-    .order("nota")
     .limit(20)
 
+  const listaFiltrada =
+    (data || [])
+      .map(x => x.nota)
+      .filter(n => n.startsWith(valor))
+
   const listaUnica =
-    [...new Set((data || []).map(x=>x.nota))]
+    [...new Set(listaFiltrada)]
 
   setNotasSug(listaUnica)
 
