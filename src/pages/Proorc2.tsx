@@ -514,41 +514,47 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
             <tbody>
 
-              {cadastro.map(x => (
+{cadastro.map(x => (
 
-                <tr key={x.id}>
+<tr key={x.id}>
 
-                  <td style={styles.tdPadrao}>{x.codigo}</td>
-                  <td style={styles.tdPadrao}>{x.descricao}</td>
-                  <td style={styles.tdPadrao}>{x.quantidade}</td>
-                  
-                  <td style={styles.tdPadrao}>
-                  {x.aplicacao}
-                  </td>
-                  
-                  <td style={styles.tdPadrao}>
+<td style={styles.tdPadrao}>{x.codigo}</td>
 
-                    <button
-                      style={styles.btnGrid}
-                      onClick={()=>editar(x)}
-                    >
-                      alterar
-                    </button>
+<td style={styles.tdPadrao}>{x.descricao}</td>
 
-                    <button
-                      style={styles.btnExcluir}
-                      onClick={()=>excluir(x.id)}
-                    >
-                      excluir
-                    </button>
+<td style={styles.tdPadrao}>
+  {x.aplicacao === "U"
+    ? Math.abs(x.quantidade)
+    : x.quantidade}
+</td>
 
-                  </td>
+<td style={styles.tdPadrao}>
+{x.aplicacao}
+</td>
 
-                </tr>
+<td style={styles.tdPadrao}>
 
-              ))}
+<button
+style={styles.btnGrid}
+onClick={()=>editar(x)}
+>
+alterar
+</button>
 
-            </tbody>
+<button
+style={styles.btnExcluir}
+onClick={()=>excluir(x.id)}
+>
+excluir
+</button>
+
+</td>
+
+</tr>
+
+))}
+
+</tbody>
 
           </table>
 
