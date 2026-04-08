@@ -447,8 +447,11 @@ function exportarPDF(){
 
     setNotasSug([])
     setIndiceNotaSug(-1)
+    return
 
   }
+
+  buscarNotas()
 
 }}
 
