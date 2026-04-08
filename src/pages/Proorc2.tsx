@@ -858,15 +858,15 @@ whiteSpace:"nowrap"
 },
 
 colCodigo:{
-width:70
+width:50
 },
 
 colAp:{
-width:45
+width:25
 },
 
 colDescricao:{
-width:305
+width:345
 },
 
 colQtd:{
