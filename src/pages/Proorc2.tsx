@@ -539,7 +539,7 @@ function exportarPDF(){
             onBlur={()=>validarNota(nota)}
 
           />
-{notasSug.length>0 && (
+{notasSug.length>0 && nota.length < 10 && (
 
 <div style={styles.sugestoesNota}>
 
