@@ -20,8 +20,8 @@ export default function Proorc2({ usuario,setPagina }:Props){
   const qtdRef = useRef<HTMLInputElement>(null)
 
   const [codigo,setCodigo] = useState("")
-const [materiaisSug,setMateriaisSug] = useState<any[]>([])
-const [indiceSug,setIndiceSug] = useState<number>(-1)
+  const [materiaisSug,setMateriaisSug] = useState<any[]>([])
+  const [indiceSug,setIndiceSug] = useState<number>(-1)
 
   const [material,setMaterial] = useState<any>(null)
   const [estrutura,setEstrutura] = useState<any[]>([])
@@ -33,8 +33,6 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
   const [explodido,setExplodido] = useState<any[]>([])
 
   const [editando,setEditando] = useState<string | null>(null)
-
-
 
   function saudacao(){
 
@@ -60,7 +58,7 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
     if(valor.length < 10){
 
       setNotaValida(false)
-      setErroNota("mínimo 10 dígitos numéricos")
+      setErroNota("")
       return
 
     }
@@ -70,7 +68,7 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
     if(!/^\d{10}$/.test(primeiros10)){
 
       setNotaValida(false)
-      setErroNota("os 10 primeiros caracteres devem ser numéricos")
+      setErroNota("")
       return
 
     }
@@ -82,19 +80,24 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
 
   useEffect(()=>{
 
-    if(!notaValida) return
+    if(notaValida){
 
-    carregarNota()
+      carregarNota()
 
-  },[notaValida])
+      setTimeout(()=>{
+        materialRef.current?.focus()
+      },50)
+
+    }
+
+  },[notaValida,nota])
 
   useEffect(()=>{
 
     if(codigo.length < 2){
 
-      setMaterial(null)
-      setEstrutura([])
-
+      setMateriaisSug([])
+      setIndiceSug(-1)
       return
 
     }
@@ -113,26 +116,7 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
       .limit(20)
 
     setMateriaisSug(data || [])
-
-  }
-
-  async function confirmarCodigoDigitado(){
-
-    if(!codigo) return
-
-    const { data } = await supabase
-      .from("vw_proorc_materiais")
-      .select("*")
-      .ilike("codigo",`${codigo}%`)
-      .order("codigo")
-      .limit(1)
-      .maybeSingle()
-
-    if(data){
-
-      selecionarMaterial(data.codigo)
-
-    }
+    setIndiceSug(-1)
 
   }
 
@@ -140,6 +124,7 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
 
     setCodigo(cod)
     setMateriaisSug([])
+    setIndiceSug(-1)
 
     const { data } = await supabase
       .from("vw_proorc_materiais")
@@ -162,6 +147,30 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
     else{
 
       setEstrutura([])
+
+    }
+
+    setTimeout(()=>{
+      qtdRef.current?.focus()
+    },50)
+
+  }
+
+  async function confirmarCodigoDigitado(){
+
+    if(!codigo) return
+
+    const { data } = await supabase
+      .from("vw_proorc_materiais")
+      .select("*")
+      .ilike("codigo",`${codigo}%`)
+      .order("codigo")
+      .limit(1)
+      .maybeSingle()
+
+    if(data){
+
+      selecionarMaterial(data.codigo)
 
     }
 
@@ -258,6 +267,10 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
     setAplicacao(linha.aplicacao)
     setEditando(linha.id)
 
+    setTimeout(()=>{
+      qtdRef.current?.focus()
+    },50)
+
   }
 
   const podeSalvar =
@@ -297,22 +310,36 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
             ref={notaRef}
             style={styles.inputConsulta}
             value={nota}
-            onChange={(e)=>setNota(e.target.value)}
+
+            onChange={(e)=>{
+
+              const valor = e.target.value
+
+              setNota(valor)
+
+              setCadastro([])
+              setExplodido([])
+              setCodigo("")
+              setMaterial(null)
+              setEstrutura([])
+              setQuantidade("")
+              setAplicacao("N")
+
+            }}
 
             onKeyDown={(e)=>{
+
               if(e.key==="Enter" || e.key==="Tab"){
+
                 validarNota(nota)
+
               }
+
             }}
 
             onBlur={()=>validarNota(nota)}
-          />
 
-          {erroNota && !notaValida &&(
-            <div style={styles.erroNota}>
-              {erroNota}
-            </div>
-          )}
+          />
 
         </div>
 
@@ -320,12 +347,12 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
 
 <div style={styles.gridPrincipal}>
 
-  {/* COLUNA ESQUERDA */}
   <div>
 
     <div style={styles.cardPequeno}>
 
       <div style={styles.linhaCadastro}>
+
 {materiaisSug.length > 0 && (
 
   <div style={styles.sugestoesFixas}>
@@ -350,12 +377,73 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
   </div>
 
 )}
+
         <input
           ref={materialRef}
           style={styles.material}
           placeholder="Item ou kit"
           value={codigo}
+
           onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
+
+          onKeyDown={(e)=>{
+
+            if(materiaisSug.length===0) return
+
+            if(e.key==="ArrowDown"){
+
+              e.preventDefault()
+
+              setIndiceSug(prev=>
+                prev < materiaisSug.length-1 ? prev+1 : 0
+              )
+
+            }
+
+            if(e.key==="ArrowUp"){
+
+              e.preventDefault()
+
+              setIndiceSug(prev=>
+                prev > 0 ? prev-1 : materiaisSug.length-1
+              )
+
+            }
+
+            if(e.key==="Enter"){
+
+              e.preventDefault()
+
+              const item =
+                indiceSug>=0
+                ? materiaisSug[indiceSug]
+                : materiaisSug[0]
+
+              if(item){
+
+                selecionarMaterial(item.codigo)
+
+              }
+
+            }
+
+            if(e.key==="Tab"){
+
+              const item =
+                indiceSug>=0
+                ? materiaisSug[indiceSug]
+                : materiaisSug[0]
+
+              if(item){
+
+                selecionarMaterial(item.codigo)
+
+              }
+
+            }
+
+          }}
+
         />
 
         <input
@@ -399,17 +487,9 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
 
               <tr>
 
-                <th style={styles.thPadrao}>
-                  codigo
-                </th>
-
-                <th style={styles.thPadrao}>
-                  descricao
-                </th>
-
-                <th style={styles.thPadrao}>
-                  qtd
-                </th>
+                <th style={styles.thPadrao}>codigo</th>
+                <th style={styles.thPadrao}>descricao</th>
+                <th style={styles.thPadrao}>qtd</th>
 
               </tr>
 
@@ -421,17 +501,9 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
 
                 <tr key={i.codigo_item}>
 
-                  <td style={styles.tdPadrao}>
-                    {i.codigo_item}
-                  </td>
-
-                  <td style={styles.tdPadrao}>
-                    {i.item}
-                  </td>
-
-                  <td style={styles.tdPadrao}>
-                    {i.quantidade}
-                  </td>
+                  <td style={styles.tdPadrao}>{i.codigo_item}</td>
+                  <td style={styles.tdPadrao}>{i.item}</td>
+                  <td style={styles.tdPadrao}>{i.quantidade}</td>
 
                 </tr>
 
@@ -447,8 +519,6 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
 
     </div>
 
-
-
     <div style={styles.cardMedioGrid}>
 
       <strong>REGISTROS CADASTRADOS</strong>
@@ -459,22 +529,10 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
 
           <tr>
 
-            <th style={{...styles.thBlue,...styles.colCodigo}}>
-              CODIGO
-            </th>
-
-            <th style={{...styles.thBlue,...styles.colDescricao}}>
-              DESCRIÇÃO
-            </th>
-
-            <th style={{...styles.thBlue,...styles.colQtd}}>
-              QTD
-            </th>
-
-            <th style={styles.thBlue}>
-              AP
-            </th>
-
+            <th style={{...styles.thBlue,...styles.colCodigo}}>CODIGO</th>
+            <th style={{...styles.thBlue,...styles.colDescricao}}>DESCRIÇÃO</th>
+            <th style={{...styles.thBlue,...styles.colQtd}}>QTD</th>
+            <th style={styles.thBlue}>AP</th>
             <th style={styles.thBlue}></th>
 
           </tr>
@@ -487,90 +545,83 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
 
 <tr key={x.id}>
 
-              <td style={styles.tdPadrao}>
-                {x.codigo}
-              </td>
+<td style={styles.tdPadrao}>{x.codigo}</td>
 
-              <td style={styles.tdPadrao}>
-                {x.descricao}
-              </td>
+<td style={styles.tdPadrao}>{x.descricao}</td>
 
-              <td style={styles.tdPadrao}>
-                {x.aplicacao === "U"
-                  ? Math.abs(x.quantidade)
-                  : x.quantidade}
-              </td>
+<td style={styles.tdPadrao}>
+{x.aplicacao === "U"
+? Math.abs(x.quantidade)
+: x.quantidade}
+</td>
 
-              <td style={styles.tdPadrao}>
-                {x.aplicacao}
-              </td>
+<td style={styles.tdPadrao}>
+{x.aplicacao}
+</td>
 
-              <td style={styles.tdPadrao}>
+<td style={styles.tdPadrao}>
 
-                <button
-                  style={styles.btnGrid}
-                  onClick={()=>editar(x)}
-                >
-                  alterar
-                </button>
+<button
+style={styles.btnGrid}
+onClick={()=>editar(x)}
+>
+alterar
+</button>
 
-                <button
-                  style={styles.btnExcluir}
-                  onClick={()=>excluir(x.id)}
-                >
-                  excluir
-                </button>
+<button
+style={styles.btnExcluir}
+onClick={()=>excluir(x.id)}
+>
+excluir
+</button>
 
-              </td>
+</td>
 
-            </tr>
+</tr>
 
-          ))}
+))}
 
-        </tbody>
+</tbody>
 
-      </table>
+</table>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
+<div style={styles.cardGrid}>
 
+<strong>LISTA PARA PROORC</strong>
 
-  {/* COLUNA DIREITA */}
-  <div style={styles.cardGrid}>
+<table style={styles.tabelaCompacta}>
 
-    <strong>LISTA PARA PROORC</strong>
+<thead>
 
-    <table style={styles.tabelaCompacta}>
+<tr>
 
-      <thead>
+<th style={{...styles.thPadrao,...styles.colCodigo}}>
+CODIGO
+</th>
 
-        <tr>
-
-          <th style={{...styles.thPadrao,...styles.colCodigo}}>
-            CODIGO
-          </th>
-
-          <th style={{...styles.thPadrao,...styles.colQtd}}>
-            QNT
-          </th>
+<th style={{...styles.thPadrao,...styles.colQtd}}>
+QNT
+</th>
 
 <th style={{...styles.thPadrao,...styles.colAp}}>
 AP
 </th>
 
-          <th style={{...styles.thPadrao,...styles.colDescricao}}>
-            DESCRIÇÃO
-          </th>
+<th style={{...styles.thPadrao,...styles.colDescricao}}>
+DESCRIÇÃO
+</th>
 
-        </tr>
+</tr>
 
-      </thead>
+</thead>
 
-      <tbody>
+<tbody>
 
-        {explodido.map(x => (
+{explodido.map(x => (
 
 <tr
 key={x.id}
@@ -581,41 +632,41 @@ x.aplicacao==="S"
 }
 >
 
-            <td style={styles.tdPadrao}>
-              {x.codigo}
-            </td>
+<td style={styles.tdPadrao}>
+{x.codigo}
+</td>
 
-            <td style={styles.tdPadrao}>
-              {x.quantidade}
-            </td>
+<td style={styles.tdPadrao}>
+{x.quantidade}
+</td>
 
 <td style={{...styles.tdPadrao,...styles.colAp}}>
 {x.aplicacao}
 </td>
 
-            <td style={styles.tdPadrao}>
-              {x.descricao}
-            </td>
+<td style={styles.tdPadrao}>
+{x.descricao}
+</td>
 
-          </tr>
+</tr>
 
-        ))}
+))}
 
-      </tbody>
+</tbody>
 
-    </table>
+</table>
 
-  </div>
+</div>
 
 </div>
 
 )}
 
-      </div>
+</div>
 
-    </div>
+</div>
 
-  )
+)
 
 }
 
@@ -673,12 +724,6 @@ width:180,
 textAlign:"center"
 },
 
-erroNota:{
-fontSize:12,
-color:"#c0392b",
-marginLeft:8
-},
-
 voltar:{
 padding:"8px 14px",
 background:"#c0392b",
@@ -686,18 +731,6 @@ border:"none",
 borderRadius:6,
 color:"white",
 cursor:"pointer"
-},
-
-card:{
-background:"white",
-color:"black",
-padding:"14px 18px",
-borderRadius:14,
-marginBottom:18,
-display:"block",
-width:"fit-content",
-boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
-borderTop:"4px solid #4da3ff"
 },
 
 gridPrincipal:{
@@ -713,9 +746,7 @@ color:"black",
 padding:"14px 18px",
 borderRadius:14,
 marginBottom:18,
-display:"block",
 width:"620px",
-maxWidth:"620px",
 boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
 borderTop:"4px solid #4da3ff"
 },
@@ -726,52 +757,21 @@ color:"black",
 padding:"14px 18px",
 borderRadius:14,
 marginBottom:18,
-display:"block",
 width:"580px",
-maxWidth:"580px",
 boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
 borderTop:"4px solid #4da3ff"
 },
 
-tabelaCompacta:{
-width:"100%",
-borderCollapse:"collapse",
-fontSize:12,
-marginTop:6,
-tableLayout:"fixed"
-},        
 cardPequeno:{
 background:"white",
 color:"black",
 padding:"14px 18px",
 borderRadius:14,
 marginBottom:18,
-display:"block",
 width:"620px",
-maxWidth:"620px",
 boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
 
-cardMedio:{
-background:"white",
-color:"black",
-padding:"14px 18px",
-borderRadius:14,
-marginBottom:18,
-display:"block",
-width:"fit-content",
-boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
-borderTop:"4px solid #4da3ff"
-},
-
-subBox:{
-marginTop:10,
-paddingTop:10,
-borderTop:"1px solid #eee"
-},
-
-        
-        
 linhaCadastro:{
 display:"flex",
 gap:6,
@@ -834,11 +834,16 @@ fontSize:13
 },
 
 tabelaPadrao:{
-width:"auto",
 borderCollapse:"collapse",
 fontSize:13,
-marginTop:6,
-tableLayout:"fixed"
+marginTop:6
+},
+
+tabelaCompacta:{
+width:"100%",
+borderCollapse:"collapse",
+fontSize:12,
+marginTop:6
 },
 
 thPadrao:{
@@ -864,21 +869,10 @@ textAlign:"center",
 whiteSpace:"nowrap"
 },
 
-colCodigo:{
-width:50
-},
-
-colAp:{
-width:25
-},
-
-colDescricao:{
-width:345
-},
-
-colQtd:{
-width:70
-},
+colCodigo:{width:50},
+colAp:{width:25},
+colDescricao:{width:345},
+colQtd:{width:70},
 
 btnGrid:{
 background:"#34495e",
@@ -902,12 +896,6 @@ cursor:"pointer"
 linhaS:{
 color:"#C00000",
 fontWeight:600
-},
-  
-erro:{
-color:"#ffb3b3",
-marginTop:6,
-fontSize:13
 }
 
 }
