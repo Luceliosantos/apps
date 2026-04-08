@@ -326,7 +326,30 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
     <div style={styles.cardPequeno}>
 
       <div style={styles.linhaCadastro}>
+{materiaisSug.length > 0 && (
 
+  <div style={styles.sugestoesFixas}>
+
+    {materiaisSug.map((m,i)=> (
+
+      <div
+        key={m.codigo}
+        style={{
+          ...styles.itemSug,
+          background:i===indiceSug ? "#e8f1ff" : "white"
+        }}
+        onMouseDown={()=>selecionarMaterial(m.codigo)}
+      >
+
+        {m.codigo} - {m.descricao}
+
+      </div>
+
+    ))}
+
+  </div>
+
+)}
         <input
           ref={materialRef}
           style={styles.material}
