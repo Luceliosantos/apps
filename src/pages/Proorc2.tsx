@@ -485,11 +485,13 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
 
           {cadastro.map(x => (
 
-            <tr
-key={i}
+<tr
+key={x.id}
 style={
 x.aplicacao==="S"
 ? styles.linhaS
+: x.aplicacao==="U"
+? styles.linhaU
 : x.aplicacao==="N"
 ? styles.linhaN
 : undefined
@@ -913,7 +915,7 @@ cursor:"pointer"
 },
 
 linhaS:{
-background:"#E06666"
+background:"#E06666",
 color:"#000"
 },
 
