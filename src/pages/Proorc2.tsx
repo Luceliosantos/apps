@@ -463,7 +463,7 @@ export default function Proorc2({ usuario,setPagina }:Props){
             <div style={styles.subBox}>
               <strong>estrutura do kit</strong>
 
-              <table style={styles.tabelaPadrao}>
+              <table style={styles.tabelaCompacta}>
                 <thead>
                   <tr>
                     <th style={styles.thPadrao}>codigo</th>
@@ -483,12 +483,17 @@ export default function Proorc2({ usuario,setPagina }:Props){
                 </tbody>
 
               </table>
-            </div>
-          )}
+        </div>
 
         </div>
 
-        <div style={styles.cardMedio}>
+        </>
+
+        </div>
+
+        <div style={styles.gridTabelas}>
+
+        <div style={styles.cardMedioGrid}>
 
           <strong>registros cadastrados</strong>
 
@@ -560,11 +565,11 @@ excluir
 
         </div>
 
-        <div style={styles.card}>
+        <div style={styles.cardGrid}>
 
           <strong>itens consolidados</strong>
 
-          <table style={styles.tabelaPadrao}>
+          <table style={styles.tabelaCompacta}>
 
 <thead>
 
@@ -722,6 +727,46 @@ boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
 borderTop:"4px solid #4da3ff"
 },
 
+gridTabelas:{
+display:"flex",
+gap:14,
+flexWrap:"wrap",
+alignItems:"flex-start"
+},
+
+cardMedioGrid:{
+background:"white",
+color:"black",
+padding:"14px 18px",
+borderRadius:14,
+marginBottom:18,
+display:"block",
+width:"520px",
+maxWidth:"520px",
+boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
+borderTop:"4px solid #4da3ff"
+},
+
+cardGrid:{
+background:"white",
+color:"black",
+padding:"14px 18px",
+borderRadius:14,
+marginBottom:18,
+display:"block",
+width:"520px",
+maxWidth:"520px",
+boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
+borderTop:"4px solid #4da3ff"
+},
+
+tabelaCompacta:{
+width:"100%",
+borderCollapse:"collapse",
+fontSize:12,
+marginTop:6,
+tableLayout:"fixed"
+},        
 cardPequeno:{
 background:"white",
 color:"black",
@@ -751,6 +796,8 @@ paddingTop:10,
 borderTop:"1px solid #eee"
 },
 
+        
+        
 linhaCadastro:{
 display:"flex",
 gap:6,
@@ -848,7 +895,7 @@ width:90
 },
 
 colDescricao:{
-width:340
+width:260
 },
 
 colQtd:{
