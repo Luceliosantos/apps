@@ -318,8 +318,10 @@ export default function Proorc2({ usuario,setPagina }:Props){
         </div>
 
         {notaValida && (
-        <>
-        <div style={styles.cardPequeno}>
+<>
+<div style={styles.gridPrincipal}>
+
+<div style={styles.cardPequeno}>
 
           <div style={styles.linhaCadastro}>
 
@@ -487,7 +489,7 @@ export default function Proorc2({ usuario,setPagina }:Props){
             )}
         </div>
 
-        <div style={styles.gridTabelas}>
+        <>
 
         <div style={styles.cardMedioGrid}>
 
@@ -717,11 +719,11 @@ boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
 borderTop:"4px solid #4da3ff"
 },
 
-gridTabelas:{
-display:"flex",
+gridPrincipal:{
+display:"grid",
+gridTemplateColumns:"620px 520px",
 gap:14,
-flexWrap:"wrap",
-alignItems:"flex-start"
+alignItems:"start"
 },
 
 cardMedioGrid:{
