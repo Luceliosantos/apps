@@ -556,9 +556,9 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
             QNT
           </th>
 
-          <th style={styles.thPadrao}>
-            AP
-          </th>
+<th style={{...styles.thPadrao,...styles.colAp}}>
+AP
+</th>
 
           <th style={{...styles.thPadrao,...styles.colDescricao}}>
             DESCRIÇÃO
@@ -582,9 +582,9 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
               {x.quantidade}
             </td>
 
-            <td style={styles.tdPadrao}>
-              {x.aplicacao}
-            </td>
+<td style={{...styles.tdPadrao,...styles.colAp}}>
+{x.aplicacao}
+</td>
 
             <td style={styles.tdPadrao}>
               {x.descricao}
@@ -858,11 +858,15 @@ whiteSpace:"nowrap"
 },
 
 colCodigo:{
-width:90
+width:70
+},
+
+colAp:{
+width:45
 },
 
 colDescricao:{
-width:260
+width:305
 },
 
 colQtd:{
