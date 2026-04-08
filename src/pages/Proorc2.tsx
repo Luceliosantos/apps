@@ -16,7 +16,8 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
   const [nota,setNota] = useState("")
   const [notaValida,setNotaValida] = useState(false)
-
+  const [notasSug,setNotasSug] = useState<any[]>([])
+  const [indiceNotaSug,setIndiceNotaSug] = useState<number>(-1)
 
   const notaRef = useRef<HTMLInputElement>(null)
   const materialRef = useRef<HTMLInputElement>(null)
@@ -49,11 +50,20 @@ export default function Proorc2({ usuario,setPagina }:Props){
   }
 
   useEffect(()=>{
-
     notaRef.current?.focus()
-
   },[])
 
+
+
+
+
+
+
+
+
+
+
+  
 function validarNota(valor:string){
 
   setNota(valor)
@@ -92,6 +102,20 @@ function validarNota(valor:string){
 
   },[notaValida,nota])
 
+  useEffect(()=>{
+
+  if(nota.length < 3){
+
+    setNotasSug([])
+    setIndiceNotaSug(-1)
+    return
+
+  }
+
+  buscarNotas()
+
+},[nota])
+  
   useEffect(()=>{
 
     if(codigo.length < 2){
@@ -248,7 +272,20 @@ function validarNota(valor:string){
     },50)
 
   }
+async function buscarNotas(){
 
+  const { data } = await supabase
+    .from("vw_proorc_cadastro")
+    .select("nota")
+    .ilike("nota",`${nota}%`)
+    .limit(10)
+
+  const listaUnica =
+    [...new Set((data || []).map(x=>x.nota))]
+
+  setNotasSug(listaUnica)
+
+}
   async function excluir(id:string){
 
     await supabase
@@ -279,7 +316,15 @@ function validarNota(valor:string){
     quantidade &&
     aplicacao
 
+function selecionarNota(n:string){
 
+  setNota(n)
+  setNotasSug([])
+  setIndiceNotaSug(-1)
+
+  validarNota(n)
+
+}
 function dadosExportacao(){
 
   return explodido.map(x => ({
@@ -402,18 +447,84 @@ function exportarPDF(){
 
             onKeyDown={(e)=>{
 
-              if(e.key==="Enter" || e.key==="Tab"){
+  if(notasSug.length){
 
-                validarNota(nota)
+    if(e.key==="ArrowDown"){
 
-              }
+      e.preventDefault()
 
-            }}
+      setIndiceNotaSug(prev=>
+        prev < notasSug.length-1 ? prev+1 : 0
+      )
+
+    }
+
+    if(e.key==="ArrowUp"){
+
+      e.preventDefault()
+
+      setIndiceNotaSug(prev=>
+        prev > 0 ? prev-1 : notasSug.length-1
+      )
+
+    }
+
+    if(e.key==="Enter"){
+
+      e.preventDefault()
+
+      const item =
+        indiceNotaSug>=0
+        ? notasSug[indiceNotaSug]
+        : notasSug[0]
+
+      if(item){
+
+        selecionarNota(item)
+
+      }
+
+    }
+
+  }
+
+  if(e.key==="Enter" || e.key==="Tab"){
+
+    validarNota(nota)
+
+  }
+
+}}
 
             onBlur={()=>validarNota(nota)}
 
           />
+{notasSug.length>0 && (
 
+<div style={styles.sugestoesNota}>
+
+{notasSug.map((n,i)=>(
+
+<div
+key={n}
+style={{
+...styles.itemSug,
+background:i===indiceNotaSug
+? "#e8f1ff"
+: "white"
+}}
+onMouseDown={()=>selecionarNota(n)}
+>
+
+{n}
+
+</div>
+
+))}
+
+</div>
+
+)}
         </div>
 
         {notaValida && (
@@ -801,13 +912,26 @@ backgroundColor:"white",
 padding:"6px 10px",
 borderRadius:8,
 marginBottom:12,
-width:"fit-content"
+width:"fit-content",
+position:"relative"
 },
 
 labelNota:{
 fontWeight:"bold",
 fontSize:14,
 color:"black"
+},
+
+sugestoesNota:{
+position:"absolute",
+marginTop:4,
+width:180,
+maxHeight:150,
+overflowY:"auto",
+background:"white",
+border:"1px solid #ccc",
+borderRadius:8,
+zIndex:1000
 },
 
 inputConsulta:{
