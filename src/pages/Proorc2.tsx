@@ -431,19 +431,26 @@ function exportarPDF(){
 
             onChange={(e)=>{
 
-              const valor = e.target.value
+  const valor = e.target.value
 
-              setNota(valor)
+  setNota(valor)
 
-              setCadastro([])
-              setExplodido([])
-              setCodigo("")
-              setMaterial(null)
-              setEstrutura([])
-              setQuantidade("")
-              setAplicacao("N")
+  setCadastro([])
+  setExplodido([])
+  setCodigo("")
+  setMaterial(null)
+  setEstrutura([])
+  setQuantidade("")
+  setAplicacao("N")
 
-            }}
+  if(valor.length < 3){
+
+    setNotasSug([])
+    setIndiceNotaSug(-1)
+
+  }
+
+}}
 
             onKeyDown={(e)=>{
 
