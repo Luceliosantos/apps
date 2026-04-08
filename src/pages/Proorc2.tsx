@@ -477,42 +477,46 @@ function exportarPDF(){
 
       e.preventDefault()
 
-      setIndiceNotaSug(prev=>
+      setIndiceNotaSug(prev =>
         prev < notasSug.length-1 ? prev+1 : 0
       )
 
+      return
     }
 
     if(e.key==="ArrowUp"){
 
       e.preventDefault()
 
-      setIndiceNotaSug(prev=>
+      setIndiceNotaSug(prev =>
         prev > 0 ? prev-1 : notasSug.length-1
       )
 
+      return
     }
 
     if(e.key==="Enter"){
 
       e.preventDefault()
 
-      const item =
-        indiceNotaSug>=0
-        ? notasSug[indiceNotaSug]
-        : notasSug[0]
+      const indice =
+        indiceNotaSug >= 0
+        ? indiceNotaSug
+        : 0
+
+      const item = notasSug[indice]
 
       if(item){
 
         selecionarNota(item)
-
       }
 
+      return
     }
 
   }
 
-  if(e.key==="Enter" || e.key==="Tab"){
+  if(e.key==="Tab"){
 
     validarNota(nota)
 
