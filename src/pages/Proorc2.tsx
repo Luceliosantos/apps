@@ -764,7 +764,8 @@ padding:"14px 18px",
 borderRadius:14,
 marginBottom:18,
 display:"block",
-width:"fit-content",
+width:"620px",
+maxWidth:"620px",
 boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
 
