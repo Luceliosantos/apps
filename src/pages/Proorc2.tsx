@@ -287,7 +287,7 @@ async function buscarNotas(valor:string){
   const { data } = await supabase
     .from("vw_proorc_cadastro")
     .select("nota")
-    .ilike("nota", `${valor}%`)
+    .ilike("nota", `%${valor}%`)
     .order("nota")
     .limit(20)
 
