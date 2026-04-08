@@ -420,14 +420,16 @@ function exportarPDF(){
 
         <div style={styles.grupoNota}>
 
-          <span style={styles.labelNota}>
-            NOTA
-          </span>
+  <span style={styles.labelNota}>
+    NOTA
+  </span>
 
-          <input
-            ref={notaRef}
-            style={styles.inputConsulta}
-            value={nota}
+  <div style={{position:"relative"}}>
+
+    <input
+      ref={notaRef}
+      style={styles.inputConsulta}
+      value={nota}
 
             onChange={(e)=>{
 
@@ -495,11 +497,14 @@ function exportarPDF(){
 
   }
 
-  if(e.key==="Enter" || e.key==="Tab"){
+if(
+ (e.key==="Enter" || e.key==="Tab")
+ && notasSug.length===0
+){
 
-    validarNota(nota)
+  validarNota(nota)
 
-  }
+}
 
 }}
 
@@ -931,14 +936,16 @@ color:"black"
 
 sugestoesNota:{
 position:"absolute",
-marginTop:4,
-width:180,
-maxHeight:150,
+top:"34px",
+left:0,
+width:"100%",
+maxHeight:160,
 overflowY:"auto",
 background:"white",
 border:"1px solid #ccc",
 borderRadius:8,
-zIndex:1000
+zIndex:1000,
+boxShadow:"0 4px 12px rgba(0,0,0,0.15)"
 },
 
 inputConsulta:{
