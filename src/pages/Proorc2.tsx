@@ -486,12 +486,12 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
           {cadastro.map(x => (
 
             <tr
-key={x.id}
+key={i}
 style={
 x.aplicacao==="S"
 ? styles.linhaS
-: x.aplicacao==="U"
-? styles.linhaU
+: x.aplicacao==="N"
+? styles.linhaN
 : undefined
 }
 >
@@ -581,11 +581,15 @@ AP
 
         {explodido.map((x,i)=> (
 
-          <tr
-key={i}
+<tr
+key={x.id}
 style={
 x.aplicacao==="S"
 ? styles.linhaS
+: x.aplicacao==="U"
+? styles.linhaU
+: x.aplicacao==="N"
+? styles.linhaN
 : undefined
 }
 >
@@ -909,7 +913,8 @@ cursor:"pointer"
 },
 
 linhaS:{
-background:"#F8CBAD"
+background:"#E06666"
+color:"#000"
 },
 
 linhaU:{
