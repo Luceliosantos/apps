@@ -485,18 +485,7 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
 
           {cadastro.map(x => (
 
-<tr
-key={x.id}
-style={
-x.aplicacao==="S"
-? styles.linhaS
-: x.aplicacao==="U"
-? styles.linhaU
-: x.aplicacao==="N"
-? styles.linhaN
-: undefined
-}
->
+<tr key={x.id}>
 
               <td style={styles.tdPadrao}>
                 {x.codigo}
@@ -588,10 +577,6 @@ key={x.id}
 style={
 x.aplicacao==="S"
 ? styles.linhaS
-: x.aplicacao==="U"
-? styles.linhaU
-: x.aplicacao==="N"
-? styles.linhaN
 : undefined
 }
 >
@@ -914,18 +899,9 @@ borderRadius:4,
 cursor:"pointer"
 },
 
-linhaS:{ 
+linhaS:{
 color:"#C00000",
 fontWeight:600
-},
-
-linhaU:{
-color:"#C65911",
-fontWeight:600
-},
-
-linhaN:{
-color:"#548235"
 },
   
 erro:{
