@@ -122,7 +122,7 @@ function validarNota(valor:string){
 
   }
 
-  buscarNotas()
+  buscarNotas(nota)
 
 },[nota])
   
