@@ -581,7 +581,7 @@ AP
 
       <tbody>
 
-        {explodido.map((x,i)=> (
+        {explodido.map(x => (
 
 <tr
 key={x.id}
