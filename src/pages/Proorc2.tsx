@@ -451,7 +451,7 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
 
     <div style={styles.cardMedioGrid}>
 
-      <strong>registros cadastrados</strong>
+      <strong>REGISTROS CADASTRADOS</strong>
 
       <table style={styles.tabelaPadrao}>
 
@@ -540,7 +540,7 @@ const [indiceSug,setIndiceSug] = useState<number>(-1)
   {/* COLUNA DIREITA */}
   <div style={styles.cardGrid}>
 
-    <strong>itens consolidados</strong>
+    <strong>LISTA PARA PROORC</strong>
 
     <table style={styles.tabelaCompacta}>
 
