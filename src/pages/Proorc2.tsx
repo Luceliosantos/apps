@@ -35,7 +35,12 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
   const [cadastro,setCadastro] = useState<any[]>([])
   const [explodido,setExplodido] = useState<any[]>([])
-
+const [infoNota,setInfoNota] = useState<{
+  criadoPor?:string
+  criadoEm?:string
+  editadoPor?:string
+  editadoEm?:string
+}>({})
   const [editando,setEditando] = useState<string | null>(null)
 
   function saudacao(){
@@ -234,6 +239,29 @@ function validarNota(valor:string){
 
     setExplodido(exp || [])
 
+    const { data:info } = await supabase
+      .from("vw_proorc_cadastro")
+      .select("usuario, created_at, updated_at")
+      .eq("nota",nota)
+      .order("created_at",{ascending:true})
+    
+    if(info && info.length){
+    
+      const primeiro = info[0]
+      const ultimo = info[info.length-1]
+    
+      setInfoNota({
+    
+        criadoPor: primeiro.usuario,
+        criadoEm: primeiro.created_at,
+    
+        editadoPor: ultimo.usuario,
+        editadoEm: ultimo.updated_at || ultimo.created_at
+    
+      })
+    
+    }
+    
   }
 
   async function salvar(){
@@ -243,6 +271,21 @@ function validarNota(valor:string){
       await confirmarCodigoDigitado()
 
     }
+
+function formatarData(data?:string){
+
+  if(!data) return ""
+
+  const d = new Date(data)
+
+  return d.toLocaleDateString("pt-BR")
+  +" às "+
+  d.toLocaleTimeString("pt-BR",{
+    hour:"2-digit",
+    minute:"2-digit"
+  })
+
+}
 
     if(!material) return
 
@@ -429,6 +472,41 @@ function exportarPDF(){
       <div style={styles.overlay}>
 
         <div style={styles.header}>
+  
+  <div style={styles.boasVindas}>
+    {saudacao()}, {usuario?.nome || ""}
+  </div>
+
+  <div style={styles.headerDireita}>
+
+    {infoNota.criadoPor && (
+
+      <div style={styles.infoNota}>
+
+        <div>
+          Criada por <strong>{infoNota.criadoPor}</strong>
+          {" "}em {formatarData(infoNota.criadoEm)}
+        </div>
+
+        <div>
+          Editada por <strong>{infoNota.editadoPor}</strong>
+          {" "}em {formatarData(infoNota.editadoEm)}
+        </div>
+
+      </div>
+
+    )}
+
+    <button
+      style={styles.voltar}
+      onClick={()=>setPagina("menu")}
+    >
+      voltar
+    </button>
+
+  </div>
+
+</div>
 
           <div style={styles.boasVindas}>
             {saudacao()}, {usuario?.nome || ""}
@@ -1011,6 +1089,20 @@ padding:"4px 10px",
 borderRadius:6,
 cursor:"pointer",
 fontSize:12
+},
+
+headerDireita:{
+  display:"flex",
+  flexDirection:"column",
+  alignItems:"flex-end",
+  gap:6
+},
+
+infoNota:{
+  fontSize:12,
+  textAlign:"right",
+  lineHeight:1.4,
+  opacity:0.9
 },
 
 voltar:{
