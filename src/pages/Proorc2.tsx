@@ -13,7 +13,7 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
   const [nota,setNota] = useState("")
   const [notaValida,setNotaValida] = useState(false)
-  const [erroNota,setErroNota] = useState("")
+
 
   const notaRef = useRef<HTMLInputElement>(null)
   const materialRef = useRef<HTMLInputElement>(null)
@@ -51,32 +51,29 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
   },[])
 
-  function validarNota(valor:string){
+function validarNota(valor:string){
 
-    setNota(valor)
+  setNota(valor)
 
-    if(valor.length < 10){
+  if(valor.length < 10){
 
-      setNotaValida(false)
-      setErroNota("")
-      return
-
-    }
-
-    const primeiros10 = valor.substring(0,10)
-
-    if(!/^\d{10}$/.test(primeiros10)){
-
-      setNotaValida(false)
-      setErroNota("")
-      return
-
-    }
-
-    setErroNota("")
-    setNotaValida(true)
+    setNotaValida(false)
+    return
 
   }
+
+  const primeiros10 = valor.substring(0,10)
+
+  if(!/^\d{10}$/.test(primeiros10)){
+
+    setNotaValida(false)
+    return
+
+  }
+
+  setNotaValida(true)
+
+}
 
   useEffect(()=>{
 
