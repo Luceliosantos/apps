@@ -666,29 +666,7 @@ excluir
 
 <div style={styles.headerTabela}>
 
-<div style={styles.headerTabela}>
-
 <strong>LISTA PARA PROORC</strong>
-
-<div>
-
-<button
-style={styles.btnExport}
-onClick={exportarExcel}
->
-EXCEL
-</button>
-
-<button
-style={styles.btnExportPdf}
-onClick={exportarPDF}
->
-PDF
-</button>
-
-</div>
-
-</div>
 
 <div>
 
@@ -872,7 +850,7 @@ padding:"4px 10px",
 borderRadius:6,
 cursor:"pointer",
 fontSize:12
-}
+},
 
 voltar:{
 padding:"8px 14px",
