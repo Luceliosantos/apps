@@ -59,6 +59,14 @@ useEffect(()=>{
 
   }
 
+  // não buscar quando já for uma nota completa
+  if(nota.length >= 10){
+
+    setNotasSug([])
+    return
+
+  }
+
   buscarNotas(nota)
 
 },[nota])
