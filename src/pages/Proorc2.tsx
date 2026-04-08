@@ -49,9 +49,19 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
   }
 
-  useEffect(()=>{
-    notaRef.current?.focus()
-  },[])
+useEffect(()=>{
+
+  if(nota.length < 3){
+
+    setNotasSug([])
+    setIndiceNotaSug(-1)
+    return
+
+  }
+
+  buscarNotas(nota)
+
+},[nota])
 
 
 
@@ -277,7 +287,7 @@ async function buscarNotas(valor:string){
   const { data } = await supabase
     .from("vw_proorc_cadastro")
     .select("nota")
-    .ilike("nota", `${valor.trim()}%`)
+    .ilike("nota", `${valor}%`)
     .order("nota")
     .limit(20)
 
