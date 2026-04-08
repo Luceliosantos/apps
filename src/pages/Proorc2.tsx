@@ -318,7 +318,6 @@ export default function Proorc2({ usuario,setPagina }:Props){
         </div>
 
         {notaValida && (
-<>
 <div style={styles.gridPrincipal}>
 
 <div style={styles.cardPequeno}>
