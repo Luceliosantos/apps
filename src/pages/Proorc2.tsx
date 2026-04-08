@@ -20,7 +20,8 @@ export default function Proorc2({ usuario,setPagina }:Props){
   const qtdRef = useRef<HTMLInputElement>(null)
 
   const [codigo,setCodigo] = useState("")
-
+const [materiaisSug,setMateriaisSug] = useState<any[]>([])
+const [indiceSug,setIndiceSug] = useState<number>(-1)
 
   const [material,setMaterial] = useState<any>(null)
   const [estrutura,setEstrutura] = useState<any[]>([])
