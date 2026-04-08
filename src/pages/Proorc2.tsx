@@ -1100,10 +1100,11 @@ zIndex:1000
 },
 
 itemSug:{
-padding:"6px 10px",
-borderBottom:"1px solid #eee",
-cursor:"pointer",
-fontSize:13
+  padding:"6px 10px",
+  borderBottom:"1px solid #eee",
+  cursor:"pointer",
+  fontSize:13,
+  color:"#000"
 },
 
 tabelaPadrao:{
