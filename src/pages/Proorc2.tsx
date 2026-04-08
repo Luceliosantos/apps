@@ -530,7 +530,7 @@ function validarNota(valor:string){
             <th style={{...styles.thBlue,...styles.colDescricao}}>DESCRIÇÃO</th>
             <th style={{...styles.thBlue,...styles.colQtd}}>QTD</th>
             <th style={styles.thBlue}>AP</th>
-            <th style={styles.thBlue}></th>
+            <th style={styles.thBlue}>AÇÕES</th>
 
           </tr>
 
