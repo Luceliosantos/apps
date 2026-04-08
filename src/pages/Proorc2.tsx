@@ -1,6 +1,9 @@
 import { useEffect, useState, useRef } from "react"
 import { supabase } from "../supabase"
 import { Pagina } from "../App"
+import * as XLSX from "xlsx"
+import jsPDF from "jspdf"
+import autoTable from "jspdf-autotable"
 
 type Props = {
   usuario?:{
@@ -276,6 +279,79 @@ function validarNota(valor:string){
     quantidade &&
     aplicacao
 
+
+function dadosExportacao(){
+
+  return explodido.map(x => ({
+
+    CODIGO: x.codigo,
+    QUANTIDADE: x.quantidade,
+    PONTO: "1",
+    APLICACAO: x.aplicacao,
+    VIABILIDADE: "SIM",
+    TIPO: "I",
+    DESCRICAO: x.descricao
+
+  }))
+
+}
+
+function exportarExcel(){
+
+  const dados = dadosExportacao()
+
+  const ws = XLSX.utils.json_to_sheet(dados)
+
+  const wb = XLSX.utils.book_new()
+
+  XLSX.utils.book_append_sheet(wb, ws, "PROORC")
+
+  XLSX.writeFile(wb, `proorc_${nota}.xlsx`)
+
+}
+
+function exportarPDF(){
+
+  const dados = dadosExportacao()
+
+  const doc = new jsPDF()
+
+  autoTable(doc,{
+    head:[[
+      "CODIGO",
+      "QUANTIDADE",
+      "PONTO",
+      "APLICAÇÃO",
+      "VIABILIDADE",
+      "TIPO",
+      "DESCRIÇÃO"
+    ]],
+    body:dados.map(x => [
+
+      x.CODIGO,
+      x.QUANTIDADE,
+      x.PONTO,
+      x.APLICACAO,
+      x.VIABILIDADE,
+      x.TIPO,
+      x.DESCRICAO
+
+    ]),
+    styles:{
+      fontSize:8
+    },
+    headStyles:{
+      fillColor:[30,60,114]
+    }
+  })
+
+  doc.save(`proorc_${nota}.pdf`)
+
+}
+
+
+
+  
   return(
 
     <div style={styles.container}>
@@ -588,7 +664,51 @@ excluir
 
 <div style={styles.cardGrid}>
 
+<div style={styles.headerTabela}>
+
+<div style={styles.headerTabela}>
+
 <strong>LISTA PARA PROORC</strong>
+
+<div>
+
+<button
+style={styles.btnExport}
+onClick={exportarExcel}
+>
+EXCEL
+</button>
+
+<button
+style={styles.btnExportPdf}
+onClick={exportarPDF}
+>
+PDF
+</button>
+
+</div>
+
+</div>
+
+<div>
+
+<button
+style={styles.btnExport}
+onClick={exportarExcel}
+>
+EXCEL
+</button>
+
+<button
+style={styles.btnExportPdf}
+onClick={exportarPDF}
+>
+PDF
+</button>
+
+</div>
+
+</div>
 
 <table style={styles.tabelaCompacta}>
 
@@ -720,6 +840,34 @@ fontSize:14,
 width:180,
 textAlign:"center"
 },
+
+headerTabela:{
+display:"flex",
+justifyContent:"space-between",
+alignItems:"center",
+marginBottom:6
+},
+
+btnExport:{
+background:"#1d6f42",
+color:"white",
+border:"none",
+padding:"4px 10px",
+borderRadius:6,
+marginRight:6,
+cursor:"pointer",
+fontSize:12
+},
+
+btnExportPdf:{
+background:"#c0392b",
+color:"white",
+border:"none",
+padding:"4px 10px",
+borderRadius:6,
+cursor:"pointer",
+fontSize:12
+}
 
 voltar:{
 padding:"8px 14px",
