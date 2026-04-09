@@ -209,6 +209,7 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
   async function carregarNota(){
 
+    setInfoNota({})
     const { data } = await supabase
       .from("vw_proorc_cadastro")
       .select("*")
@@ -388,12 +389,13 @@ await supabase.rpc(
 
     const d = new Date(data)
 
-    return d.toLocaleDateString("pt-BR")
-    +" às "+
-    d.toLocaleTimeString("pt-BR",{
-      hour:"2-digit",
-      minute:"2-digit"
-    })
+return d.toLocaleDateString("pt-BR")
++" às "+
+d.toLocaleTimeString("pt-BR",{
+  hour:"2-digit",
+  minute:"2-digit",
+  second:"2-digit"
+})
 
   }
 
