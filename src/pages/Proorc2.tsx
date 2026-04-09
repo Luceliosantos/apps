@@ -225,11 +225,11 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
     setExplodido(exp || [])
 
-    const { data:info } = await supabase
-      .from("vw_proorc_cadastro")
-      .select("usuario, created_at, updated_at")
-      .eq("nota",nota)
-      .order("created_at",{ascending:true})
+const { data:info } = await supabase
+  .from("db_proorc_cadastro")
+  .select("usuario, created_at, updated_at")
+  .eq("nota",nota)
+  .order("created_at",{ascending:true})
 
     if(info && info.length){
 
