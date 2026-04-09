@@ -288,54 +288,40 @@ setInfoNota({
   }
   else{
 
-    await supabase.rpc(
-      "fn_proorc_cadastrar",
-      {
-        p_nota: nota,
-        p_codigo: material.codigo,
-        p_quantidade: Number(quantidade),
-        p_aplicacao: aplicacao
-      }
-    )
-
-    /* identifica último registro criado para a nota */
-    const { data:ultimo } = await supabase
-      .from("db_proorc_cadastro")
-      .select("id")
-      .eq("nota",nota)
-      .order("created_at",{ascending:false})
-      .limit(1)
-      .maybeSingle()
-
-    if(ultimo?.id){
-
-      await supabase
-        .from("db_proorc_cadastro")
-        .update({
-
-          created_by: usuario?.nome || "sistema",
-          updated_by: usuario?.nome || "sistema"
-
-        })
-        .eq("id",ultimo.id)
-
+  await supabase.rpc(
+    "fn_proorc_cadastrar",
+    {
+      p_nota: nota,
+      p_codigo: material.codigo,
+      p_quantidade: Number(quantidade),
+      p_aplicacao: aplicacao
     }
+  )
+
+  /* busca o último item inserido da nota */
+  const { data:ultimo } = await supabase
+    .from("db_proorc_cadastro")
+    .select("id")
+    .eq("nota",nota)
+    .eq("codigo",material.codigo)
+    .order("created_at",{ascending:false})
+    .limit(1)
+    .maybeSingle()
+
+  if(ultimo?.id){
+
+    await supabase
+      .from("db_proorc_cadastro")
+      .update({
+
+        created_by: usuario?.nome || "sistema",
+        updated_by: usuario?.nome || "sistema",
+        updated_at: new Date()
+
+      })
+      .eq("id",ultimo.id)
 
   }
-
-  setCodigo("")
-  setQuantidade("")
-  setAplicacao("N")
-  setMaterial(null)
-  setEstrutura([])
-  setMateriaisSug([])
-  setIndiceSug(-1)
-
-  await carregarNota()
-
-  setTimeout(()=>{
-    materialRef.current?.focus()
-  },50)
 
 }
 
