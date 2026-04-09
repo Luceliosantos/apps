@@ -275,15 +275,14 @@ setInfoNota({
     }
     else{
 
-      await supabase.rpc(
-        "fn_proorc_cadastrar",
-        {
-          p_nota: nota,
-          p_codigo: material.codigo,
-          p_quantidade: Number(quantidade),
-          p_aplicacao: aplicacao
-        }
-      )
+      await supabase
+  .from("db_proorc_cadastro")
+  .update({
+    quantidade:Number(quantidade),
+    aplicacao,
+    updated_by: usuario?.nome || "sistema",
+    updated_at: new Date()
+  })
 
     }
 
