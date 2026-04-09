@@ -325,6 +325,22 @@ setInfoNota({
 
 }
 
+  setCodigo("")
+  setQuantidade("")
+  setAplicacao("N")
+  setMaterial(null)
+  setEstrutura([])
+  setMateriaisSug([])
+  setIndiceSug(-1)
+
+  await carregarNota()
+
+  setTimeout(()=>{
+    materialRef.current?.focus()
+  },50)
+
+}
+
   function formatarData(data?:string){
 
     if(!data) return ""
