@@ -267,16 +267,7 @@ setInfoNota({
       .update({
 
         quantidade:Number(quantidade),
-        aplicacao
-
-      })
-      .eq("id",editando)
-
-    /* grava usuário da edição */
-    await supabase
-      .from("db_proorc_cadastro")
-      .update({
-
+        aplicacao,
         updated_by: usuario?.nome || "sistema",
         updated_at: new Date()
 
@@ -287,36 +278,19 @@ setInfoNota({
 
   }
   else{
-  await supabase.rpc(
-    "fn_proorc_cadastrar",
-    {
-      p_nota: nota,
-      p_codigo: material.codigo,
-      p_quantidade: Number(quantidade),
-      p_aplicacao: aplicacao,
-      p_user: usuario?.nome || "web"
-    }
-  )
 
-}
+    await supabase.rpc(
+      "fn_proorc_cadastrar",
+      {
+        p_nota: nota,
+        p_codigo: material.codigo,
+        p_quantidade: Number(quantidade),
+        p_aplicacao: aplicacao,
+        p_user: usuario?.nome || "web"
+      }
+    )
 
-  /* aguarda banco finalizar inserts */
-  await new Promise(r => setTimeout(r, 300))
-
-  /* atualiza todos registros mais recentes da nota */
-  await supabase
-    .from("db_proorc_cadastro")
-    .update({
-
-      created_by: usuario?.nome || "sistema",
-      updated_by: usuario?.nome || "sistema",
-      updated_at: new Date()
-
-    })
-    .eq("nota",nota)
-    .is("created_by",null)
-
-}
+  }
 
   setCodigo("")
   setQuantidade("")
