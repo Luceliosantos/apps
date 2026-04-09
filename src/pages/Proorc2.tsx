@@ -250,7 +250,7 @@ setInfoNota({
 
   }
 
-  async function salvar(){
+ async function salvar(){
 
   if(!material){
 
@@ -262,19 +262,19 @@ setInfoNota({
 
   if(editando){
 
-  await supabase
-    .from("db_proorc_cadastro")
-    .update({
+    await supabase
+      .from("db_proorc_cadastro")
+      .update({
 
-      quantidade:Number(quantidade),
-      aplicacao
+        quantidade:Number(quantidade),
+        aplicacao
 
-    })
-    .eq("id",editando)
+      })
+      .eq("id",editando)
 
-  setEditando(null)
+    setEditando(null)
 
-}
+  }
   else{
 
     await supabase.rpc(
