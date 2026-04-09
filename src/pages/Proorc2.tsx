@@ -260,6 +260,80 @@ setInfoNota({
 
   if(!material) return
 
+
+
+  // 🚫 impedir U para KIT
+  if(aplicacao === "U" && material.tipo === "KIT"){
+
+    alert("Aplicação U permitida apenas para ITENS")
+
+    setCodigo("")
+    setQuantidade("")
+    setAplicacao("N")
+    setMaterial(null)
+
+    setTimeout(()=>{
+      materialRef.current?.focus()
+    },50)
+
+    return
+
+  }
+
+
+
+  // 🔎 validar saldo N para permitir U
+  if(aplicacao === "U"){
+
+    const saldoN =
+      cadastro
+        .filter(x =>
+          x.codigo === material.codigo
+          && x.aplicacao === "N"
+        )
+        .reduce((soma,x)=>
+          soma + Number(x.quantidade)
+        ,0)
+
+
+    const saldoU =
+      cadastro
+        .filter(x =>
+          x.codigo === material.codigo
+          && x.aplicacao === "U"
+        )
+        .reduce((soma,x)=>
+          soma + Math.abs(Number(x.quantidade))
+        ,0)
+
+
+    const saldoDisponivel =
+      saldoN - saldoU
+
+
+    if(Number(quantidade) > saldoDisponivel){
+
+      alert(
+        "Quantidade U maior que saldo disponível em N"
+      )
+
+      setCodigo("")
+      setQuantidade("")
+      setAplicacao("N")
+      setMaterial(null)
+
+      setTimeout(()=>{
+        materialRef.current?.focus()
+      },50)
+
+      return
+
+    }
+
+  }
+
+
+
   if(editando){
 
     await supabase
