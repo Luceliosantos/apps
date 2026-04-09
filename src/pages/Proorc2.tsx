@@ -287,17 +287,18 @@ setInfoNota({
 
   }
   else{
+  await supabase.rpc(
+    "fn_proorc_cadastrar",
+    {
+      p_nota: nota,
+      p_codigo: material.codigo,
+      p_quantidade: Number(quantidade),
+      p_aplicacao: aplicacao,
+      p_user: usuario?.nome || "web"
+    }
+  )
 
-await supabase.rpc(
-  "fn_proorc_cadastrar",
-  {
-    p_nota: nota,
-    p_codigo: material.codigo,
-    p_quantidade: Number(quantidade),
-    p_aplicacao: aplicacao,
-    p_user: usuario?.nome || "web"
-  }
-)
+}
 
   /* aguarda banco finalizar inserts */
   await new Promise(r => setTimeout(r, 300))
