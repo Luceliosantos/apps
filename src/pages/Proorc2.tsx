@@ -227,7 +227,7 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
 const { data:info } = await supabase
   .from("db_proorc_cadastro")
-  .select("usuario, created_at, updated_at")
+  .select("created_by, updated_by, created_at, updated_at")
   .eq("nota",nota)
   .order("created_at",{ascending:true})
 
@@ -236,15 +236,15 @@ const { data:info } = await supabase
       const primeiro = info[0]
       const ultimo = info[info.length-1]
 
-      setInfoNota({
+setInfoNota({
 
-        criadoPor: primeiro.usuario,
-        criadoEm: primeiro.created_at,
+  criadoPor: primeiro.created_by,
+  criadoEm: primeiro.created_at,
 
-        editadoPor: ultimo.usuario,
-        editadoEm: ultimo.updated_at || ultimo.created_at
+  editadoPor: ultimo.updated_by || ultimo.created_by,
+  editadoEm: ultimo.updated_at || ultimo.created_at
 
-      })
+})
 
     }
 
