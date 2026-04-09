@@ -353,16 +353,16 @@ setInfoNota({
   }
   else{
 
-    await supabase.rpc(
-      "fn_proorc_cadastrar",
-      {
-        p_nota: nota,
-        p_codigo: material.codigo,
-        p_quantidade: Number(quantidade),
-        p_aplicacao: aplicacao,
-        p_user: crypto.randomUUID()
-      }
-    )
+await supabase.rpc(
+  "fn_proorc_cadastrar",
+  {
+    p_nota: nota,
+    p_codigo: material.codigo,
+    p_quantidade: Number(quantidade),
+    p_aplicacao: aplicacao,
+    p_user: usuario?.nome || "sistema"
+  }
+)
 
   }
 
