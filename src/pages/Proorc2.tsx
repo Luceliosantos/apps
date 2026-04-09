@@ -275,16 +275,24 @@ setInfoNota({
     }
     else{
 
-      await supabase
-  .from("db_proorc_cadastro")
-  .update({
-    quantidade:Number(quantidade),
-    aplicacao,
-    updated_by: usuario?.nome || "sistema",
-    updated_at: new Date()
-  })
+  await supabase
+    .from("db_proorc_cadastro")
+    .insert({
 
-    }
+      nota: nota,
+      codigo: material.codigo,
+      quantidade: Number(quantidade),
+      aplicacao: aplicacao,
+
+      created_by: usuario?.nome || "sistema",
+      created_at: new Date(),
+
+      updated_by: usuario?.nome || "sistema",
+      updated_at: new Date()
+
+    })
+
+}
 
     setCodigo("")
     setQuantidade("")
