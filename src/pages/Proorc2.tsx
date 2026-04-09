@@ -298,7 +298,10 @@ setInfoNota({
     }
   )
 
-  /* atualiza todas as linhas novas da nota que ainda não têm usuário */
+  /* aguarda banco finalizar inserts */
+  await new Promise(r => setTimeout(r, 300))
+
+  /* atualiza todos registros mais recentes da nota */
   await supabase
     .from("db_proorc_cadastro")
     .update({
