@@ -298,30 +298,18 @@ setInfoNota({
     }
   )
 
-  /* busca o último item inserido da nota */
-  const { data:ultimo } = await supabase
+  /* atualiza todas as linhas novas da nota que ainda não têm usuário */
+  await supabase
     .from("db_proorc_cadastro")
-    .select("id")
+    .update({
+
+      created_by: usuario?.nome || "sistema",
+      updated_by: usuario?.nome || "sistema",
+      updated_at: new Date()
+
+    })
     .eq("nota",nota)
-    .eq("codigo",material.codigo)
-    .order("created_at",{ascending:false})
-    .limit(1)
-    .maybeSingle()
-
-  if(ultimo?.id){
-
-    await supabase
-      .from("db_proorc_cadastro")
-      .update({
-
-        created_by: usuario?.nome || "sistema",
-        updated_by: usuario?.nome || "sistema",
-        updated_at: new Date()
-
-      })
-      .eq("id",ultimo.id)
-
-  }
+    .is("created_by",null)
 
 }
 
