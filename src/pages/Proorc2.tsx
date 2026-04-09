@@ -272,6 +272,17 @@ setInfoNota({
       })
       .eq("id",editando)
 
+    /* grava usuário da edição */
+    await supabase
+      .from("db_proorc_cadastro")
+      .update({
+
+        updated_by: usuario?.nome || "sistema",
+        updated_at: new Date()
+
+      })
+      .eq("id",editando)
+
     setEditando(null)
 
   }
@@ -286,6 +297,29 @@ setInfoNota({
         p_aplicacao: aplicacao
       }
     )
+
+    /* identifica último registro criado para a nota */
+    const { data:ultimo } = await supabase
+      .from("db_proorc_cadastro")
+      .select("id")
+      .eq("nota",nota)
+      .order("created_at",{ascending:false})
+      .limit(1)
+      .maybeSingle()
+
+    if(ultimo?.id){
+
+      await supabase
+        .from("db_proorc_cadastro")
+        .update({
+
+          created_by: usuario?.nome || "sistema",
+          updated_by: usuario?.nome || "sistema"
+
+        })
+        .eq("id",ultimo.id)
+
+    }
 
   }
 
