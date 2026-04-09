@@ -420,21 +420,35 @@ d.toLocaleTimeString("pt-BR",{
 
 async function excluir(id:string){
 
-  await supabase
+  // 1. descobrir nota do registro
+  const { data:registro } = await supabase
     .from("db_proorc_cadastro")
-    .update({
-
-      updated_by: usuario?.nome || "sistema",
-      updated_at: new Date()
-
-    })
+    .select("nota")
     .eq("id",id)
+    .single()
 
+
+  if(registro){
+
+    // 2. atualizar timestamp de todos registros da nota
+    await supabase
+      .from("db_proorc_cadastro")
+      .update({
+
+        updated_by: usuario?.nome || "sistema",
+        updated_at: new Date()
+
+      })
+      .eq("nota",registro.nota)
+
+  }
+
+
+  // 3. excluir item
   await supabase
     .from("db_proorc_cadastro")
     .delete()
     .eq("id",id)
-
   carregarNota()
 
 }
