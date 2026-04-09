@@ -336,16 +336,16 @@ setInfoNota({
 
   if(editando){
 
-    await supabase
-      .from("db_proorc_cadastro")
-      .update({
+await supabase
+  .from("db_proorc_cadastro")
+  .update({
 
-        quantidade:Number(quantidade),
-        aplicacao,
-        updated_by: usuario?.nome || "sistema",
-        updated_at: new Date()
+    quantidade:Number(quantidade),
+    aplicacao,
+    updated_by: usuario?.nome || "sistema",
+    updated_at: new Date()
 
-      })
+  })
       .eq("id",editando)
 
     setEditando(null)
@@ -416,16 +416,26 @@ await supabase.rpc(
 
   }
 
-  async function excluir(id:string){
+async function excluir(id:string){
 
-    await supabase
-      .from("db_proorc_cadastro")
-      .delete()
-      .eq("id",id)
+  await supabase
+    .from("db_proorc_cadastro")
+    .update({
 
-    carregarNota()
+      updated_by: usuario?.nome || "sistema",
+      updated_at: new Date()
 
-  }
+    })
+    .eq("id",id)
+
+  await supabase
+    .from("db_proorc_cadastro")
+    .delete()
+    .eq("id",id)
+
+  carregarNota()
+
+}
 
   function editar(linha:any){
 
