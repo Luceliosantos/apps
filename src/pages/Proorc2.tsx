@@ -252,63 +252,68 @@ setInfoNota({
 
   async function salvar(){
 
-    if(!material){
+  if(!material){
 
-      await confirmarCodigoDigitado()
-
-    }
-
-    if(!material) return
-
-    if(editando){
-
-      await supabase
-        .from("db_proorc_cadastro")
-        .update({
-          quantidade:Number(quantidade),
-          aplicacao
-        })
-        .eq("id",editando)
-
-      setEditando(null)
-
-    }
-    else{
-
-  await supabase
-    .from("db_proorc_cadastro")
-    .insert({
-
-      nota: nota,
-      codigo: material.codigo,
-      quantidade: Number(quantidade),
-      aplicacao: aplicacao,
-
-      created_by: usuario?.nome || "sistema",
-      created_at: new Date(),
-
-      updated_by: usuario?.nome || "sistema",
-      updated_at: new Date()
-
-    })
-
-}
-
-    setCodigo("")
-    setQuantidade("")
-    setAplicacao("N")
-    setMaterial(null)
-    setEstrutura([])
-    setMateriaisSug([])
-    setIndiceSug(-1)
-
-    carregarNota()
-
-    setTimeout(()=>{
-      materialRef.current?.focus()
-    },50)
+    await confirmarCodigoDigitado()
 
   }
+
+  if(!material) return
+
+  if(editando){
+
+    await supabase
+      .from("db_proorc_cadastro")
+      .update({
+
+        quantidade:Number(quantidade),
+        aplicacao,
+
+        updated_by: usuario?.nome || "sistema",
+        updated_at: new Date()
+
+      })
+      .eq("id",editando)
+
+    setEditando(null)
+
+  }
+  else{
+
+    await supabase
+      .from("db_proorc_cadastro")
+      .insert({
+
+        nota: nota,
+        codigo: material.codigo,
+        quantidade: Number(quantidade),
+        aplicacao: aplicacao,
+
+        created_by: usuario?.nome || "sistema",
+        created_at: new Date(),
+
+        updated_by: usuario?.nome || "sistema",
+        updated_at: new Date()
+
+      })
+
+  }
+
+  setCodigo("")
+  setQuantidade("")
+  setAplicacao("N")
+  setMaterial(null)
+  setEstrutura([])
+  setMateriaisSug([])
+  setIndiceSug(-1)
+
+  carregarNota()
+
+  setTimeout(()=>{
+    materialRef.current?.focus()
+  },50)
+
+}
 
   function formatarData(data?:string){
 
