@@ -295,7 +295,7 @@ await supabase.rpc(
     p_codigo: material.codigo,
     p_quantidade: Number(quantidade),
     p_aplicacao: aplicacao,
-    p_user: "web"
+    p_user: usuario?.nome || "web"
   }
 )
 
