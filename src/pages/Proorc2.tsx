@@ -280,22 +280,15 @@ setInfoNota({
   }
   else{
 
-    await supabase
-      .from("db_proorc_cadastro")
-      .insert({
-
-        nota: nota,
-        codigo: material.codigo,
-        quantidade: Number(quantidade),
-        aplicacao: aplicacao,
-
-        created_by: usuario?.nome || "sistema",
-        created_at: new Date(),
-
-        updated_by: usuario?.nome || "sistema",
-        updated_at: new Date()
-
-      })
+    await supabase.rpc(
+      "fn_proorc_cadastrar",
+      {
+        p_nota: nota,
+        p_codigo: material.codigo,
+        p_quantidade: Number(quantidade),
+        p_aplicacao: aplicacao
+      }
+    )
 
   }
 
@@ -307,7 +300,7 @@ setInfoNota({
   setMateriaisSug([])
   setIndiceSug(-1)
 
-  carregarNota()
+  await carregarNota()
 
   setTimeout(()=>{
     materialRef.current?.focus()
