@@ -611,13 +611,13 @@ async function excluir(id:string){
             style={styles.inputConsulta}
             value={nota}
 
-            onChange={(e)=>{
+           onChange={(e)=>{
 
   const valor = e.target.value
 
   setNota(valor)
 
-  // limpar dados somente quando começar nova nota
+  // limpar dados ao iniciar nova nota
   if(valor.length <= 1){
 
     setCadastro([])
@@ -628,6 +628,14 @@ async function excluir(id:string){
     setQuantidade("")
     setAplicacao("N")
     setInfoNota({})
+    setNotaValida(false)
+
+  }
+
+  // validar automaticamente quando completar 10 digitos
+  if(valor.length === 10){
+
+    validarNota(valor)
 
   }
 
