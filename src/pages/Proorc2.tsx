@@ -109,19 +109,21 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
   }
 
-  useEffect(()=>{
+ useEffect(()=>{
 
-    if(notaValida){
+  if(notaValida){
 
-      carregarNota()
+    carregarNota()
 
-      setTimeout(()=>{
-        materialRef.current?.focus()
-      },50)
+    setTimeout(()=>{
 
-    }
+      materialRef.current?.focus()
 
-  },[notaValida,nota])
+    },50)
+
+  }
+
+},[notaValida])
 
   useEffect(()=>{
 
@@ -611,29 +613,35 @@ async function excluir(id:string){
 
             onChange={(e)=>{
 
-              const valor = e.target.value
+  const valor = e.target.value
 
-              setNota(valor)
+  setNota(valor)
 
-              setCadastro([])
-              setExplodido([])
-              setCodigo("")
-              setMaterial(null)
-              setEstrutura([])
-              setQuantidade("")
-              setAplicacao("N")
+  // limpar dados somente quando começar nova nota
+  if(valor.length <= 1){
 
-              if(valor.length < 3){
+    setCadastro([])
+    setExplodido([])
+    setCodigo("")
+    setMaterial(null)
+    setEstrutura([])
+    setQuantidade("")
+    setAplicacao("N")
+    setInfoNota({})
 
-                setNotasSug([])
-                setIndiceNotaSug(-1)
-                return
+  }
 
-              }
+  if(valor.length < 3){
 
-              buscarNotas(valor)
+    setNotasSug([])
+    setIndiceNotaSug(-1)
+    return
 
-            }}
+  }
+
+  buscarNotas(valor)
+
+}}
 
             onKeyDown={(e)=>{
 
@@ -691,7 +699,16 @@ async function excluir(id:string){
 
             }}
 
-            onBlur={()=>validarNota(nota)}
+            onBlur={()=>{
+
+  // validar somente se tiver 10 digitos
+  if(nota.length === 10){
+
+    validarNota(nota)
+
+  }
+
+}}
 
           />
 
