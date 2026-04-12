@@ -1240,7 +1240,9 @@ marginBottom:18,
 width:"100%",
 maxWidth:"52vw",
 boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
-borderTop:"4px solid #4da3ff"
+borderTop:"4px solid #4da3ff",
+
+overflow:"hidden"
 },
 
 cardGrid:{
@@ -1329,6 +1331,7 @@ color:"#000"
 },
 
 tabelaPadrao:{
+width:"100%",
 borderCollapse:"collapse",
 fontSize:13,
 marginTop:6,
