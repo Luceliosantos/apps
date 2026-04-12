@@ -1220,9 +1220,11 @@ cursor:"pointer"
 
 gridPrincipal:{
 display:"grid",
-gridTemplateColumns:"620px 580px",
+gridTemplateColumns:"52% 48%",
 gap:14,
-alignItems:"start"
+alignItems:"start",
+maxWidth:"95vw",
+margin:"0 auto"
 },
 
 cardMedioGrid:{
@@ -1231,7 +1233,8 @@ color:"black",
 padding:"14px 18px",
 borderRadius:14,
 marginBottom:18,
-width:"620px",
+width:"100%",
+maxWidth:"52vw",
 boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
 borderTop:"4px solid #4da3ff"
 },
@@ -1242,7 +1245,8 @@ color:"black",
 padding:"14px 18px",
 borderRadius:14,
 marginBottom:18,
-width:"580px",
+width:"100%",
+maxWidth:"48vw",
 boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
 borderTop:"4px solid #4da3ff"
 },
@@ -1253,7 +1257,8 @@ color:"black",
 padding:"14px 18px",
 borderRadius:14,
 marginBottom:18,
-width:"620px",
+width:"100%",
+maxWidth:"52vw",
 boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
 
