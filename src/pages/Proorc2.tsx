@@ -905,30 +905,19 @@ async function excluir(id:string){
 
                         {estrutura.map(i => (
 
-                          <tr key={i.codigo_item}>
+<tr key={i.codigo_item}>
 
-                            <td style={{...styles.tdPadrao,...styles.colCodigoConsolidado}}>
-                            {x.codigo}
-                            </td>
-                            
-                            <td style={{...styles.tdPadrao,...styles.colQtdConsolidado}}>
-                            {x.quantidade}
-                            </td>
-                            
-                            <td style={{...styles.tdPadrao,...styles.colApConsolidado}}>
-                            {x.aplicacao}
-                            </td>
-                            
-                            <td
-                            style={{
-                            ...styles.tdPadrao,
-                            ...styles.colDescricaoConsolidado,
-                            whiteSpace:"normal",
-                            wordBreak:"break-word"
-                            }}
-                            >
-                            {x.descricao}
-                            </td>
+<td style={styles.tdPadrao}>
+{i.codigo_item}
+</td>
+
+<td style={styles.tdPadrao}>
+{i.item}
+</td>
+
+<td style={styles.tdPadrao}>
+{i.quantidade}
+</td>
 
                           </tr>
 
