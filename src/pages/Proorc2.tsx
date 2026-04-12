@@ -1352,7 +1352,7 @@ color:"#000"
 tabelaPadrao:{
 width:"100%",
 borderCollapse:"collapse",
-fontSize:13,
+fontSize:10,
 marginTop:6,
 tableLayout:"fixed"
 },
@@ -1360,7 +1360,7 @@ tableLayout:"fixed"
 tabelaCompacta:{
 width:"100%",
 borderCollapse:"collapse",
-fontSize:12,
+fontSize:10,
 marginTop:6,
 tableLayout:"fixed"
 },
@@ -1383,7 +1383,7 @@ textAlign:"center"
 
 tdPadrao:{
 border:"1px solid #d6e4ff",
-padding:"6px",
+padding:"4px",
 textAlign:"center",
 whiteSpace:"nowrap"
 },
