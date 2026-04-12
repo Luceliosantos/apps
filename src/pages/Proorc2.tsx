@@ -951,18 +951,22 @@ async function excluir(id:string){
 
                       <tr key={x.id}>
 
-                        <td style={styles.tdPadrao}>{x.codigo}</td>
-
-                        <td style={styles.tdPadrao}>{x.descricao}</td>
-
-                        <td style={styles.tdPadrao}>
+                        <td style={{...styles.tdPadrao,...styles.colCodigo}}>
+                          {x.codigo}
+                          </td>
+                          
+                          <td style={{...styles.tdPadrao,...styles.colDescricao}}>
+                          {x.descricao}
+                          </td>
+                          
+                          <td style={{...styles.tdPadrao,...styles.colQtd}}>
                           {x.aplicacao === "U"
                           ? Math.abs(x.quantidade)
                           : x.quantidade}
                         </td>
 
-                        <td style={styles.tdPadrao}>
-                          {x.aplicacao}
+                        <td style={{...styles.tdPadrao,...styles.colAp}}>
+                        {x.aplicacao}
                         </td>
 
                         <td style={styles.tdPadrao}>
@@ -1060,22 +1064,21 @@ async function excluir(id:string){
                       }
                     >
 
-                      <td style={styles.tdPadrao}>
-                        {x.codigo}
-                      </td>
+                     <td style={{...styles.tdPadrao,...styles.colCodigo}}>
+{x.codigo}
+</td>
 
-                      <td style={styles.tdPadrao}>
-                        {x.quantidade}
-                      </td>
+<td style={{...styles.tdPadrao,...styles.colQtd}}>
+{x.quantidade}
+</td>
 
-                      <td style={{...styles.tdPadrao,...styles.colAp}}>
-                        {x.aplicacao}
-                      </td>
+<td style={{...styles.tdPadrao,...styles.colAp}}>
+{x.aplicacao}
+</td>
 
-                      <td style={styles.tdPadrao}>
-                        {x.descricao}
-                      </td>
-
+<td style={{...styles.tdPadrao,...styles.colDescricao}}>
+{x.descricao}
+</td>
                     </tr>
 
                   ))}
