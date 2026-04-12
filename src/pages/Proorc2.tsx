@@ -1352,7 +1352,7 @@ color:"#000"
 tabelaPadrao:{
 width:"100%",
 borderCollapse:"collapse",
-fontSize:10,
+fontSize:11,
 marginTop:6,
 tableLayout:"fixed"
 },
@@ -1360,7 +1360,7 @@ tableLayout:"fixed"
 tabelaCompacta:{
 width:"100%",
 borderCollapse:"collapse",
-fontSize:10,
+fontSize:11,
 marginTop:6,
 tableLayout:"fixed"
 },
