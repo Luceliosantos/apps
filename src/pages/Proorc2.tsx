@@ -1327,14 +1327,16 @@ color:"#000"
 tabelaPadrao:{
 borderCollapse:"collapse",
 fontSize:13,
-marginTop:6
+marginTop:6,
+tableLayout:"fixed"
 },
 
 tabelaCompacta:{
 width:"100%",
 borderCollapse:"collapse",
 fontSize:12,
-marginTop:6
+marginTop:6,
+tableLayout:"fixed"
 },
 
 thPadrao:{
@@ -1360,10 +1362,10 @@ textAlign:"center",
 whiteSpace:"nowrap"
 },
 
-colCodigo:{width:50},
-colAp:{width:25},
-colDescricao:{width:345},
-colQtd:{width:70},
+colCodigo:{width:"16%"},
+colQtd:{width:"12%"},
+colAp:{width:"8%"},
+colDescricao:{width:"64%"},
 
 btnGrid:{
 background:"#34495e",
