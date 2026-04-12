@@ -935,11 +935,15 @@ async function excluir(id:string){
 
                     <tr>
 
-                      <th style={{...styles.thBlue,...styles.colCodigo}}>CODIGO</th>
-                      <th style={{...styles.thBlue,...styles.colDescricao}}>DESCRIÇÃO</th>
-                      <th style={{...styles.thBlue,...styles.colQtd}}>QTD</th>
-                      <th style={styles.thBlue}>AP</th>
-                      <th style={styles.thBlue}>AÇÕES</th>
+<th style={{...styles.thBlue,...styles.colCodigo}}>CODIGO</th>
+
+<th style={{...styles.thBlue,...styles.colDescricao}}>DESCRIÇÃO</th>
+
+<th style={{...styles.thBlue,...styles.colQtd}}>QTD</th>
+
+<th style={{...styles.thBlue,...styles.colAp}}>AP</th>
+
+<th style={{...styles.thBlue,...styles.colAcoes}}>AÇÕES</th>
 
                     </tr>
 
@@ -947,49 +951,56 @@ async function excluir(id:string){
 
                   <tbody>
 
-                    {cadastro.map(x => (
+{cadastro.map(x => (
 
-                      <tr key={x.id}>
+<tr key={x.id}>
 
-                        <td style={{...styles.tdPadrao,...styles.colCodigo}}>
-                          {x.codigo}
-                          </td>
-                          
-                          <td style={{...styles.tdPadrao,...styles.colDescricao}}>
-                          {x.descricao}
-                          </td>
-                          
-                          <td style={{...styles.tdPadrao,...styles.colQtd}}>
-                          {x.aplicacao === "U"
-                          ? Math.abs(x.quantidade)
-                          : x.quantidade}
-                        </td>
+<td style={{...styles.tdPadrao,...styles.colCodigo}}>
+{x.codigo}
+</td>
 
-                        <td style={{...styles.tdPadrao,...styles.colAp}}>
-                        {x.aplicacao}
-                        </td>
+<td
+style={{
+...styles.tdPadrao,
+...styles.colDescricao,
+whiteSpace:"normal",
+wordBreak:"break-word"
+}}
+>
+{x.descricao}
+</td>
 
-                        <td style={styles.tdPadrao}>
+<td style={{...styles.tdPadrao,...styles.colQtd}}>
+{x.aplicacao === "U"
+? Math.abs(x.quantidade)
+: x.quantidade}
+</td>
 
-                          <button
-                            style={styles.btnGrid}
-                            onClick={()=>editar(x)}
-                          >
-                            alterar
-                          </button>
+<td style={{...styles.tdPadrao,...styles.colAp}}>
+{x.aplicacao}
+</td>
 
-                          <button
-                            style={styles.btnExcluir}
-                            onClick={()=>excluir(x.id)}
-                          >
-                            excluir
-                          </button>
+<td style={{...styles.tdPadrao,...styles.colAcoes}}>
 
-                        </td>
+<button
+style={styles.btnGrid}
+onClick={()=>editar(x)}
+>
+alterar
+</button>
 
-                      </tr>
+<button
+style={styles.btnExcluir}
+onClick={()=>excluir(x.id)}
+>
+excluir
+</button>
 
-                    ))}
+</td>
+
+</tr>
+
+))}
 
                   </tbody>
 
@@ -1369,10 +1380,11 @@ textAlign:"center",
 whiteSpace:"nowrap"
 },
 
-colCodigo:{width:"16%"},
-colQtd:{width:"12%"},
-colAp:{width:"8%"},
-colDescricao:{width:"64%"},
+colCodigo:{width:"18%"},
+colDescricao:{width:"40%"},
+colQtd:{width:"10%"},
+colAp:{width:"6%"},
+colAcoes:{width:"26%"},
 
 btnGrid:{
 background:"#34495e",
