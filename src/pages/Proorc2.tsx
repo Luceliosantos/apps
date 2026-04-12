@@ -907,9 +907,28 @@ async function excluir(id:string){
 
                           <tr key={i.codigo_item}>
 
-                            <td style={styles.tdPadrao}>{i.codigo_item}</td>
-                            <td style={styles.tdPadrao}>{i.item}</td>
-                            <td style={styles.tdPadrao}>{i.quantidade}</td>
+                            <td style={{...styles.tdPadrao,...styles.colCodigoConsolidado}}>
+                            {x.codigo}
+                            </td>
+                            
+                            <td style={{...styles.tdPadrao,...styles.colQtdConsolidado}}>
+                            {x.quantidade}
+                            </td>
+                            
+                            <td style={{...styles.tdPadrao,...styles.colApConsolidado}}>
+                            {x.aplicacao}
+                            </td>
+                            
+                            <td
+                            style={{
+                            ...styles.tdPadrao,
+                            ...styles.colDescricaoConsolidado,
+                            whiteSpace:"normal",
+                            wordBreak:"break-word"
+                            }}
+                            >
+                            {x.descricao}
+                            </td>
 
                           </tr>
 
@@ -1042,20 +1061,20 @@ excluir
 
                   <tr>
 
-                    <th style={{...styles.thPadrao,...styles.colCodigo}}>
-                      CODIGO
+                    <th style={{...styles.thPadrao,...styles.colCodigoConsolidado}}>
+                    CODIGO
                     </th>
-
-                    <th style={{...styles.thPadrao,...styles.colQtd}}>
-                      QNT
+                    
+                    <th style={{...styles.thPadrao,...styles.colQtdConsolidado}}>
+                    QNT
                     </th>
-
-                    <th style={{...styles.thPadrao,...styles.colAp}}>
-                      AP
+                    
+                    <th style={{...styles.thPadrao,...styles.colApConsolidado}}>
+                    AP
                     </th>
-
-                    <th style={{...styles.thPadrao,...styles.colDescricao}}>
-                      DESCRIÇÃO
+                    
+                    <th style={{...styles.thPadrao,...styles.colDescricaoConsolidado}}>
+                    DESCRIÇÃO
                     </th>
 
                   </tr>
@@ -1386,6 +1405,12 @@ colQtd:{width:"10%"},
 colAp:{width:"6%"},
 colAcoes:{width:"26%"},
 
+colCodigoConsolidado:{width:"18%"},
+colQtdConsolidado:{width:"12%"},
+colApConsolidado:{width:"8%"},
+colDescricaoConsolidado:{width:"62%"},
+
+  
 btnGrid:{
 background:"#34495e",
 color:"white",
