@@ -1114,9 +1114,7 @@ overlay:{
 minHeight:"100vh",
 background:"rgba(0,0,0,0.75)",
 padding:20,
-color:"white",
-maxWidth:"96vw",
-margin:"0 auto"
+color:"white"
 },
 
 header:{
@@ -1225,10 +1223,12 @@ cursor:"pointer"
 
 gridPrincipal:{
 display:"grid",
-gridTemplateColumns:"1fr 1fr",
+gridTemplateColumns:"52% 48%",
 gap:14,
 alignItems:"start",
-width:"100%"
+width:"100%",
+maxWidth:"1200px",
+margin:"0 auto"
 },
 
 cardMedioGrid:{
