@@ -401,24 +401,21 @@ d.toLocaleTimeString("pt-BR",{
 
   }
 
-  async function buscarNotas(valor:string){
+ async function buscarNotas(valor:string){
 
-    const { data } = await supabase
-      .from("vw_proorc_cadastro")
-      .select("nota")
-      .limit(20)
+  const { data } = await supabase
+    .from("vw_proorc_cadastro")
+    .select("nota")
+    .ilike("nota",`${valor}%`)
+    .order("nota")
+    .limit(20)
 
-    const listaFiltrada =
-      (data || [])
-        .map(x => x.nota)
-        .filter(n => n.startsWith(valor))
+  const listaUnica =
+    [...new Set((data || []).map(x => x.nota))]
 
-    const listaUnica =
-      [...new Set(listaFiltrada)]
+  setNotasSug(listaUnica)
 
-    setNotasSug(listaUnica)
-
-  }
+}
 
 async function excluir(id:string){
 
