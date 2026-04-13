@@ -56,26 +56,26 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
   }
 
-  useEffect(()=>{
+ useEffect(()=>{
 
-    if(nota.length < 3){
+  if(nota.length < 3){
 
-      setNotasSug([])
-      setIndiceNotaSug(-1)
-      return
+    setNotasSug([])
+    setIndiceNotaSug(-1)
+    return
 
-    }
+  }
 
-    if(nota.length >= 10){
+  if(nota.length >= 10){
 
-      setNotasSug([])
-      return
+    setNotasSug([])
+    return
 
-    }
+  }
 
-    buscarNotas(nota)
+  buscarNotas(nota)
 
-  },[nota])
+},[nota])
 
   useEffect(()=>{
 
@@ -614,7 +614,6 @@ async function excluir(id:string){
 
   setNota(valor)
 
-  // limpar dados ao iniciar nova nota
   if(valor.length <= 1){
 
     setCadastro([])
@@ -629,22 +628,11 @@ async function excluir(id:string){
 
   }
 
-  // validar automaticamente quando completar 10 digitos
   if(valor.length === 10){
 
     validarNota(valor)
 
   }
-
-  if(valor.length < 3){
-
-    setNotasSug([])
-    setIndiceNotaSug(-1)
-    return
-
-  }
-
-  buscarNotas(valor)
 
 }}
 
