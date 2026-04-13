@@ -404,18 +404,19 @@ d.toLocaleTimeString("pt-BR",{
 async function buscarNotas(valor:string){
 
   const { data } = await supabase
-    .from("vw_proorc_cadastro")
+    .from("db_proorc_cadastro")
     .select("nota")
-    .ilike("nota", `${valor}%`)
+    .ilike("nota", valor + "%")
     .order("nota")
-    .limit(20)
+    .limit(200)
 
   const listaUnica =
     [...new Set((data || []).map(x => x.nota))]
 
-  setNotasSug(listaUnica)
+  setNotasSug(listaUnica.slice(0,20))
 
 }
+  
 async function excluir(id:string){
 
   // 1. descobrir nota do registro
