@@ -1223,50 +1223,53 @@ cursor:"pointer"
 },
 
 gridPrincipal:{
-display:"grid",
-gridTemplateColumns:"52% 48%",
-gap:14,
-alignItems:"start",
-width:"100%",
-maxWidth:"1200px",
-margin:"0 auto"
+  display:"grid",
+  gridTemplateColumns:"1fr 1fr",
+  gap:"20px",
+  alignItems:"start",
+
+  width:"90%",
+  maxWidth:"1800px",
+
+  margin:"0 auto"
 },
 
 cardMedioGrid:{
-background:"white",
-color:"black",
-padding:"14px 18px",
-borderRadius:14,
-marginBottom:18,
-width:"100%",
-maxWidth:"52vw",
-boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
-borderTop:"4px solid #4da3ff",
+  background:"white",
+  color:"black",
+  padding:"18px 22px",
+  borderRadius:14,
+  marginBottom:18,
 
-overflow:"hidden"
+  width:"100%",
+
+  boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
+  borderTop:"4px solid #4da3ff"
 },
 
 cardGrid:{
-background:"white",
-color:"black",
-padding:"14px 18px",
-borderRadius:14,
-marginBottom:18,
-width:"100%",
-maxWidth:"48vw",
-boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
-borderTop:"4px solid #4da3ff"
+  background:"white",
+  color:"black",
+  padding:"18px 22px",
+  borderRadius:14,
+  marginBottom:18,
+
+  width:"100%",
+
+  boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
+  borderTop:"4px solid #4da3ff"
 },
 
 cardPequeno:{
-background:"white",
-color:"black",
-padding:"14px 18px",
-borderRadius:14,
-marginBottom:18,
-width:"100%",
-maxWidth:"52vw",
-boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
+  background:"white",
+  color:"black",
+  padding:"18px 22px",
+  borderRadius:14,
+  marginBottom:18,
+
+  width:"60%",
+
+  boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
 
 linhaCadastro:{
@@ -1332,12 +1335,11 @@ color:"#000"
 },
 
 tabelaPadrao:{
-width:"100%",
-borderCollapse:"collapse",
-fontSize:11,
-marginTop:6,
-tableLayout:"fixed"
-},
+  width:"100%",
+  borderCollapse:"separate",
+  borderSpacing:"0 2px",
+  fontSize:12
+}
 
 tabelaCompacta:{
 width:"100%",
