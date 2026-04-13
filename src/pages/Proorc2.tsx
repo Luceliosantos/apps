@@ -139,19 +139,19 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
   },[codigo])
 
-  async function buscarMateriais(){
+ async function buscarMateriais(){
 
-const { data } = await supabase
-  .from("vw_proorc_notas")
-  .select("nota")
-  .ilike("nota", `${valor}%`)
-  .order("nota")
-  .limit(20)
+  const { data } = await supabase
+    .from("db_proorc_materiais")
+    .select("codigo, descricao, tipo")
+    .ilike("codigo", `${codigo}%`)
+    .order("codigo")
+    .limit(20)
 
-    setMateriaisSug(data || [])
-    setIndiceSug(-1)
+  setMateriaisSug(data || [])
+  setIndiceSug(-1)
 
-  }
+}
 
   async function selecionarMaterial(cod:string){
 
