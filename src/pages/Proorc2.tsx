@@ -970,7 +970,13 @@ wordBreak:"break-word"
 {x.aplicacao}
 </td>
 
-<td style={{...styles.tdPadrao,...styles.colAcoes}}>
+<td style={{
+...styles.tdPadrao,
+...styles.colAcoes,
+display:"flex",
+justifyContent:"center",
+gap:4
+}}>
 
 <button
 style={styles.btnGrid}
@@ -1262,17 +1268,18 @@ cardGrid:{
 },
 
 cardPequeno:{
-  background:"white",
-  color:"black",
-  padding:"18px 22px",
-  borderRadius:14,
-  marginBottom:18,
+background:"white",
+color:"black",
+padding:"18px 22px",
+borderRadius:14,
+marginBottom:18,
 
-  minWidth:"450px",
-  width:"fit-content",
-  maxWidth:"100%",
+minWidth:"450px",
+width:"fit-content",
+maxWidth:"100%",
 
-  boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
+boxShadow:"0 4px 14px rgba(0,0,0,0.25)",
+borderTop:"4px solid #4da3ff"
 },
 
 linhaCadastro:{
@@ -1338,25 +1345,26 @@ color:"#000"
 },
 
 tabelaPadrao:{
-  width:"100%",
-  borderCollapse:"separate",
-  borderSpacing:"0 2px",
-  fontSize:12
+width:"100%",
+borderCollapse:"collapse",
+fontSize:12,
+border:"1px solid #bcd4f6"
 },
 
 tabelaCompacta:{
-  width:"100%",
-  borderCollapse:"collapse",
-  fontSize:12,
-  marginTop:6,
-
-  tableLayout:"auto"
+width:"100%",
+borderCollapse:"collapse",
+fontSize:12,
+marginTop:6,
+tableLayout:"auto",
+border:"1px solid #bcd4f6"
 },
 
 thPadrao:{
 border:"1px solid #bcd4f6",
 background:"#e8f1ff",
 padding:"6px",
+textAlign:"center",
 fontWeight:"bold",
 textAlign:"center"
 },
@@ -1373,7 +1381,11 @@ colCodigo:{width:"18%"},
 colDescricao:{width:"40%"},
 colQtd:{width:"10%"},
 colAp:{width:"6%"},
-colAcoes:{width:"26%"},
+
+colAcoes:{
+width:"26%",
+textAlign:"center"
+},
 
 colCodigoConsolidado:{width:"18%"},
 colQtdConsolidado:{width:"12%"},
