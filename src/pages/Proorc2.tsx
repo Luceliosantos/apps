@@ -867,7 +867,7 @@ async function excluir(id:string){
 
                   <div style={styles.subBox}>
 
-                    <strong>estrutura do kit</strong>
+                    <strong>ESTRUTURA DO KIT</strong>
 
                     <table style={styles.tabelaCompacta}>
 
