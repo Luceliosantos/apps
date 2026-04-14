@@ -1228,9 +1228,10 @@ gridPrincipal:{
   gap:"20px",
   alignItems:"start",
 
-  width:"90%",
-  maxWidth:"1800px",
+  width:"100%",
+  maxWidth:"100%",
 
+  padding:"0 20px",
   margin:"0 auto"
 },
 
@@ -1267,7 +1268,8 @@ cardPequeno:{
   borderRadius:14,
   marginBottom:18,
 
-  width:"60%",
+  width:"100%",
+  maxWidth:"900px",
 
   boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
