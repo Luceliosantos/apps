@@ -1339,14 +1339,14 @@ tabelaPadrao:{
   borderCollapse:"separate",
   borderSpacing:"0 2px",
   fontSize:12
-}
+},
 
 tabelaCompacta:{
-width:"100%",
-borderCollapse:"collapse",
-fontSize:11,
-marginTop:6,
-tableLayout:"fixed"
+  width:"100%",
+  borderCollapse:"collapse",
+  fontSize:11,
+  marginTop:6,
+  tableLayout:"fixed"
 },
 
 thPadrao:{
