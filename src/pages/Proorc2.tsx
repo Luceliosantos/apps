@@ -1347,7 +1347,7 @@ tabelaPadrao:{
 tabelaCompacta:{
   width:"100%",
   borderCollapse:"collapse",
-  fontSize:11,
+  fontSize:12,
   marginTop:6,
 
   tableLayout:"auto"
