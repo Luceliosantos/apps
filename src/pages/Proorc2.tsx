@@ -972,11 +972,10 @@ wordBreak:"break-word"
 
 <td style={{
 ...styles.tdPadrao,
-...styles.colAcoes,
-display:"flex",
-justifyContent:"center",
-gap:4
+...styles.colAcoes
 }}>
+
+<div style={styles.acoesContainer}>
 
 <button
 style={styles.btnGrid}
@@ -991,6 +990,8 @@ onClick={()=>excluir(x.id)}
 >
 excluir
 </button>
+
+</div>
 
 </td>
 
@@ -1203,6 +1204,14 @@ padding:"4px 10px",
 borderRadius:6,
 cursor:"pointer",
 fontSize:12
+},
+
+acoesContainer:{
+display:"flex",
+justifyContent:"center",
+alignItems:"center",
+gap:6,
+width:"100%"
 },
 
 headerDireita:{
