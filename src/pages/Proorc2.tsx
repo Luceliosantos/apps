@@ -1269,7 +1269,7 @@ cardPequeno:{
   marginBottom:18,
 
   width:"100%",
-  maxWidth:"900px",
+  maxWidth:"620px",
 
   boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
