@@ -1364,7 +1364,6 @@ thPadrao:{
 border:"1px solid #bcd4f6",
 background:"#e8f1ff",
 padding:"6px",
-textAlign:"center",
 fontWeight:"bold",
 textAlign:"center"
 },
@@ -1375,6 +1374,12 @@ background:"#cfe2ff",
 padding:"6px",
 fontWeight:"bold",
 textAlign:"center"
+},
+
+tdPadrao:{
+padding:"6px",
+textAlign:"center",
+border:"1px solid #d0d7e2"
 },
 
 colCodigo:{width:"18%"},
