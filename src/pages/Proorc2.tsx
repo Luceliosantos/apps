@@ -1397,7 +1397,7 @@ colQtd:{width:"10%"},
 colAp:{width:"6%"},
 
 colAcoes:{
-width:"26%",
+width:"18%",
 textAlign:"center"
 },
 
@@ -1412,7 +1412,6 @@ color:"white",
 border:"none",
 padding:"4px 8px",
 borderRadius:4,
-marginRight:4,
 cursor:"pointer"
 },
 
