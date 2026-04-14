@@ -1369,12 +1369,6 @@ fontWeight:"bold",
 textAlign:"center"
 },
 
-colDescricao:{
-  width:"40%",
-  whiteSpace:"normal",
-  wordBreak:"break-word"
-},
-
 colCodigo:{width:"18%"},
 colDescricao:{width:"40%"},
 colQtd:{width:"10%"},
@@ -1385,7 +1379,6 @@ colCodigoConsolidado:{width:"18%"},
 colQtdConsolidado:{width:"12%"},
 colApConsolidado:{width:"8%"},
 colDescricaoConsolidado:{width:"62%"},
-
   
 btnGrid:{
 background:"#34495e",
