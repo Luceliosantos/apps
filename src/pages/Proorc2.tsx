@@ -1268,8 +1268,9 @@ cardPequeno:{
   borderRadius:14,
   marginBottom:18,
 
-  width:"100%",
-  maxWidth:"420px",
+  minWidth:"450px",
+  width:"fit-content",
+  maxWidth:"100%",
 
   boxShadow:"0 4px 14px rgba(0,0,0,0.25)"
 },
@@ -1348,7 +1349,8 @@ tabelaCompacta:{
   borderCollapse:"collapse",
   fontSize:11,
   marginTop:6,
-  tableLayout:"fixed"
+
+  tableLayout:"auto"
 },
 
 thPadrao:{
@@ -1367,11 +1369,10 @@ fontWeight:"bold",
 textAlign:"center"
 },
 
-tdPadrao:{
-border:"1px solid #d6e4ff",
-padding:"4px",
-textAlign:"center",
-whiteSpace:"nowrap"
+colDescricao:{
+  width:"40%",
+  whiteSpace:"normal",
+  wordBreak:"break-word"
 },
 
 colCodigo:{width:"18%"},
