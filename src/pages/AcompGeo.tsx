@@ -25,8 +25,6 @@ const [regionalSelecionada,setRegionalSelecionada] = useState<string>("");
 const [tipoListaAtiva,setTipoListaAtiva] = useState<string>("");
   async function carregarRegional(regional:string){
 
-    async function carregarRegional(regional:string){
-
   setRegionalSelecionada(regional);
   setTipoListaAtiva("regional");
 
