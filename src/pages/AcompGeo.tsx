@@ -239,86 +239,90 @@ async function buscarListaCompleta(){
 
         <div style={styles.linhaTopo}>
 
-          <div style={styles.grupoEsquerda}>
+  <div style={styles.grupoEsquerda}>
+
+    <button
+      style={
+        regionalSelecionada==="NE/MC"
+          ? styles.buttonSelecionado
+          : styles.button
+      }
+      onClick={()=>carregarRegional("NE/MC")}
+    >
+      NE/MC
+    </button>
+
+    <button
+      style={
+        regionalSelecionada==="NE/PR"
+          ? styles.buttonSelecionado
+          : styles.button
+      }
+      onClick={()=>carregarRegional("NE/PR")}
+    >
+      NE/PR
+    </button>
+
+    <button
+      style={
+        regionalSelecionada==="CE/SL"
+          ? styles.buttonSelecionado
+          : styles.button
+      }
+      onClick={()=>carregarRegional("CE/SL")}
+    >
+      CE/SL
+    </button>
+
+    <button style={styles.buttonLimpar} onClick={limparTabela}>
+      Limpar
+    </button>
+
+    <input
+      style={styles.input}
+      placeholder="NUMERO DA NOTA"
+      value={buscaNota}
+      onChange={(e)=>setBuscaNota(e.target.value)}
+    />
+
+    <button style={styles.button} onClick={buscarNota}>
+      Buscar
+    </button>
+
+    <button
+      style={
+        tipoListaAtiva==="divergencias"
+          ? styles.buttonSelecionado
+          : styles.button
+      }
+      onClick={buscarDivergencias}
+    >
+      Divergencias
+    </button>
+
+    <button
+      style={
+        tipoListaAtiva==="listaCompleta"
+          ? styles.buttonSelecionado
+          : styles.button
+      }
+      onClick={buscarListaCompleta}
+    >
+      Lista Completa
+    </button>
+
+    <button style={styles.button} onClick={exportarExcel}>
+      Exportar Excel
+    </button>
+
+  </div>
+
 
   <button
-    style={
-      regionalSelecionada==="NE/MC"
-        ? styles.buttonSelecionado
-        : styles.button
-    }
-    onClick={()=>carregarRegional("NE/MC")}
+    style={styles.button}
+    onClick={()=>setPagina("menu")}
   >
-    NE/MC
-  </button>
-
-  <button
-    style={
-      regionalSelecionada==="NE/PR"
-        ? styles.buttonSelecionado
-        : styles.button
-    }
-    onClick={()=>carregarRegional("NE/PR")}
-  >
-    NE/PR
-  </button>
-
-  <button
-    style={
-      regionalSelecionada==="CE/SL"
-        ? styles.buttonSelecionado
-        : styles.button
-    }
-    onClick={()=>carregarRegional("CE/SL")}
-  >
-    CE/SL
-  </button>
-
-
-  <button style={styles.buttonLimpar} onClick={limparTabela}>
-    Limpar
-  </button>
-
-
-  <input
-    style={styles.input}
-    placeholder="NUMERO DA NOTA"
-    value={buscaNota}
-    onChange={(e)=>setBuscaNota(e.target.value)}
-  />
-
-
-  <button style={styles.button} onClick={buscarNota}>
-    Buscar
-  </button>
-
-
-  <button
-    style={
-      tipoListaAtiva==="divergencias"
-        ? styles.buttonSelecionado
-        : styles.button
-    }
-    onClick={buscarDivergencias}
-  >
-    Divergencias
-  </button>
-
-
-  <button
-    style={
-      tipoListaAtiva==="listaCompleta"
-        ? styles.buttonSelecionado
-        : styles.button
-    }
-    onClick={buscarListaCompleta}
-  >
-    Lista Completa
-  </button>
-
-
-  <button style={styles.button} onClick={exportarExcel}>
-    Exportar Excel
+    Voltar
   </button>
 
 </div>
