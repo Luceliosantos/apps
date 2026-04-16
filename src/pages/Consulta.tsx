@@ -592,17 +592,17 @@ function obterNomeUsuario(matricula:any){
 >
 {
   col === "usu_cad_db"
-    ? obterNomeUsuario(valor)
-  :
-  col === "usu_ass"
-    ? obterNomeUsuario(valor)
-  :
-  col === "dt_ass_db"
-    ? formatarData(valor)
-  :
-  valor == null || valor === ""
-    ? "-"
-    : String(valor)
+  ? obterNomeUsuario(valor)
+:
+col === "usu_ass"
+  ? obterNomeUsuario(valor)
+:
+col === "dt_ass_db" || col === "dt_cad_db"
+  ? formatarData(valor)
+:
+valor == null || valor === ""
+  ? "-"
+  : String(valor)
 }
 </td>
 
