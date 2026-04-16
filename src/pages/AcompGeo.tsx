@@ -25,69 +25,92 @@ export default function AcompGeo({ setPagina }: Props){
 
   async function carregarRegional(regional:string){
 
-    const { data,error } = await supabase
-      .from("db_acomp_geo")
-      .select("nota,base_cr,medida,status_med,obs,tipo")
-      .eq("regional",regional);
+  const { data,error } = await supabase
+    .from("db_acomp_geo")
+    .select("nota,base_cr,medida,status_med,obs,tipo")
+    .eq("regional",regional)
+    .order("base_cr",{ascending:false}); // garante vir ordenado pela maior base
 
-    if(error || !data) return;
+  if(error || !data) return;
 
-    const mapa:Record<string,LinhaResumo> = {};
+  const mapa:Record<string,LinhaResumo> = {};
 
-    data.forEach((r:any)=>{
+  data.forEach((r:any)=>{
 
-      if(!mapa[r.nota]){
+    const valorBase = Number(r.base_cr) || 0;
 
-        mapa[r.nota] = {
-          nota:r.nota,
-          tipo:"",
-          base_cr:Number(r.base_cr) || 0,
-          m609:"",
-          m614:"",
-          m625:"",
-          obs:""
-        };
+    // cria registro único por nota
+    if(!mapa[r.nota]){
 
+      mapa[r.nota] = {
+        nota:r.nota,
+        tipo:r.tipo || "",
+        base_cr:valorBase,
+        m609:"",
+        m614:"",
+        m625:"",
+        obs:r.obs || ""
+      };
+
+    }else{
+
+      // garante manter o MAIOR base_cr da nota
+      if(valorBase > mapa[r.nota].base_cr){
+        mapa[r.nota].base_cr = valorBase;
       }
 
-      if(r.medida==="0609"){
-        mapa[r.nota].m609=r.status_med || "";
-        mapa[r.nota].tipo=r.tipo || "";
-      }
-
-      if(r.medida==="0614"){
-
-        if(r.tipo==="MDCO"){
-          mapa[r.nota].m614 =
-            r.status_med
-              ? `*${r.status_med}*`
-              : "****";
-        }else{
-          mapa[r.nota].m614=r.status_med || "";
-        }
-
-        mapa[r.nota].tipo=r.tipo || "";
-      }
-
-      if(r.medida==="0625"){
-        mapa[r.nota].m625=r.status_med || "";
-        mapa[r.nota].tipo=r.tipo || "";
-      }
-
+      // mantém obs se ainda não existir
       if(r.obs && !mapa[r.nota].obs){
-        mapa[r.nota].obs=r.obs;
+        mapa[r.nota].obs = r.obs;
       }
 
-    });
+      // mantém tipo se ainda não existir
+      if(r.tipo && !mapa[r.nota].tipo){
+        mapa[r.nota].tipo = r.tipo;
+      }
 
-    const top15 =
-      Object.values(mapa)
-        .sort((a,b)=>b.base_cr-a.base_cr)
-        .slice(0,15);
+    }
 
-    setLista(top15);
 
-  }
+    // preenche medidas
+    if(r.medida==="0609"){
+      mapa[r.nota].m609 = r.status_med || "";
+    }
+
+    if(r.medida==="0614"){
+
+      if(r.tipo==="MDCO"){
+
+        mapa[r.nota].m614 =
+          r.status_med
+            ? `*${r.status_med}*`
+            : "****";
+
+      }else{
+
+        mapa[r.nota].m614 = r.status_med || "";
+
+      }
+
+    }
+
+    if(r.medida==="0625"){
+      mapa[r.nota].m625 = r.status_med || "";
+    }
+
+  });
+
+
+  // gera TOP 15 por base_cr
+  const top15 =
+    Object.values(mapa)
+      .sort((a,b)=>b.base_cr-a.base_cr)
+      .slice(0,15);
+
+
+  setLista(top15);
+
+}
 
 
   function limparTabela(){
