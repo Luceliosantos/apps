@@ -482,8 +482,7 @@ areaTabela:{
   display:"block",
   width:"100%",
   overflowX:"auto",
-  marginBottom:25,
-  textAlign:"center"   // centraliza card na tela
+  marginBottom:25
 },
 
 card:{
