@@ -21,10 +21,10 @@ export default function AcompGeo({ setPagina }: Props){
   const [lista,setLista] = useState<LinhaResumo[]>([]);
   const [buscaNota,setBuscaNota] = useState("");
   const [resultadoBusca,setResultadoBusca] = useState<any[]>([]);
-
+const [regionalSelecionada,setRegionalSelecionada] = useState<string>("");
 
   async function carregarRegional(regional:string){
-
+setRegionalSelecionada(regional);
   const { data,error } = await supabase
     .from("db_acomp_geo")
     .select("nota,base_cr,medida,status_med,obs,tipo")
@@ -105,7 +105,7 @@ export default function AcompGeo({ setPagina }: Props){
   const top15 =
     Object.values(mapa)
       .sort((a,b)=>b.base_cr-a.base_cr)
-      .slice(0,15);
+      .slice(0,25);
 
 
   setLista(top15);
@@ -113,13 +113,14 @@ export default function AcompGeo({ setPagina }: Props){
 }
 
 
-  function limparTabela(){
+function limparTabela(){
 
-    setLista([]);
-    setResultadoBusca([]);
-    setBuscaNota("");
+  setLista([]);
+  setResultadoBusca([]);
+  setBuscaNota("");
+  setRegionalSelecionada("");
 
-  }
+}
 
 
   async function buscarNota(){
@@ -228,17 +229,32 @@ export default function AcompGeo({ setPagina }: Props){
 
           <div style={styles.grupoEsquerda}>
 
-            <button style={styles.button} onClick={()=>carregarRegional("NE/MC")}>
-              NE/MC
-            </button>
+<button
+  style={
+    regionalSelecionada==="NE/MC"
+      ? styles.buttonSelecionado
+      : styles.button
+  }
+  onClick={()=>carregarRegional("NE/MC")}
+>
 
-            <button style={styles.button} onClick={()=>carregarRegional("NE/PR")}>
-              NE/PR
-            </button>
+<button
+  style={
+    regionalSelecionada==="NE/PR"
+      ? styles.buttonSelecionado
+      : styles.button
+  }
+  onClick={()=>carregarRegional("NE/PR")}
+>
 
-            <button style={styles.button} onClick={()=>carregarRegional("CE/SL")}>
-              CE/SL
-            </button>
+<button
+  style={
+    regionalSelecionada==="CE/SL"
+      ? styles.buttonSelecionado
+      : styles.button
+  }
+  onClick={()=>carregarRegional("CE/SL")}
+>
 
             <button style={styles.buttonLimpar} onClick={limparTabela}>
               Limpar
@@ -456,22 +472,36 @@ const styles:{[key:string]:React.CSSProperties}={
     flexWrap:"wrap"
   },
 
-  areaTabela:{
-    display:"block",
-    width:"100%",
-    overflowX:"auto",
-    marginBottom:25
-  },
+areaTabela:{
+  display:"block",
+  width:"100%",
+  overflowX:"auto",
+  marginBottom:25,
+  textAlign:"center"   // centraliza card na tela
+},
 
-  card:{
-    background:"rgba(255,255,255,0.08)",
-    padding:14,
-    borderRadius:10,
-    border:"1px solid rgba(255,255,255,0.25)",
-    backdropFilter:"blur(6px)",
-    overflowX:"auto"
-  },
+card:{
+  background:"rgba(255,255,255,0.08)",
+  padding:14,
+  borderRadius:10,
+  border:"1px solid rgba(255,255,255,0.25)",
+  backdropFilter:"blur(6px)",
+  display:"inline-block",   // faz card ter largura da tabela
+  overflowX:"auto"
+},
 
+buttonSelecionado:{
+  padding:"8px 14px",
+  borderRadius:8,
+  border:"1px solid #4da3ff",
+  backgroundColor:"#4da3ff",
+  color:"white",
+  cursor:"pointer",
+  whiteSpace:"nowrap",
+  fontWeight:"bold",
+  boxShadow:"0 0 6px rgba(77,163,255,0.6)"
+},
+          
   cardTabelaInferior:{
     background:"rgba(255,255,255,0.08)",
     padding:14,
