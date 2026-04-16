@@ -22,10 +22,16 @@ export default function AcompGeo({ setPagina }: Props){
   const [buscaNota,setBuscaNota] = useState("");
   const [resultadoBusca,setResultadoBusca] = useState<any[]>([]);
 const [regionalSelecionada,setRegionalSelecionada] = useState<string>("");
-
+const [tipoListaAtiva,setTipoListaAtiva] = useState<string>("");
   async function carregarRegional(regional:string){
-setRegionalSelecionada(regional);
+
+    async function carregarRegional(regional:string){
+
+  setRegionalSelecionada(regional);
+  setTipoListaAtiva("regional");
+
   const { data,error } = await supabase
+
     .from("db_acomp_geo")
     .select("nota,base_cr,medida,status_med,obs,tipo")
     .eq("regional",regional)
@@ -119,6 +125,7 @@ function limparTabela(){
   setResultadoBusca([]);
   setBuscaNota("");
   setRegionalSelecionada("");
+  setTipoListaAtiva("");
 
 }
 
@@ -139,8 +146,12 @@ function limparTabela(){
 
   async function buscarDivergencias(){
 
-    const { data } = await supabase
-      .from("db_acomp_geo")
+  setRegionalSelecionada("");
+  setTipoListaAtiva("divergencias");
+
+  const { data } = await supabase
+
+     .from("db_acomp_geo")
       .select("*")
       .is("resp_geral",null)
       .neq("status_med","CONC");
@@ -150,9 +161,12 @@ function limparTabela(){
   }
 
 
-  async function buscarListaCompleta(){
+async function buscarListaCompleta(){
 
-    const { data } = await supabase
+  setRegionalSelecionada("");
+  setTipoListaAtiva("listaCompleta");
+
+  const { data } = await supabase
       .from("db_acomp_geo")
       .select("*");
 
@@ -279,14 +293,24 @@ function limparTabela(){
             </button>
 
 
-            <button style={styles.button} onClick={buscarDivergencias}>
-              Divergencias
-            </button>
+<button
+  style={
+    tipoListaAtiva==="divergencias"
+      ? styles.buttonSelecionado
+      : styles.button
+  }
+  onClick={buscarDivergencias}
+>
 
 
-            <button style={styles.button} onClick={buscarListaCompleta}>
-              Lista Completa
-            </button>
+<button
+  style={
+    tipoListaAtiva==="listaCompleta"
+      ? styles.buttonSelecionado
+      : styles.button
+  }
+  onClick={buscarListaCompleta}
+>
 
 
             <button style={styles.button} onClick={exportarExcel}>
