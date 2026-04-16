@@ -219,22 +219,18 @@ else if(tipoBusca === "dt_ass_db"){
 
   }
 
-  function formatarData(valor:any){
+function formatarData(valor:any){
 
-    if(!valor) return "-";
+  if(!valor) return "-";
 
-    return new Date(valor)
-      .toLocaleString("pt-BR",{
-        day:"2-digit",
-        month:"2-digit",
-        year:"numeric",
-        hour:"2-digit",
-        minute:"2-digit",
-        second:"2-digit"
-      })
-      .replace(","," -");
+  return new Date(valor)
+    .toLocaleDateString("pt-BR",{
+      day:"2-digit",
+      month:"2-digit",
+      year:"numeric"
+    });
 
-  }
+}
 
   function prepararDadosExportacao(){
 
