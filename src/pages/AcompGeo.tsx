@@ -328,15 +328,6 @@ async function buscarListaCompleta(){
 </div>
 
 
-          <button
-            style={styles.button}
-            onClick={()=>setPagina("menu")}
-          >
-            Voltar
-          </button>
-
-        </div>
-
 
 
         <div style={styles.areaTabela}>
