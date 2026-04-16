@@ -231,7 +231,21 @@ function formatarData(valor:any){
     });
 
 }
+function formatarDataHora(valor:any){
 
+  if(!valor) return "-";
+
+  return new Date(valor)
+    .toLocaleString("pt-BR",{
+      day:"2-digit",
+      month:"2-digit",
+      year:"numeric",
+      hour:"2-digit",
+      minute:"2-digit",
+      second:"2-digit"
+    });
+
+}
   function prepararDadosExportacao(){
 
     return dados.map(linha => {
@@ -593,8 +607,12 @@ function obterNomeUsuario(matricula:any){
 col === "usu_ass"
   ? obterNomeUsuario(valor)
 :
-col === "dt_ass_db" || col === "dt_cad_db"
+col === "dt_cad_db"
   ? formatarData(valor)
+
+:
+col === "dt_ass_db"
+  ? formatarDataHora(valor)
 :
 valor == null || valor === ""
   ? "-"
