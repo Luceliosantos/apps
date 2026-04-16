@@ -243,81 +243,87 @@ async function buscarListaCompleta(){
 
           <div style={styles.grupoEsquerda}>
 
-<button
-  style={
-    regionalSelecionada==="NE/MC"
-      ? styles.buttonSelecionado
-      : styles.button
-  }
-  onClick={()=>carregarRegional("NE/MC")}
->
-  NE/MC
-</button>
+  <button
+    style={
+      regionalSelecionada==="NE/MC"
+        ? styles.buttonSelecionado
+        : styles.button
+    }
+    onClick={()=>carregarRegional("NE/MC")}
+  >
+    NE/MC
+  </button>
 
-<button
-  style={
-    regionalSelecionada==="NE/PR"
-      ? styles.buttonSelecionado
-      : styles.button
-  }
-  onClick={()=>carregarRegional("NE/PR")}
->
-  NE/PR
-</button>
+  <button
+    style={
+      regionalSelecionada==="NE/PR"
+        ? styles.buttonSelecionado
+        : styles.button
+    }
+    onClick={()=>carregarRegional("NE/PR")}
+  >
+    NE/PR
+  </button>
 
-<button
-  style={
-    regionalSelecionada==="CE/SL"
-      ? styles.buttonSelecionado
-      : styles.button
-  }
-  onClick={()=>carregarRegional("CE/SL")}
->
-  CE/SL
-</button>
-
-            <button style={styles.buttonLimpar} onClick={limparTabela}>
-              Limpar
-            </button>
+  <button
+    style={
+      regionalSelecionada==="CE/SL"
+        ? styles.buttonSelecionado
+        : styles.button
+    }
+    onClick={()=>carregarRegional("CE/SL")}
+  >
+    CE/SL
+  </button>
 
 
-            <input
-              style={styles.input}
-              placeholder="NUMERO DA NOTA"
-              value={buscaNota}
-              onChange={(e)=>setBuscaNota(e.target.value)}
-            />
-
-            <button style={styles.button} onClick={buscarNota}>
-              Buscar
-            </button>
+  <button style={styles.buttonLimpar} onClick={limparTabela}>
+    Limpar
+  </button>
 
 
-<button
-  style={
-    tipoListaAtiva==="divergencias"
-      ? styles.buttonSelecionado
-      : styles.button
-  }
-  onClick={buscarDivergencias}
->
+  <input
+    style={styles.input}
+    placeholder="NUMERO DA NOTA"
+    value={buscaNota}
+    onChange={(e)=>setBuscaNota(e.target.value)}
+  />
 
 
-<button
-  style={
-    tipoListaAtiva==="listaCompleta"
-      ? styles.buttonSelecionado
-      : styles.button
-  }
-  onClick={buscarListaCompleta}
->
+  <button style={styles.button} onClick={buscarNota}>
+    Buscar
+  </button>
 
 
-            <button style={styles.button} onClick={exportarExcel}>
-              Exportar Excel
-            </button>
+  <button
+    style={
+      tipoListaAtiva==="divergencias"
+        ? styles.buttonSelecionado
+        : styles.button
+    }
+    onClick={buscarDivergencias}
+  >
+    Divergencias
+  </button>
 
-          </div>
+
+  <button
+    style={
+      tipoListaAtiva==="listaCompleta"
+        ? styles.buttonSelecionado
+        : styles.button
+    }
+    onClick={buscarListaCompleta}
+  >
+    Lista Completa
+  </button>
+
+
+  <button style={styles.button} onClick={exportarExcel}>
+    Exportar Excel
+  </button>
+
+</div>
 
 
           <button
