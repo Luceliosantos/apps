@@ -237,6 +237,8 @@ function limparTabela(){
   }
   onClick={()=>carregarRegional("NE/MC")}
 >
+  NE/MC
+</button>
 
 <button
   style={
@@ -246,6 +248,8 @@ function limparTabela(){
   }
   onClick={()=>carregarRegional("NE/PR")}
 >
+  NE/PR
+</button>
 
 <button
   style={
@@ -255,6 +259,8 @@ function limparTabela(){
   }
   onClick={()=>carregarRegional("CE/SL")}
 >
+  CE/SL
+</button>
 
             <button style={styles.buttonLimpar} onClick={limparTabela}>
               Limpar
