@@ -451,13 +451,13 @@ if(pagina === "proorc"){
 
     <Proorc2
       usuario={usuario}
+      permissoes={permissoes}
       setPagina={setPagina}
     />
 
   );
 
 }
-
     return(
 
        <ControleChaves
