@@ -45,9 +45,16 @@ export default function Proorc2({ usuario,setPagina }:Props){
   }>({})
 
   const [editando,setEditando] = useState<string | null>(null)
+
 const podeEditar =
   usuario?.perfil === "admin"
   || usuario?.perfil === "gravacao"
+
+const podeExcluirTudo =
+  usuario?.perfil === "admin"
+  || usuario?.perfil === "comissionador"
+  
+
  
   async function excluirTodosMateriais(){
 
@@ -528,11 +535,6 @@ function exportarExcel(){
   }
 
   const dados = dadosExportacao()
-
-const podeExcluirTudo =
-  usuario?.perfil === "admin"
-  || usuario?.perfil === "comissionador"
-
   
   const ws = XLSX.utils.json_to_sheet(dados)
 
