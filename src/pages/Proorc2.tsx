@@ -44,7 +44,29 @@ export default function Proorc2({ usuario,setPagina }:Props){
   }>({})
 
   const [editando,setEditando] = useState<string | null>(null)
+const podeEditar =
+  usuario?.perfil === "admin"
+  || usuario?.perfil === "gravacao"
 
+const podeExcluirTudo =
+  usuario?.perfil === "admin"
+  || usuario?.perfil === "comissionador"
+ 
+  async function excluirTodosMateriais(){
+
+  if(!confirm("Deseja excluir TODOS os materiais desta nota?"))
+    return
+
+  await supabase
+    .from("db_proorc_cadastro")
+    .delete()
+    .eq("nota",nota)
+
+  await carregarNota()
+
+}
+  
+  
   function saudacao(){
 
     const hora = new Date().getHours()
@@ -314,24 +336,16 @@ setInfoNota({
       saldoN - saldoU
 
 
-    if(Number(quantidade) > saldoDisponivel){
+if(Number(quantidade) > saldoDisponivel){
 
-      alert(
-        "Quantidade U maior que saldo disponível em N"
-      )
+  alert("Quantidade U maior que saldo disponível em N")
 
-      setCodigo("")
-      setQuantidade("")
-      setAplicacao("N")
-      setMaterial(null)
+  setTimeout(()=>{
+    qtdRef.current?.focus()
+  },50)
 
-      setTimeout(()=>{
-        materialRef.current?.focus()
-      },50)
-
-      return
-
-    }
+  return
+}
 
   }
 
@@ -448,7 +462,15 @@ async function excluir(id:string){
   carregarNota()
 
 }
+function existeFPpositivo(){
 
+  return explodido.some(x =>
+    x.aplicacao === "N"
+    && x.descricao?.toUpperCase().startsWith("FP")
+    && Number(x.quantidade) > 0
+  )
+
+}
   function editar(linha:any){
 
     setCodigo(linha.codigo)
@@ -498,58 +520,75 @@ async function excluir(id:string){
 
   }
 
-  function exportarExcel(){
+function exportarExcel(){
 
-    const dados = dadosExportacao()
+  if(existeFPpositivo()){
 
-    const ws = XLSX.utils.json_to_sheet(dados)
+    alert("Não é possível gerar arquivo pois existe material FP positivo na lista")
 
-    const wb = XLSX.utils.book_new()
-
-    XLSX.utils.book_append_sheet(wb, ws, "PROORC")
-
-    XLSX.writeFile(wb, `proorc_${nota}.xlsx`)
+    return
 
   }
+
+  const dados = dadosExportacao()
+
+const podeExcluirTudo =
+  usuario?.perfil === "admin"
+  || usuario?.perfil === "comissionador"
+
+  
+  const ws = XLSX.utils.json_to_sheet(dados)
+
+  const wb = XLSX.utils.book_new()
+
+  XLSX.utils.book_append_sheet(wb, ws, "PROORC")
+
+  XLSX.writeFile(wb, `proorc_${nota}.xlsx`)
+
+}
 
   function exportarPDF(){
 
-    const dados = dadosExportacao()
+  if(existeFPpositivo()){
 
-    const doc = new jsPDF()
+    alert("Não é possível gerar arquivo pois existe material FP positivo na lista")
 
-    autoTable(doc,{
-      head:[[
-        "CODIGO",
-        "QUANTIDADE",
-        "PONTO",
-        "APLICAÇÃO",
-        "VIABILIDADE",
-        "TIPO",
-        "DESCRIÇÃO"
-      ]],
-      body:dados.map(x => [
-
-        x.CODIGO,
-        x.QUANTIDADE,
-        x.PONTO,
-        x.APLICACAO,
-        x.VIABILIDADE,
-        x.TIPO,
-        x.DESCRICAO
-
-      ]),
-      styles:{
-        fontSize:8
-      },
-      headStyles:{
-        fillColor:[30,60,114]
-      }
-    })
-
-    doc.save(`proorc_${nota}.pdf`)
+    return
 
   }
+
+  const dados = dadosExportacao()
+
+  const doc = new jsPDF()
+
+  autoTable(doc,{
+    head:[[
+      "CODIGO",
+      "QUANTIDADE",
+      "PONTO",
+      "APLICAÇÃO",
+      "VIABILIDADE",
+      "TIPO",
+      "DESCRIÇÃO"
+    ]],
+    body:dados.map(x => [
+
+      x.CODIGO,
+      x.QUANTIDADE,
+      x.PONTO,
+      x.APLICACAO,
+      x.VIABILIDADE,
+      x.TIPO,
+      x.DESCRICAO
+
+    ]),
+    styles:{ fontSize:8 },
+    headStyles:{ fillColor:[30,60,114] }
+  })
+
+  doc.save(`proorc_${nota}.pdf`)
+
+}
 
   return(
 
@@ -835,7 +874,8 @@ async function excluir(id:string){
                   />
 
                   <input
-                    ref={qtdRef}
+  ref={qtdRef}
+  disabled={!podeEditar}
                     style={styles.qtd}
                     type="number"
                     placeholder="qtd"
@@ -844,6 +884,7 @@ async function excluir(id:string){
                   />
 
                   <select
+                    disabled={!podeEditar}
                     style={styles.aplicacao}
                     value={aplicacao}
                     onChange={(e)=>setAplicacao(e.target.value)}
@@ -853,11 +894,11 @@ async function excluir(id:string){
                     <option value="S">S</option>
                   </select>
 
-                  <button
-                    style={styles.salvar}
-                    disabled={!podeSalvar}
-                    onClick={salvar}
-                  >
+<button
+  style={styles.salvar}
+  disabled={!podeSalvar || !podeEditar}
+  onClick={salvar}
+>
                     {editando ? "alterar" : "gravar"}
                   </button>
 
@@ -1012,7 +1053,16 @@ excluir
               <div style={styles.headerTabela}>
 
                 <strong>LISTA PARA PROORC</strong>
+{podeExcluirTudo && (
 
+  <button
+    style={styles.btnExcluir}
+    onClick={excluirTodosMateriais}
+  >
+    excluir materiais
+  </button>
+
+)}
                 <div>
 
                   <button
