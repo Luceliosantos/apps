@@ -6,10 +6,10 @@ import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 
 type Props = {
-  usuario?:{
-    nome?:string
-    perfil?:string
-  }
+usuario?:{
+  nome?:string
+  proorc?:string
+}
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>
 }
 
@@ -47,12 +47,12 @@ export default function Proorc2({ usuario,setPagina }:Props){
   const [editando,setEditando] = useState<string | null>(null)
 
 const podeEditar =
-  usuario?.perfil === "admin"
-  || usuario?.perfil === "gravacao"
+  usuario?.proorc === "admin"
+  || usuario?.proorc === "gravacao"
 
 const podeExcluirTudo =
-  usuario?.perfil === "admin"
-  || usuario?.perfil === "comissionador"
+  usuario?.proorc === "admin"
+  || usuario?.proorc === "comissionador"
   
 
  
