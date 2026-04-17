@@ -6,14 +6,21 @@ import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 
 type Props = {
-usuario?:{
-  nome?:string
-  proorc?:string
-}
+  usuario?:{
+    nome?:string
+  }
+  permissoes?:{
+    sistema:string
+    tipo:string
+  }[]
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>
 }
 
-export default function Proorc2({ usuario,setPagina }:Props){
+export default function Proorc2({
+  usuario,
+  permissoes,
+  setPagina
+}:Props){
 
   const [nota,setNota] = useState("")
   const [notaValida,setNotaValida] = useState(false)
@@ -46,13 +53,16 @@ export default function Proorc2({ usuario,setPagina }:Props){
 
   const [editando,setEditando] = useState<string | null>(null)
 
+const perfilProorc =
+  getPermissao("proorc");
+
 const podeEditar =
-  usuario?.proorc === "admin"
-  || usuario?.proorc === "gravacao"
+  perfilProorc === "admin"
+  || perfilProorc === "gravacao";
 
 const podeExcluirTudo =
-  usuario?.proorc === "admin"
-  || usuario?.proorc === "comissionador"
+  perfilProorc === "admin"
+  || perfilProorc === "comissionador";
   
 
  
@@ -473,6 +483,17 @@ function existeFPpositivo(){
     && x.descricao?.toUpperCase().startsWith("FP")
     && Number(x.quantidade) > 0
   )
+
+}
+  
+  function getPermissao(tipoSistema:string){
+
+  const p =
+    permissoes?.find(
+      x => x.sistema === tipoSistema
+    );
+
+  return p?.tipo;
 
 }
   function editar(linha:any){
