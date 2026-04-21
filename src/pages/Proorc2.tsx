@@ -696,7 +696,11 @@ function exportarExcel(){
             
            onChange={(e)=>{
 
-  const valor = e.target.value
+  let valor = e.target.value
+
+  valor = valor.replace(/\s/g,"")
+
+  valor = valor.toUpperCase()
 
   setNota(valor)
 
