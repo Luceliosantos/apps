@@ -48,7 +48,6 @@ export default function Proorc2({
   
   const [material,setMaterial] = useState<any>(null)
   const [estrutura,setEstrutura] = useState<any[]>([])
-  const [bloquearEstrutura,setBloquearEstrutura] = useState(false)
 
   const [quantidade,setQuantidade] = useState("")
   const [aplicacao,setAplicacao] = useState("N")
