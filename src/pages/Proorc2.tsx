@@ -770,6 +770,9 @@ function exportarExcel(){
 
               if(e.key==="Enter" || e.key==="Tab"){
 
+  setNotasSug([])        // limpa lista
+  setIndiceNotaSug(-1)
+
   validarNota(nota)
 
   if(nota.length >= 10){
@@ -1271,15 +1274,20 @@ excluir
                     key={m.codigo}
                     style={styles.itemBusca}
 
-                    onMouseDown={()=>{
+onMouseDown={()=>{
 
-                     setCodigoViaPopup(true)
+  setNota(n)
 
-                      selecionarMaterial(m.codigo,false)
+  setNotasSug([])        // limpa lista
+  setIndiceNotaSug(-1)
 
-                      setPopupBusca(false)
+  validarNota(n)
 
-                    }}
+  setTimeout(()=>{
+    materialRef.current?.focus()
+  },50)
+
+}}
                   >
 
                     <strong>{m.codigo}</strong>
