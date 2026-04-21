@@ -221,7 +221,7 @@ const podeExcluirTudo =
   setIndiceBusca(-1)
 
 }
-  async function selecionarMaterial(cod:string){
+  async function selecionarMaterial(cod:string, mostrarEstrutura=true){
 
     setCodigo(cod)
     setMateriaisSug([])
@@ -235,7 +235,7 @@ const podeExcluirTudo =
 
     setMaterial(data)
 
-    if(data?.tipo === "KIT"){
+    if(mostrarEstrutura && data?.tipo === "KIT"){
 
       const { data:itens } = await supabase
         .from("vw_proorc_estrutura")
@@ -1269,7 +1269,7 @@ excluir
 
                     onMouseDown={()=>{
 
-                      selecionarMaterial(m.codigo)
+                      selecionarMaterial(m.codigo,false)
 
                       setPopupBusca(false)
 
