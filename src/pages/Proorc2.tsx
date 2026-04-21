@@ -221,12 +221,18 @@ const podeExcluirTudo =
   setIndiceBusca(-1)
 
 }
-  async function selecionarMaterial(cod:string){
+ async function selecionarMaterial(cod:string){
 
-    setCodigo(cod)
-    setPopupBusca(false)
-    setMateriaisSug([])
-    setIndiceSug(-1)
+  setCodigo(cod)
+
+  setPopupBusca(false)
+
+  setTextoBusca("")
+  setResultBusca([])
+  setIndiceBusca(-1)
+
+  setMateriaisSug([])
+  setIndiceSug(-1)
 
     const { data } = await supabase
       .from("vw_proorc_materiais")
@@ -882,7 +888,13 @@ function exportarExcel(){
                     placeholder="Item ou kit"
                     value={codigo}
 
-                    onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
+                    onChange={(e)=>{
+
+  setCodigo(e.target.value.toUpperCase())
+
+  setEstrutura([]) // limpa estrutura anterior
+
+}}
 
                     onKeyDown={(e)=>{
 
