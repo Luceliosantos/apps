@@ -26,6 +26,7 @@ export default function Proorc2({
   const [notaValida,setNotaValida] = useState(false)
   const [notasSug,setNotasSug] = useState<any[]>([])
   const [indiceNotaSug,setIndiceNotaSug] = useState<number>(-1)
+  const [notaSelecionada,setNotaSelecionada] = useState(false)
 
   const notaRef = useRef<HTMLInputElement>(null)
   const materialRef = useRef<HTMLInputElement>(null)
@@ -104,6 +105,13 @@ const podeExcluirTudo =
   }
 
  useEffect(()=>{
+
+  if(notaSelecionada){
+
+    setNotaSelecionada(false)
+    return
+
+  }
 
   if(nota.length < 3){
 
@@ -544,20 +552,22 @@ function existeFPpositivo(){
     quantidade &&
     aplicacao
 
-  function selecionarNota(n:string){
+function selecionarNota(n:string){
 
-    setNota(n)
+  setNotaSelecionada(true)
 
-    setNotasSug([])
-    setIndiceNotaSug(-1)
+  setNota(n)
 
-    validarNota(n)
+  setNotasSug([])
+  setIndiceNotaSug(-1)
 
-    setTimeout(()=>{
-      materialRef.current?.focus()
-    },50)
+  validarNota(n)
 
-  }
+  setTimeout(()=>{
+    materialRef.current?.focus()
+  },50)
+
+}
     function dadosExportacao(){
 
     return explodido.map(x => ({
