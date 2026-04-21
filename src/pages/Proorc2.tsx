@@ -341,7 +341,7 @@ setInfoNota({
   // 🚫 impedir U para KIT
   if(aplicacao === "U" && material.tipo === "KIT"){
 
-    alert("Aplicação U permitida apenas para ITENS")
+    alert("Aplicação U permitida apenas para ITENS. Corrija antes de proseguir!")
 
     setCodigo("")
     setQuantidade("")
@@ -389,7 +389,7 @@ setInfoNota({
 
 if(Number(quantidade) > saldoDisponivel){
 
-  alert("Quantidade U maior que saldo disponível em N")
+  alert("Quantidade de material tipo U maior que saldo disponível de material N na lista. Não é permitido cadastro de material tipo U sem material tipo N para abatimento")
 
   setTimeout(()=>{
     qtdRef.current?.focus()
@@ -588,7 +588,7 @@ function exportarExcel(){
 
   if(existeFPpositivo()){
 
-    alert("Não é possível gerar arquivo pois existe material FP positivo na lista")
+    alert("Não é possível gerar arquivo pois existe material FP positivo na sua lista. Corrija antes de proseguir!")
 
     return
 
@@ -610,7 +610,7 @@ function exportarExcel(){
 
   if(existeFPpositivo()){
 
-    alert("Não é possível gerar arquivo pois existe material FP positivo na lista")
+    alert("Não é possível gerar arquivo pois existe material FP positivo na sua lista. Corrija antes de proseguir!!!")
 
     return
 
