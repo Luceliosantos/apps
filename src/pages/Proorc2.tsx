@@ -48,6 +48,7 @@ export default function Proorc2({
   
   const [material,setMaterial] = useState<any>(null)
   const [estrutura,setEstrutura] = useState<any[]>([])
+  const [bloquearEstrutura,setBloquearEstrutura] = useState(false)
 
   const [quantidade,setQuantidade] = useState("")
   const [aplicacao,setAplicacao] = useState("N")
@@ -246,7 +247,7 @@ const podeExcluirTudo =
   setMaterial(data)
 
   // só carrega estrutura se permitido
-  if(carregarEstrutura && data?.tipo === "KIT"){
+  if(!bloquearEstrutura && data?.tipo === "KIT"){
 
     const { data:itens } = await supabase
       .from("vw_proorc_estrutura")
@@ -265,7 +266,7 @@ const podeExcluirTudo =
   setTimeout(()=>{
     qtdRef.current?.focus()
   },50)
-
+setBloquearEstrutura(false)
 }
 
     async function confirmarCodigoDigitado(){
@@ -1286,11 +1287,13 @@ excluir
 
                     onMouseDown={()=>{
 
-                      selecionarMaterial(m.codigo,false)
+  setBloquearEstrutura(true)
 
-                      setPopupBusca(false)
+  selecionarMaterial(m.codigo)
 
-                    }}
+  setPopupBusca(false)
+
+}}
                   >
 
                     <strong>{m.codigo}</strong>
