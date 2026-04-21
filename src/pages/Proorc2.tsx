@@ -38,7 +38,7 @@ export default function Proorc2({
   const [popupBusca,setPopupBusca] = useState(false)
   const [textoBusca,setTextoBusca] = useState("")
   const [resultBusca,setResultBusca] = useState<any[]>([])
-  const [indiceBusca,setIndiceBusca] = useState(-1)
+  const [,setIndiceBusca] = useState(-1)
   
   
   
