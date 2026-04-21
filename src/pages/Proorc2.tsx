@@ -35,6 +35,17 @@ export default function Proorc2({
   const [materiaisSug,setMateriaisSug] = useState<any[]>([])
   const [indiceSug,setIndiceSug] = useState<number>(-1)
 
+  const [popupBusca,setPopupBusca] = useState(false)
+  const [textoBusca,setTextoBusca] = useState("")
+  const [resultBusca,setResultBusca] = useState<any[]>([])
+  const [indiceBusca,setIndiceBusca] = useState(-1)
+  
+  
+  
+
+
+
+  
   const [material,setMaterial] = useState<any>(null)
   const [estrutura,setEstrutura] = useState<any[]>([])
 
@@ -189,6 +200,27 @@ const podeExcluirTudo =
 
 }
 
+  async function buscarPorDescricao(txt:string){
+
+  if(txt.length < 2){
+
+    setResultBusca([])
+    setIndiceBusca(-1)
+    return
+
+  }
+
+  const { data } = await supabase
+    .from("db_proorc_materiais")
+    .select("codigo, descricao")
+    .ilike("descricao", `%${txt}%`)
+    .order("descricao")
+    .limit(30)
+
+  setResultBusca(data || [])
+  setIndiceBusca(-1)
+
+}
   async function selecionarMaterial(cod:string){
 
     setCodigo(cod)
@@ -800,6 +832,7 @@ function exportarExcel(){
 
                 <div style={styles.linhaCadastro}>
 
+                  
                   {materiaisSug.length > 0 && (
 
                     <div style={styles.sugestoesFixas}>
@@ -825,6 +858,23 @@ function exportarExcel(){
 
                   )}
 
+<button
+  style={styles.btnBusca}
+  onClick={()=>{
+
+    setPopupBusca(true)
+    setTextoBusca("")
+    setResultBusca([])
+
+    setTimeout(()=>{
+      document.getElementById("campoBuscaDesc")?.focus()
+    },100)
+
+  }}
+>
+🔎
+</button>
+                  
                   <input
                     ref={materialRef}
                     style={styles.material}
@@ -1169,6 +1219,77 @@ excluir
 
           </div>
 
+              )}
+
+        {/* POPUP BUSCA POR DESCRIÇÃO */}
+        {popupBusca && (
+
+          <div style={styles.popupOverlay}>
+
+            <div style={styles.popupBox}>
+
+              <div style={styles.popupHeader}>
+
+                <strong>BUSCAR MATERIAL</strong>
+
+                <button
+                  style={styles.btnFechar}
+                  onClick={()=>setPopupBusca(false)}
+                >
+                  X
+                </button>
+
+              </div>
+
+              <input
+                id="campoBuscaDesc"
+                style={styles.inputBusca}
+                placeholder="digite parte da descrição..."
+                value={textoBusca}
+
+                onChange={(e)=>{
+
+                  const v = e.target.value
+
+                  setTextoBusca(v)
+
+                  buscarPorDescricao(v)
+
+                }}
+
+              />
+
+              <div style={styles.listaBusca}>
+
+                {resultBusca.map((m)=>(
+
+                  <div
+                    key={m.codigo}
+                    style={styles.itemBusca}
+
+                    onMouseDown={()=>{
+
+                      selecionarMaterial(m.codigo)
+
+                      setPopupBusca(false)
+
+                    }}
+                  >
+
+                    <strong>{m.codigo}</strong>
+                    {" - "}
+                    {m.descricao}
+
+                  </div>
+
+                ))}
+
+              </div>
+
+            </div>
+
+          </div>
+
         )}
 
       </div>
@@ -1181,6 +1302,7 @@ excluir
 
 const styles:any={
 
+  
 container:{
 minHeight:"100vh",
 backgroundImage:"url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')",
@@ -1298,6 +1420,74 @@ lineHeight:1.4,
 opacity:0.9
 },
 
+btnBusca:{
+padding:"6px 8px",
+borderRadius:6,
+border:"1px solid #ccc",
+background:"#f5f5f5",
+cursor:"pointer"
+},
+
+popupOverlay:{
+position:"fixed",
+top:0,
+left:0,
+width:"100%",
+height:"100%",
+background:"rgba(0,0,0,0.6)",
+display:"flex",
+justifyContent:"center",
+alignItems:"center",
+zIndex:2000
+},
+
+popupBox:{
+background:"white",
+padding:20,
+borderRadius:10,
+width:"600px",
+maxHeight:"80vh",
+display:"flex",
+flexDirection:"column",
+gap:10
+},
+
+popupHeader:{
+display:"flex",
+justifyContent:"space-between",
+alignItems:"center"
+},
+
+btnFechar:{
+background:"#c0392b",
+color:"white",
+border:"none",
+padding:"4px 8px",
+borderRadius:6,
+cursor:"pointer"
+},
+
+inputBusca:{
+padding:"8px",
+borderRadius:6,
+border:"1px solid #ccc",
+fontSize:14
+},
+
+listaBusca:{
+maxHeight:"50vh",
+overflowY:"auto",
+border:"1px solid #ddd"
+},
+
+itemBusca:{
+padding:"8px",
+borderBottom:"1px solid #eee",
+cursor:"pointer",
+fontSize:13,
+color:"#000"
+}
+  
 voltar:{
 padding:"8px 14px",
 background:"#c0392b",
