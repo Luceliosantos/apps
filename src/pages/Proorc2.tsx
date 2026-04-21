@@ -162,12 +162,6 @@ const podeExcluirTudo =
 
     carregarNota()
 
-    setTimeout(()=>{
-
-      materialRef.current?.focus()
-
-    },50)
-
   }
 
 },[notaValida])
@@ -705,7 +699,8 @@ function exportarExcel(){
             ref={notaRef}
             style={styles.inputConsulta}
             value={nota}
-
+            maxLength={20}
+            
            onChange={(e)=>{
 
   const valor = e.target.value
@@ -726,7 +721,7 @@ function exportarExcel(){
 
   }
 
-  if(valor.length === 10){
+  if(valor.length >= 10){
 
     validarNota(valor)
 
@@ -782,11 +777,19 @@ function exportarExcel(){
 
               }
 
-              if(e.key==="Tab"){
+              if(e.key==="Enter" || e.key==="Tab"){
 
-                validarNota(nota)
+  validarNota(nota)
 
-              }
+  if(nota.length >= 10){
+
+    setTimeout(()=>{
+      materialRef.current?.focus()
+    },50)
+
+  }
+
+}
 
             }}
 
