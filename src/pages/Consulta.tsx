@@ -182,8 +182,9 @@ else if(tipoBusca === "dt_ass_db"){
 
     }
 
-    const { data, error } =
-      await query;
+const { data, error } =
+  await query
+    .order("dt_ass_db", { ascending:false });
 
     if(!error && data){
 
@@ -198,10 +199,11 @@ else if(tipoBusca === "dt_ass_db"){
   async function chavesEmpenhadas(){
 
     const { data } =
-      await supabase
-        .from("db_chaves")
-        .select("*")
-        .not("ns","is",null);
+  await supabase
+    .from("db_chaves")
+    .select("*")
+    .not("ns","is",null)
+    .order("dt_ass_db",{ascending:false});
 
     if(data) setDados(data);
 
@@ -210,10 +212,11 @@ else if(tipoBusca === "dt_ass_db"){
   async function chavesDisponiveis(){
 
     const { data } =
-      await supabase
-        .from("db_chaves")
-        .select("*")
-        .is("ns",null);
+  await supabase
+    .from("db_chaves")
+    .select("*")
+    .is("ns",null)
+    .order("dt_ass_db",{ascending:false});
 
     if(data) setDados(data);
 
@@ -235,15 +238,16 @@ function formatarDataHora(valor:any){
 
   if(!valor) return "-";
 
-  return new Date(valor)
-    .toLocaleString("pt-BR",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      second:"2-digit"
-    });
+return new Date(valor)
+  .toLocaleString("pt-BR",{
+    day:"2-digit",
+    month:"2-digit",
+    year:"numeric",
+    hour:"2-digit",
+    minute:"2-digit",
+    second:"2-digit"
+  })
+  .replace(","," -");
 
 }
   function prepararDadosExportacao(){
@@ -257,24 +261,42 @@ function formatarDataHora(valor:any){
           col !== "id" &&
           col !== "dt_disp"
         )
-        .forEach(([col,val]) => {
+.forEach(([col,val]) => {
 
-          if(col === "dt_ass_db"){
+  if(col === "dt_ass_db"){
 
-            novo[col.toUpperCase()] =
-              formatarData(val);
+    novo["DATA ASSOCIAÇÃO"] =
+      formatarDataHora(val);
 
-          }
-          else{
+  }
+  else if(col === "usu_ass"){
 
-            novo[col.toUpperCase()] =
-              val == null || val === ""
-                ? "-"
-                : val;
+    novo["USUARIO ASSOCIAÇÃO"] =
+      obterNomeUsuario(val);
 
-          }
+  }
+  else if(col === "usu_cad_db"){
 
-        });
+    novo["USUARIO CADASTRO"] =
+      obterNomeUsuario(val);
+
+  }
+  else if(col === "dt_cad_db"){
+
+    novo["DATA CADASTRO"] =
+      formatarData(val);
+
+  }
+  else{
+
+    novo[col.toUpperCase()] =
+      val == null || val === ""
+        ? "-"
+        : val;
+
+  }
+
+});
 
       return novo;
 
