@@ -787,14 +787,11 @@ function exportarExcel(){
 
             }}
 
-            onBlur={()=>{
+onBlur={()=>{
 
-  // validar somente se tiver 10 digitos
-  if(nota.length === 10){
-
-    validarNota(nota)
-
-  }
+  // apenas limpar sugestões ao sair do campo
+  setNotasSug([])
+  setIndiceNotaSug(-1)
 
 }}
 
