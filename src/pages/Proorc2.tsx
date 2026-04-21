@@ -247,7 +247,7 @@ const podeExcluirTudo =
   setMaterial(data)
 
   // só carrega estrutura se permitido
-  if(!bloquearEstrutura && data?.tipo === "KIT"){
+  if(carregarEstrutura && data?.tipo === "KIT"){
 
     const { data:itens } = await supabase
       .from("vw_proorc_estrutura")
@@ -1285,13 +1285,11 @@ excluir
                     key={m.codigo}
                     style={styles.itemBusca}
 
-                    onMouseDown={()=>{
+onMouseDown={()=>{
 
-  setBloquearEstrutura(true)
+  setEstrutura([])   // 👈 limpa imediatamente
 
-  selecionarMaterial(m.codigo)
-
-  setPopupBusca(false)
+  selecionarMaterial(m.codigo,false)
 
 }}
                   >
