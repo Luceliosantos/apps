@@ -224,6 +224,7 @@ const podeExcluirTudo =
   async function selecionarMaterial(cod:string){
 
     setCodigo(cod)
+    setPopupBusca(false)
     setMateriaisSug([])
     setIndiceSug(-1)
 
