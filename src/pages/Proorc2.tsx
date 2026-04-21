@@ -221,7 +221,52 @@ const podeExcluirTudo =
   setIndiceBusca(-1)
 
 }
- async function selecionarMaterial(cod:string){
+ async function selecionarMaterial(
+  cod:string,
+  carregarEstrutura = true
+){
+
+  setCodigo(cod)
+
+  setPopupBusca(false)
+
+  setTextoBusca("")
+  setResultBusca([])
+  setIndiceBusca(-1)
+
+  setMateriaisSug([])
+  setIndiceSug(-1)
+
+  const { data } = await supabase
+    .from("vw_proorc_materiais")
+    .select("*")
+    .eq("codigo", cod)
+    .maybeSingle()
+
+  setMaterial(data)
+
+  // só carrega estrutura se permitido
+  if(carregarEstrutura && data?.tipo === "KIT"){
+
+    const { data:itens } = await supabase
+      .from("vw_proorc_estrutura")
+      .select("*")
+      .eq("codigo_kit", data.codigo)
+
+    setEstrutura(itens || [])
+
+  }
+  else{
+
+    setEstrutura([])
+
+  }
+
+  setTimeout(()=>{
+    qtdRef.current?.focus()
+  },50)
+
+}
 
   setCodigo(cod)
 
@@ -1282,7 +1327,7 @@ excluir
 
                     onMouseDown={()=>{
 
-                      selecionarMaterial(m.codigo)
+                      selecionarMaterial(m.codigo,false)
 
                       setPopupBusca(false)
 
