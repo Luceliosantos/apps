@@ -1276,16 +1276,11 @@ excluir
 
 onMouseDown={()=>{
 
-  setNota(n)
+  setCodigoViaPopup(true)
 
-  setNotasSug([])        // limpa lista
-  setIndiceNotaSug(-1)
+  selecionarMaterial(m.codigo,false)
 
-  validarNota(n)
-
-  setTimeout(()=>{
-    materialRef.current?.focus()
-  },50)
+  setPopupBusca(false)
 
 }}
                   >
