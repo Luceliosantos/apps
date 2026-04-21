@@ -221,54 +221,43 @@ const podeExcluirTudo =
   setIndiceBusca(-1)
 
 }
- async function selecionarMaterial(
-  cod:string,
-  carregarEstrutura = true
-){
+  async function selecionarMaterial(cod:string){
 
-  setCodigo(cod)
+    setCodigo(cod)
+    setMateriaisSug([])
+    setIndiceSug(-1)
 
-  setPopupBusca(false)
-
-  setTextoBusca("")
-  setResultBusca([])
-  setIndiceBusca(-1)
-
-  setMateriaisSug([])
-  setIndiceSug(-1)
-
-  const { data } = await supabase
-    .from("vw_proorc_materiais")
-    .select("*")
-    .eq("codigo", cod)
-    .maybeSingle()
-
-  setMaterial(data)
-
-  // só carrega estrutura se permitido
-  if(carregarEstrutura && data?.tipo === "KIT"){
-
-    const { data:itens } = await supabase
-      .from("vw_proorc_estrutura")
+    const { data } = await supabase
+      .from("vw_proorc_materiais")
       .select("*")
-      .eq("codigo_kit", data.codigo)
+      .eq("codigo", cod)
+      .maybeSingle()
 
-    setEstrutura(itens || [])
+    setMaterial(data)
+
+    if(data?.tipo === "KIT"){
+
+      const { data:itens } = await supabase
+        .from("vw_proorc_estrutura")
+        .select("*")
+        .eq("codigo_kit", data.codigo)
+
+      setEstrutura(itens || [])
+
+    }
+    else{
+
+      setEstrutura([])
+
+    }
+
+    setTimeout(()=>{
+      qtdRef.current?.focus()
+    },50)
 
   }
-  else{
 
-    setEstrutura([])
-
-  }
-
-  setTimeout(()=>{
-    qtdRef.current?.focus()
-  },50)
-setBloquearEstrutura(false)
-}
-
-    async function confirmarCodigoDigitado(){
+  async function confirmarCodigoDigitado(){
 
     if(!codigo) return
 
@@ -892,13 +881,7 @@ function exportarExcel(){
                     placeholder="Item ou kit"
                     value={codigo}
 
-                    onChange={(e)=>{
-
-  setCodigo(e.target.value.toUpperCase())
-
-  setEstrutura([]) // limpa estrutura anterior
-
-}}
+                    onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
 
                     onKeyDown={(e)=>{
 
@@ -1284,13 +1267,13 @@ excluir
                     key={m.codigo}
                     style={styles.itemBusca}
 
-onMouseDown={()=>{
+                    onMouseDown={()=>{
 
-  setEstrutura([])   // 👈 limpa imediatamente
+                      selecionarMaterial(m.codigo)
 
-  selecionarMaterial(m.codigo,false)
+                      setPopupBusca(false)
 
-}}
+                    }}
                   >
 
                     <strong>{m.codigo}</strong>
