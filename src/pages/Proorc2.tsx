@@ -42,7 +42,7 @@ export default function Proorc2({
   const [,setIndiceBusca] = useState(-1)
   const [codigoViaPopup,setCodigoViaPopup] = useState(false)
   
-  
+  const [codigoSelecionado,setCodigoSelecionado] = useState(false)
 
 
 
@@ -167,14 +167,19 @@ const podeExcluirTudo =
 
 },[notaValida])
 
-  useEffect(()=>{
+ useEffect(()=>{
+
+  if(codigoSelecionado){
+
+    setCodigoSelecionado(false)
+    return
+
+  }
 
   if(codigoViaPopup){
 
     setCodigoViaPopup(false)
-
     setMateriaisSug([])
-
     return
 
   }
@@ -183,6 +188,9 @@ const podeExcluirTudo =
 
     setMateriaisSug([])
     setIndiceSug(-1)
+    setMaterial(null)
+    setEstrutura([])
+
     return
 
   }
@@ -228,6 +236,8 @@ const podeExcluirTudo =
 }
   async function selecionarMaterial(cod:string, mostrarEstrutura=true){
 
+setCodigoSelecionado(true)
+    
     setCodigo(cod)
     setMateriaisSug([])
     setIndiceSug(-1)
@@ -895,7 +905,22 @@ onBlur={()=>{
                     placeholder="Item ou kit"
                     value={codigo}
 
-                    onChange={(e)=>setCodigo(e.target.value.toUpperCase())}
+                    onChange={(e)=>{
+
+  const valor = e.target.value.toUpperCase()
+
+  setCodigo(valor)
+
+  if(!valor){
+
+    setMateriaisSug([])
+    setIndiceSug(-1)
+    setMaterial(null)
+    setEstrutura([])
+
+  }
+
+}}
 
                     onKeyDown={(e)=>{
 
