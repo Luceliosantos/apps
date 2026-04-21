@@ -113,13 +113,6 @@ const podeExcluirTudo =
 
   }
 
-  if(nota.length >= 10){
-
-    setNotasSug([])
-    return
-
-  }
-
   buscarNotas(nota)
 
 },[nota])
