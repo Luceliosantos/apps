@@ -39,7 +39,7 @@ export default function Proorc2({
   const [textoBusca,setTextoBusca] = useState("")
   const [resultBusca,setResultBusca] = useState<any[]>([])
   const [,setIndiceBusca] = useState(-1)
-  
+  const [codigoViaPopup,setCodigoViaPopup] = useState(false)
   
   
 
@@ -174,17 +174,27 @@ const podeExcluirTudo =
 
   useEffect(()=>{
 
-    if(codigo.length < 2){
+  if(codigoViaPopup){
 
-      setMateriaisSug([])
-      setIndiceSug(-1)
-      return
+    setCodigoViaPopup(false)
 
-    }
+    setMateriaisSug([])
 
-    buscarMateriais()
+    return
 
-  },[codigo])
+  }
+
+  if(codigo.length < 2){
+
+    setMateriaisSug([])
+    setIndiceSug(-1)
+    return
+
+  }
+
+  buscarMateriais()
+
+},[codigo])
 
  async function buscarMateriais(){
 
@@ -1268,6 +1278,8 @@ excluir
                     style={styles.itemBusca}
 
                     onMouseDown={()=>{
+
+                     setCodigoViaPopup(true)
 
                       selecionarMaterial(m.codigo,false)
 
