@@ -1486,7 +1486,7 @@ borderBottom:"1px solid #eee",
 cursor:"pointer",
 fontSize:13,
 color:"#000"
-}
+},
   
 voltar:{
 padding:"8px 14px",
