@@ -721,12 +721,6 @@ function exportarExcel(){
 
   }
 
-  if(valor.length >= 10){
-
-    validarNota(valor)
-
-  }
-
 }}
 
             onKeyDown={(e)=>{
