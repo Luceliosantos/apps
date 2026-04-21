@@ -793,7 +793,7 @@ function exportarExcel(){
 
           />
 
-          {notasSug.length>0 && nota.length < 10 && (
+          {notasSug.length>0 && (
 
             <div style={styles.sugestoesNota}>
 
