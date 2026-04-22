@@ -371,25 +371,15 @@ setInfoNota({
   // 🔎 validar saldo N para permitir U
   if(aplicacao === "U"){
 
-    const saldoN =
+const saldoDisponivel =
   explodido
     .filter(x =>
-      x.codigo === material.codigo
-      && x.aplicacao === "N"
+      x.codigo === material.codigo &&
+      x.aplicacao === "N"
     )
-    .reduce((soma,x)=>
+    .reduce((soma, x) =>
       soma + Number(x.quantidade)
-    ,0)
-
-const saldoU =
-  explodido
-    .filter(x =>
-      x.codigo === material.codigo
-      && x.aplicacao === "N"
-    )
-    .reduce((soma,x)=>
-      soma + Number(x.quantidade)
-    ,0)
+    , 0)
 
 
     const saldoDisponivel =
