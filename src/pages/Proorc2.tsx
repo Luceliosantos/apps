@@ -372,29 +372,35 @@ setInfoNota({
   if(aplicacao === "U"){
 
     const saldoN =
-      cadastro
-        .filter(x =>
-          x.codigo === material.codigo
-          && x.aplicacao === "N"
-        )
-        .reduce((soma,x)=>
-          soma + Number(x.quantidade)
-        ,0)
+  explodido
+    .filter(x =>
+      x.codigo === material.codigo
+      && x.aplicacao === "N"
+    )
+    .reduce((soma,x)=>
+      soma + Number(x.quantidade)
+    ,0)
 
-
-    const saldoU =
-      cadastro
-        .filter(x =>
-          x.codigo === material.codigo
-          && x.aplicacao === "U"
-        )
-        .reduce((soma,x)=>
-          soma + Math.abs(Number(x.quantidade))
-        ,0)
+const saldoU =
+  explodido
+    .filter(x =>
+      x.codigo === material.codigo
+      && x.aplicacao === "N"
+    )
+    .reduce((soma,x)=>
+      soma + Number(x.quantidade)
+    ,0)
 
 
     const saldoDisponivel =
-      saldoN - saldoU
+  explodido
+    .filter(x =>
+      x.codigo === material.codigo
+      && x.aplicacao === "N"
+    )
+    .reduce((soma,x)=>
+      soma + Number(x.quantidade)
+    ,0)
 
 
 if(Number(quantidade) > saldoDisponivel){
