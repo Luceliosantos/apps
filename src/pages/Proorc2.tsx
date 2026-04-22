@@ -369,42 +369,31 @@ setInfoNota({
 
 
   // 🔎 validar saldo N para permitir U
-  if(aplicacao === "U"){
+ if(aplicacao === "U"){
 
-const saldoDisponivel =
-  explodido
-    .filter(x =>
-      x.codigo === material.codigo &&
-      x.aplicacao === "N"
-    )
-    .reduce((soma, x) =>
-      soma + Number(x.quantidade)
-    , 0)
+  const saldoDisponivel =
+    explodido
+      .filter(x =>
+        x.codigo === material.codigo &&
+        x.aplicacao === "N"
+      )
+      .reduce((soma, x) =>
+        soma + Number(x.quantidade)
+      , 0)
 
+  if(Number(quantidade) > saldoDisponivel){
 
-    const saldoDisponivel =
-  explodido
-    .filter(x =>
-      x.codigo === material.codigo
-      && x.aplicacao === "N"
-    )
-    .reduce((soma,x)=>
-      soma + Number(x.quantidade)
-    ,0)
+    alert("Quantidade de material tipo U maior que saldo disponível de material N na lista. Não é permitido cadastro de material tipo U sem material tipo N para abatimento")
 
+    setTimeout(()=>{
+      qtdRef.current?.focus()
+    },50)
 
-if(Number(quantidade) > saldoDisponivel){
+    return
+  }
 
-  alert("Quantidade de material tipo U maior que saldo disponível de material N na lista. Não é permitido cadastro de material tipo U sem material tipo N para abatimento")
-
-  setTimeout(()=>{
-    qtdRef.current?.focus()
-  },50)
-
-  return
 }
 
-  }
 
 
 
