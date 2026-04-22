@@ -254,7 +254,7 @@ useEffect(() => {
 
           usu_ass:usuario.matricula,
 
-          dt_ass_db:new Date()
+          dt_ass_db: new Date().toISOString()
 
         })
         .eq("numero",Number(chave.numero))
@@ -597,17 +597,15 @@ onChange={(e)=>{
 
                       <td style={styles.td}>
 
-  {new Date(
-    r.dt_ass_db
-  )
-  .toLocaleString("pt-BR",{
-    day:"2-digit",
-    month:"2-digit",
-    year:"numeric",
-    hour:"2-digit",
-    minute:"2-digit",
-    second:"2-digit"
-  })
+  {new Date(r.dt_ass_db).toLocaleString("pt-BR", {
+  timeZone: "America/Sao_Paulo",
+  day:"2-digit",
+  month:"2-digit",
+  year:"numeric",
+  hour:"2-digit",
+  minute:"2-digit",
+  second:"2-digit"
+})
   .replace(","," - ")}
 
 </td>
