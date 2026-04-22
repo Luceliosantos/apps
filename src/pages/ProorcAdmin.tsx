@@ -1,27 +1,26 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Navigate } from "react-router-dom";
-import AdminTabs from "@/components/proorc/AdminTabs";
+import ProorcAdminTabs from "@/components/proorc-admin/ProorcAdminTabs";
 
-export default function ProorcAdmin() {
+export default function ProorcAdminPage() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getUser = async () => {
+    const loadUser = async () => {
       const { data } = await supabase.auth.getUser();
       setUser(data.user);
       setLoading(false);
     };
-    getUser();
+    loadUser();
   }, []);
 
   if (loading) return <div>Carregando...</div>;
 
-  // 🔐 trava acesso
   if (user?.user_metadata?.global !== "admin") {
     return <Navigate to="/proorc" />;
   }
 
-  return <AdminTabs />;
+  return <ProorcAdminTabs />;
 }
