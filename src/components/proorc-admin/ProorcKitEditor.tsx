@@ -55,11 +55,44 @@ export default function ProorcKitEditor() {
   const adicionarItem = async (item: any) => {
     if (!kitSelecionado) return;
 
-    await supabase.from("db_proorc_kit_itens").insert({
-      kit_id: kitSelecionado.id,
-      item_id: item.id,
-      quantidade
-    });
+const adicionarItem = async (item: any) => {
+  if (!kitSelecionado) return;
+
+  const { data: existente } = await supabase
+    .from("db_proorc_kit_itens")
+    .select("*")
+    .eq("kit_id", kitSelecionado.id)
+    .eq("item_id", item.id)
+    .maybeSingle();
+
+  if (existente) {
+    // ➕ soma quantidade
+    await supabase
+      .from("db_proorc_kit_itens")
+      .update({
+        quantidade: existente.quantidade + quantidade
+      })
+      .eq("id", existente.id);
+
+    // 🔔 👉 AQUI entra a melhoria
+    alert("Item já existe no kit — quantidade somada!");
+
+  } else {
+    await supabase
+      .from("db_proorc_kit_itens")
+      .insert({
+        kit_id: kitSelecionado.id,
+        item_id: item.id,
+        quantidade
+      });
+  }
+
+  setBusca("");
+  setResultados([]);
+  setQuantidade(1);
+
+  loadItens(kitSelecionado.id);
+};
 
     setBusca("");
     setResultados([]);
