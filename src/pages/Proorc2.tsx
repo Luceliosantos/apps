@@ -28,7 +28,6 @@ export default function Proorc2({
   const [notasSug,setNotasSug] = useState<any[]>([])
   const [indiceNotaSug,setIndiceNotaSug] = useState<number>(-1)
   const [notaSelecionada,setNotaSelecionada] = useState(false)
-  const navigate = useNavigate();
   
   const notaRef = useRef<HTMLInputElement>(null)
   const materialRef = useRef<HTMLInputElement>(null)
