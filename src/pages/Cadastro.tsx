@@ -1,6 +1,6 @@
 import { useState } from "react";
 import * as XLSX from "xlsx";
-import { supabase } from "../supabase";
+import { supabase } from "../lib/supabase";
 import { Pagina } from "../App";
 
 type Registro = {
