@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "../lib/supabase";
 import { Navigate } from "react-router-dom";
 import ProorcAdminTabs from "@/components/proorc-admin/ProorcAdminTabs";
 
