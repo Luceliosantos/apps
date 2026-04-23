@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { Navigate } from "react-router-dom";
-import ProorcAdminTabs from "@/components/proorc-admin/ProorcAdminTabs";
+import ProorcAdminTabs from "../components/proorc-admin/ProorcAdminTabs";
 
 export default function ProorcAdminPage() {
   const [user, setUser] = useState<any>(null);
