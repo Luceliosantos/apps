@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react"
-import { supabase } from "../supabase"
+import { supabase } from "../lib/supabase";
 import { Pagina } from "../App"
 import * as XLSX from "xlsx"
 import jsPDF from "jspdf"
