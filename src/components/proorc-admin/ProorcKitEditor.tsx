@@ -88,15 +88,9 @@ const adicionarItem = async (item: any) => {
   setResultados([]);
   setQuantidade(1);
 
-  loadItens(kitSelecionado.id);
+loadItens(kitSelecionado.id);
 };
-
-    setBusca("");
-    setResultados([]);
-    setQuantidade(1);
-
-    loadItens(kitSelecionado.id);
-  };
+  
 
   // ❌ remover item
   const removerItem = async (itemId: string) => {
