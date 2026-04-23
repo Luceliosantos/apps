@@ -76,7 +76,7 @@ export default function Proorc2({
   return p?.tipo;
 };
 const perfilProorc =
-  getPermissao("proorc");
+  getPermissao("proorc") || "";
 
 const podeEditar =
   perfilProorc === "admin"
@@ -683,9 +683,10 @@ function exportarExcel(){
             >
               voltar
             </button>
-{perfilProorc === "admin" && (
+
+            {perfilProorc === "admin" && (
   <button
-    onClick={() => navigate("/proorc-admin")}
+    onClick={() => setPagina("proorc-admin")}
     style={{
       background: "#6c2bd9",
       color: "#fff",
