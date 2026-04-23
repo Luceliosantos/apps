@@ -1,4 +1,4 @@
-import { supabase } from "../supabase";
+import { supabase } from "../lib/supabase";
 import { Pagina } from "../App";
 import { useState, useEffect } from "react";
 
