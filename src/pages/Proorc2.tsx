@@ -4,6 +4,7 @@ import { Pagina } from "../App"
 import * as XLSX from "xlsx"
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable" 
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   usuario?:{
@@ -27,7 +28,8 @@ export default function Proorc2({
   const [notasSug,setNotasSug] = useState<any[]>([])
   const [indiceNotaSug,setIndiceNotaSug] = useState<number>(-1)
   const [notaSelecionada,setNotaSelecionada] = useState(false)
-
+  const navigate = useNavigate();
+  
   const notaRef = useRef<HTMLInputElement>(null)
   const materialRef = useRef<HTMLInputElement>(null)
   const qtdRef = useRef<HTMLInputElement>(null)
@@ -682,7 +684,24 @@ function exportarExcel(){
             >
               voltar
             </button>
+<button
+  onClick={() => navigate("/proorc-admin")}
+  style={{
+    background: "#6c2bd9",
+    color: "#fff",
+    padding: "8px 12px",
+    borderRadius: "6px",
+    marginLeft: "10px",
+    cursor: "pointer"
+  }}
+>
+  Admin Kits
+</button>
 
+
+
+
+            
           </div>
 
         </div>
