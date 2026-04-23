@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from './lib/supabase'
-
+import ProorcAdmin from "./pages/ProorcAdmin";
 import ControleChaves from "./pages/ControleChaves";
 import Cadastro from "./pages/Cadastro";
 import Associacao from "./pages/Associacao";
@@ -459,6 +459,22 @@ if(pagina === "proorc"){
   );
 
 }
+
+if(pagina === "proorc-admin"){
+
+  return(
+
+    <ProorcAdmin
+      usuario={usuario}
+      permissoes={permissoes}
+      setPagina={setPagina}
+    />
+
+  );
+
+}
+
+    
     return(
 
        <ControleChaves
