@@ -29,6 +29,7 @@ export type Pagina =
   | "proorc"
   | "usuarios"
   | "alterarSenha"
+  | "proorc-admin"
   | "corrigirCadastro";
 
 export default function App() {
