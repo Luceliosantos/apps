@@ -151,7 +151,7 @@ const adicionarItem = async (item: any) => {
 
           {/* RESULTADOS */}
           <ul>
-            {resultados.map(r => (
+{resultados.map(r => (
   <li key={r.id}>
     {r.codigo} - {r.descricao}
     <button onClick={() => adicionarItem(r)}>
