@@ -520,16 +520,14 @@ function existeFPpositivo(){
 
 }
   
-  function getPermissao(tipoSistema:string){
-
+const getPermissao = (tipoSistema:string) => {
   const p =
     permissoes?.find(
       x => x.sistema === tipoSistema
     );
 
   return p?.tipo;
-
-}
+};
   function editar(linha:any){
 
     setCodigo(linha.codigo)
