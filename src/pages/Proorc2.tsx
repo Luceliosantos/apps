@@ -67,6 +67,14 @@ export default function Proorc2({
 
   const [editando,setEditando] = useState<string | null>(null)
 
+  const getPermissao = (tipoSistema:string) => {
+  const p =
+    permissoes?.find(
+      x => x.sistema === tipoSistema
+    );
+
+  return p?.tipo;
+};
 const perfilProorc =
   getPermissao("proorc");
 
@@ -520,14 +528,7 @@ function existeFPpositivo(){
 
 }
   
-const getPermissao = (tipoSistema:string) => {
-  const p =
-    permissoes?.find(
-      x => x.sistema === tipoSistema
-    );
 
-  return p?.tipo;
-};
   function editar(linha:any){
 
     setCodigo(linha.codigo)
