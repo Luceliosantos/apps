@@ -12,7 +12,6 @@ type Props = {
 };
 
 export default function ProorcAdmin({
-  usuario,
   permissoes,
   setPagina
 }: Props) {
