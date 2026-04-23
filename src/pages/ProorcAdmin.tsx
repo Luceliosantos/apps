@@ -1,26 +1,73 @@
-import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
-import { Navigate } from "react-router-dom";
 import ProorcAdminTabs from "../components/proorc-admin/ProorcAdminTabs";
 
-export default function ProorcAdminPage() {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+type Props = {
+  usuario?: {
+    nome?: string;
+  };
+  permissoes?: {
+    sistema: string;
+    tipo: string;
+  }[];
+  setPagina: React.Dispatch<React.SetStateAction<any>>;
+};
 
-  useEffect(() => {
-    const loadUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user);
-      setLoading(false);
-    };
-    loadUser();
-  }, []);
+export default function ProorcAdmin({
+  usuario,
+  permissoes,
+  setPagina
+}: Props) {
 
-  if (loading) return <div>Carregando...</div>;
+  // 🔒 verificar permissão igual ao resto do sistema
+  const perfilProorc =
+    permissoes?.find(x => x.sistema === "proorc")?.tipo;
 
-  if (user?.user_metadata?.global !== "admin") {
-    return <Navigate to="/proorc" />;
+  // 🚫 bloqueio de acesso
+  if (perfilProorc !== "admin") {
+    return (
+      <div style={{ padding: 20 }}>
+        <h3>Acesso negado</h3>
+
+        <button
+          onClick={() => setPagina("proorc")}
+          style={{
+            marginTop: 10,
+            padding: "8px 12px",
+            background: "#c0392b",
+            color: "#fff",
+            border: "none",
+            borderRadius: 6,
+            cursor: "pointer"
+          }}
+        >
+          Voltar
+        </button>
+      </div>
+    );
   }
 
-  return <ProorcAdminTabs />;
+  return (
+    <div style={{ padding: 20 }}>
+
+      <div style={{ marginBottom: 10 }}>
+        <button
+          onClick={() => setPagina("proorc")}
+          style={{
+            padding: "8px 12px",
+            background: "#1e3c72",
+            color: "#fff",
+            border: "none",
+            borderRadius: 6,
+            cursor: "pointer"
+          }}
+        >
+          ← Voltar
+        </button>
+      </div>
+
+      <h2>Administração PROORC</h2>
+
+      <ProorcAdminTabs />
+
+    </div>
+  );
 }
