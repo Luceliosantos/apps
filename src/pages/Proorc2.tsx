@@ -684,19 +684,21 @@ function exportarExcel(){
             >
               voltar
             </button>
-<button
-  onClick={() => navigate("/proorc-admin")}
-  style={{
-    background: "#6c2bd9",
-    color: "#fff",
-    padding: "8px 12px",
-    borderRadius: "6px",
-    marginLeft: "10px",
-    cursor: "pointer"
-  }}
->
-  Admin Kits
-</button>
+{perfilProorc === "admin" && (
+  <button
+    onClick={() => navigate("/proorc-admin")}
+    style={{
+      background: "#6c2bd9",
+      color: "#fff",
+      padding: "8px 12px",
+      borderRadius: "6px",
+      marginLeft: "10px",
+      cursor: "pointer"
+    }}
+  >
+    Admin Kits
+  </button>
+)}
 
 
 
