@@ -52,9 +52,6 @@ export default function ProorcKitEditor() {
   };
 
   // ➕ adicionar item ao kit
-  const adicionarItem = async (item: any) => {
-    if (!kitSelecionado) return;
-
 const adicionarItem = async (item: any) => {
   if (!kitSelecionado) return;
 
