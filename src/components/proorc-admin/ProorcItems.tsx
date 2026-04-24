@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
 
-export default function ProorcItems({ setPagina }: any) {
+export default function ProorcItems() {
 
   const [busca, setBusca] = useState("");
   const [resultados, setResultados] = useState<any[]>([]);
