@@ -116,17 +116,8 @@ export default function ProorcItems({ setPagina }: any) {
   return (
     <div style={styles.container}>
 
-      {/* TOPO */}
-      <div style={styles.topo}>
-        <h2 style={styles.titulo}>Administração PROORC</h2>
-
-        <button
-          style={styles.botaoVoltar}
-          onClick={() => setPagina("proorc")}
-        >
-          Voltar
-        </button>
-      </div>
+      {/* TÍTULO */}
+      <h2 style={styles.titulo}>Administração PROORC</h2>
 
       {/* BUSCA */}
       <div style={styles.card}>
@@ -181,7 +172,6 @@ export default function ProorcItems({ setPagina }: any) {
         />
 
         <div style={styles.botoes}>
-
           <button style={styles.salvar} onClick={salvar}>
             {itemSelecionado ? "Atualizar" : "Cadastrar"}
           </button>
@@ -189,7 +179,6 @@ export default function ProorcItems({ setPagina }: any) {
           <button style={styles.limpar} onClick={limpar}>
             Limpar
           </button>
-
         </div>
 
       </div>
@@ -202,29 +191,14 @@ const styles: any = {
 
   container: {
     padding: 20,
-    background: "linear-gradient(to bottom,#1e3c72,#2a5298)"
+    background: "linear-gradient(to bottom,#1e3c72,#2a5298)",
+    minHeight: "100vh"
   },
-
-  topo: {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  width: "100%" // 👈 IMPORTANTE
-},
 
   titulo: {
     color: "#fff",
-    margin: 0
+    marginBottom: 20
   },
-
-  botaoVoltar: {
-  background: "#1e3c72",
-  color: "#fff",
-  border: "none",
-  padding: "8px 16px",
-  borderRadius: 6,
-  cursor: "pointer"
-},
 
   card: {
     background: "#fff",
