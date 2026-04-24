@@ -7,18 +7,15 @@ export default function ProorcItems({ setPagina }: any) {
   const [resultados, setResultados] = useState<any[]>([]);
   const [itemSelecionado, setItemSelecionado] = useState<any>(null);
 
-  const [codigo, setCodigo] = useState("");
   const [descricao, setDescricao] = useState("");
   const [unidade, setUnidade] = useState("");
   const [preco, setPreco] = useState("");
 
-  // 🔍 busca por código (somente números)
+  // 🔍 buscar por código
   const buscar = async (valor: string) => {
 
-    // só permite números
     const somenteNumeros = valor.replace(/\D/g, "");
     setBusca(somenteNumeros);
-    setCodigo(somenteNumeros);
 
     if (!somenteNumeros) {
       limpar();
@@ -39,7 +36,7 @@ export default function ProorcItems({ setPagina }: any) {
 
     setItemSelecionado(item);
 
-    setCodigo(item.codigo || "");
+    setBusca(item.codigo);
     setDescricao(item.descricao || "");
     setUnidade(item.unidade || "");
     setPreco(item.preco || "");
@@ -47,7 +44,7 @@ export default function ProorcItems({ setPagina }: any) {
     setResultados([]);
   };
 
-  // ⌨️ comportamento teclado
+  // ⌨️ teclado
   const handleKeyDown = (e: any) => {
 
     if (e.key === "Enter") {
@@ -65,12 +62,12 @@ export default function ProorcItems({ setPagina }: any) {
   // 💾 salvar
   const salvar = async () => {
 
-    if (!codigo || !descricao) {
+    if (!busca || !descricao) {
       alert("Informe código e descrição");
       return;
     }
 
-    if (isNaN(Number(codigo))) {
+    if (isNaN(Number(busca))) {
       alert("Código deve ser numérico");
       return;
     }
@@ -80,7 +77,6 @@ export default function ProorcItems({ setPagina }: any) {
       await supabase
         .from("db_proorc_materiais")
         .update({
-          codigo,
           descricao,
           unidade,
           preco,
@@ -95,7 +91,7 @@ export default function ProorcItems({ setPagina }: any) {
       await supabase
         .from("db_proorc_materiais")
         .insert({
-          codigo,
+          codigo: busca,
           descricao,
           unidade,
           preco,
@@ -103,7 +99,6 @@ export default function ProorcItems({ setPagina }: any) {
         });
 
       alert("Cadastrado");
-
     }
 
     limpar();
@@ -111,21 +106,19 @@ export default function ProorcItems({ setPagina }: any) {
 
   const limpar = () => {
     setItemSelecionado(null);
-    setCodigo("");
+    setBusca("");
     setDescricao("");
     setUnidade("");
     setPreco("");
-    setBusca("");
     setResultados([]);
   };
 
   return (
-
     <div style={styles.container}>
 
-      {/* topo */}
+      {/* TOPO */}
       <div style={styles.topo}>
-        <div></div>
+        <h2 style={styles.titulo}>Administração PROORC</h2>
 
         <button
           style={styles.botaoVoltar}
@@ -135,9 +128,10 @@ export default function ProorcItems({ setPagina }: any) {
         </button>
       </div>
 
-      {/* busca */}
+      {/* BUSCA */}
       <div style={styles.card}>
 
+        <label style={styles.label}>Código</label>
         <input
           placeholder="Digite o código..."
           value={busca}
@@ -162,44 +156,31 @@ export default function ProorcItems({ setPagina }: any) {
 
       </div>
 
-      {/* formulário */}
+      {/* FORM */}
       <div style={styles.card}>
 
+        <label style={styles.label}>Descrição</label>
         <input
-          placeholder="Código"
-          value={codigo}
-          onChange={(e) => buscar(e.target.value)}
-          style={styles.input}
-        />
-
-        <input
-          placeholder="Descrição"
           value={descricao}
           onChange={(e) => setDescricao(e.target.value)}
           style={styles.input}
         />
 
+        <label style={styles.label}>Unidade</label>
         <input
-          placeholder="Unidade"
           value={unidade}
           onChange={(e) => setUnidade(e.target.value)}
           style={styles.input}
         />
 
+        <label style={styles.label}>Preço</label>
         <input
-          placeholder="Preço"
           value={preco}
           onChange={(e) => setPreco(e.target.value)}
           style={styles.input}
         />
 
-        <input
-          value="ITEM"
-          disabled
-          style={{ ...styles.input, background: "#eee" }}
-        />
-
-        <div style={{ display: "flex", gap: 10 }}>
+        <div style={styles.botoes}>
 
           <button style={styles.salvar} onClick={salvar}>
             {itemSelecionado ? "Atualizar" : "Cadastrar"}
@@ -228,14 +209,20 @@ const styles: any = {
   topo: {
     display: "flex",
     justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 20
+  },
+
+  titulo: {
+    color: "#fff",
+    margin: 0
   },
 
   botaoVoltar: {
     background: "#1e3c72",
     color: "#fff",
     border: "none",
-    padding: "8px 12px",
+    padding: "8px 16px",
     borderRadius: 6,
     cursor: "pointer"
   },
@@ -245,6 +232,12 @@ const styles: any = {
     padding: 15,
     borderRadius: 10,
     marginBottom: 15
+  },
+
+  label: {
+    fontWeight: "bold",
+    marginBottom: 5,
+    display: "block"
   },
 
   input: {
@@ -266,6 +259,11 @@ const styles: any = {
     padding: 8,
     cursor: "pointer",
     borderBottom: "1px solid #eee"
+  },
+
+  botoes: {
+    display: "flex",
+    gap: 10
   },
 
   salvar: {
