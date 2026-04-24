@@ -10,77 +10,99 @@ export default function ProorcItems({ setPagina }: any) {
   const [codigo, setCodigo] = useState("");
   const [descricao, setDescricao] = useState("");
   const [unidade, setUnidade] = useState("");
-  const [tipo, setTipo] = useState("");
+  const [preco, setPreco] = useState("");
 
-  // 🔍 autocomplete
-  const buscarItens = async (texto: string) => {
+  // 🔍 busca por código (somente números)
+  const buscar = async (valor: string) => {
 
-    setBusca(texto);
+    // só permite números
+    const somenteNumeros = valor.replace(/\D/g, "");
+    setBusca(somenteNumeros);
+    setCodigo(somenteNumeros);
 
-    if (!texto) {
-      setResultados([]);
+    if (!somenteNumeros) {
+      limpar();
       return;
     }
 
     const { data } = await supabase
       .from("db_proorc_materiais")
       .select("*")
-      .ilike("descricao", `%${texto}%`)
+      .ilike("codigo", `%${somenteNumeros}%`)
       .limit(10);
 
     setResultados(data || []);
   };
 
   // 🎯 selecionar item
-  const selecionarItem = (item: any) => {
+  const selecionar = (item: any) => {
 
     setItemSelecionado(item);
 
     setCodigo(item.codigo || "");
     setDescricao(item.descricao || "");
     setUnidade(item.unidade || "");
-    setTipo(item.tipo || "");
+    setPreco(item.preco || "");
 
     setResultados([]);
-    setBusca(item.descricao);
   };
 
-  // 💾 salvar (update ou insert)
+  // ⌨️ comportamento teclado
+  const handleKeyDown = (e: any) => {
+
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (resultados.length > 0) {
+        selecionar(resultados[0]);
+      }
+    }
+
+    if (e.key === "Tab") {
+      setResultados([]);
+    }
+  };
+
+  // 💾 salvar
   const salvar = async () => {
 
-    if (!descricao || !codigo) {
+    if (!codigo || !descricao) {
       alert("Informe código e descrição");
+      return;
+    }
+
+    if (isNaN(Number(codigo))) {
+      alert("Código deve ser numérico");
       return;
     }
 
     if (itemSelecionado) {
 
-      // UPDATE
       await supabase
         .from("db_proorc_materiais")
         .update({
           codigo,
           descricao,
           unidade,
-          tipo
+          preco,
+          tipo: "ITEM"
         })
         .eq("id", itemSelecionado.id);
 
-      alert("Item atualizado");
+      alert("Atualizado");
 
     } else {
 
-      // INSERT
       await supabase
         .from("db_proorc_materiais")
         .insert({
           codigo,
           descricao,
           unidade,
-          tipo
+          preco,
+          tipo: "ITEM"
         });
 
-      alert("Item cadastrado");
+      alert("Cadastrado");
 
     }
 
@@ -92,7 +114,7 @@ export default function ProorcItems({ setPagina }: any) {
     setCodigo("");
     setDescricao("");
     setUnidade("");
-    setTipo("");
+    setPreco("");
     setBusca("");
     setResultados([]);
   };
@@ -101,21 +123,26 @@ export default function ProorcItems({ setPagina }: any) {
 
     <div style={styles.container}>
 
-      {/* 🔙 topo */}
+      {/* topo */}
       <div style={styles.topo}>
-        <button style={styles.botaoVoltar} onClick={() => setPagina("proorc")}>
-          ← voltar
+        <div></div>
+
+        <button
+          style={styles.botaoVoltar}
+          onClick={() => setPagina("proorc")}
+        >
+          Voltar
         </button>
-        <h2>Cadastro de Itens</h2>
       </div>
 
-      {/* 🔎 busca */}
+      {/* busca */}
       <div style={styles.card}>
 
         <input
-          placeholder="Buscar item..."
+          placeholder="Digite o código..."
           value={busca}
-          onChange={(e) => buscarItens(e.target.value)}
+          onChange={(e) => buscar(e.target.value)}
+          onKeyDown={handleKeyDown}
           style={styles.input}
         />
 
@@ -125,7 +152,7 @@ export default function ProorcItems({ setPagina }: any) {
               <div
                 key={item.id}
                 style={styles.itemLista}
-                onClick={() => selecionarItem(item)}
+                onClick={() => selecionar(item)}
               >
                 <b>{item.codigo}</b> - {item.descricao}
               </div>
@@ -135,13 +162,13 @@ export default function ProorcItems({ setPagina }: any) {
 
       </div>
 
-      {/* 📝 formulário */}
+      {/* formulário */}
       <div style={styles.card}>
 
         <input
           placeholder="Código"
           value={codigo}
-          onChange={(e) => setCodigo(e.target.value)}
+          onChange={(e) => buscar(e.target.value)}
           style={styles.input}
         />
 
@@ -160,19 +187,25 @@ export default function ProorcItems({ setPagina }: any) {
         />
 
         <input
-          placeholder="Tipo"
-          value={tipo}
-          onChange={(e) => setTipo(e.target.value)}
+          placeholder="Preço"
+          value={preco}
+          onChange={(e) => setPreco(e.target.value)}
           style={styles.input}
+        />
+
+        <input
+          value="ITEM"
+          disabled
+          style={{ ...styles.input, background: "#eee" }}
         />
 
         <div style={{ display: "flex", gap: 10 }}>
 
-          <button style={styles.botaoSalvar} onClick={salvar}>
+          <button style={styles.salvar} onClick={salvar}>
             {itemSelecionado ? "Atualizar" : "Cadastrar"}
           </button>
 
-          <button style={styles.botaoLimpar} onClick={limpar}>
+          <button style={styles.limpar} onClick={limpar}>
             Limpar
           </button>
 
@@ -194,18 +227,16 @@ const styles: any = {
 
   topo: {
     display: "flex",
-    alignItems: "center",
     justifyContent: "space-between",
-    color: "#fff",
     marginBottom: 20
   },
 
   botaoVoltar: {
+    background: "#1e3c72",
+    color: "#fff",
+    border: "none",
     padding: "8px 12px",
     borderRadius: 6,
-    border: "none",
-    background: "#c0392b",
-    color: "#fff",
     cursor: "pointer"
   },
 
@@ -237,20 +268,20 @@ const styles: any = {
     borderBottom: "1px solid #eee"
   },
 
-  botaoSalvar: {
-    padding: "10px 15px",
-    border: "none",
+  salvar: {
     background: "#27ae60",
     color: "#fff",
+    border: "none",
+    padding: "10px 15px",
     borderRadius: 6,
     cursor: "pointer"
   },
 
-  botaoLimpar: {
-    padding: "10px 15px",
-    border: "none",
+  limpar: {
     background: "#7f8c8d",
     color: "#fff",
+    border: "none",
+    padding: "10px 15px",
     borderRadius: 6,
     cursor: "pointer"
   }
