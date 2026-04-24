@@ -44,24 +44,18 @@ export default function ProorcAdmin({
     );
   }
 
+
+
+
+
+
+
+
+  
   return (
     <div style={{ padding: 20 }}>
 
-      <div style={{ marginBottom: 10 }}>
-        <button
-          onClick={() => setPagina("proorc")}
-          style={{
-            padding: "8px 12px",
-            background: "#1e3c72",
-            color: "#fff",
-            border: "none",
-            borderRadius: 6,
-            cursor: "pointer"
-          }}
-        >
-          ← Voltar
-        </button>
-      </div>
+      
 
       <h2>Administração PROORC</h2>
 
