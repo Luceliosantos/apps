@@ -43,21 +43,11 @@ export default function ProorcAdmin({
       </div>
     );
   }
-
-
-
-
-
-
-
-
   
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: 20 }}>   
 
-      
-
-      <h2>Administração PROORC</h2>
+      <h2>CADASTRO E EDIÇÃO DE KITS E ITENS</h2>
 
       <ProorcAdminTabs />
 
