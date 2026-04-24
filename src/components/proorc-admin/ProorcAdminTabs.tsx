@@ -36,7 +36,7 @@ export default function ProorcAdminTabs({ setPagina }: any) {
       </div>
 
       {/* CONTEÚDO */}
-      {aba === "itens" && <ProorcItems setPagina={setPagina} />}
+      {aba === "itens" && <ProorcItems />}
       {aba === "kits" && <ProorcKits />}
       {aba === "substituicao" && <ProorcBulkReplace />}
 
