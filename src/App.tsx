@@ -226,7 +226,12 @@ const { error } = await supabase
 
   const renderBotaoVoltar = () => {
 
-  if (pagina === "menu" || pagina === "login") return null;
+  // ❌ páginas que NÃO devem mostrar o botão global
+  if (
+    pagina === "menu" ||
+    pagina === "login" ||
+    pagina === "proorc"   // 👈 AQUI ESTÁ A CORREÇÃO
+  ) return null;
 
   return (
     <div style={{
