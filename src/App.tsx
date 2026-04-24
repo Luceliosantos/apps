@@ -224,6 +224,34 @@ const { error } = await supabase
 
   if(usuario){
 
+  const renderBotaoVoltar = () => {
+
+  if (pagina === "menu" || pagina === "login") return null;
+
+  return (
+    <div style={{
+      position: "fixed",
+      top: 10,
+      right: 20,
+      zIndex: 999
+    }}>
+      <button
+        style={{
+          background: "#1e3c72",
+          color: "#fff",
+          border: "none",
+          padding: "8px 16px",
+          borderRadius: 6,
+          cursor: "pointer"
+        }}
+        onClick={() => setPagina("menu")}
+      >
+        ← Voltar
+      </button>
+    </div>
+  );
+};
+    
     if(pagina === "alterarSenha"){
 
       return(
@@ -447,31 +475,31 @@ if(pagina === "corrigirCadastro"){
     }
 
 if(pagina === "proorc"){
-
   return(
+    <>
+      {renderBotaoVoltar()}
 
-    <Proorc2
-      usuario={usuario}
-      permissoes={permissoes}
-      setPagina={setPagina}
-    />
-
+      <Proorc2
+        usuario={usuario}
+        permissoes={permissoes}
+        setPagina={setPagina}
+      />
+    </>
   );
-
 }
 
 if(pagina === "proorc-admin"){
-
   return(
+    <>
+      {renderBotaoVoltar()}
 
-    <ProorcAdmin
-      usuario={usuario}
-      permissoes={permissoes}
-      setPagina={setPagina}
-    />
-
+      <ProorcAdmin
+        usuario={usuario}
+        permissoes={permissoes}
+        setPagina={setPagina}
+      />
+    </>
   );
-
 }
 
     
