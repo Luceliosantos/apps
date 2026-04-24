@@ -201,17 +201,16 @@ export default function ProorcItems({ setPagina }: any) {
 const styles: any = {
 
   container: {
-    minHeight: "100vh",
     padding: 20,
     background: "linear-gradient(to bottom,#1e3c72,#2a5298)"
   },
 
   topo: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20
-  },
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  width: "100%" // 👈 IMPORTANTE
+},
 
   titulo: {
     color: "#fff",
@@ -219,13 +218,13 @@ const styles: any = {
   },
 
   botaoVoltar: {
-    background: "#1e3c72",
-    color: "#fff",
-    border: "none",
-    padding: "8px 16px",
-    borderRadius: 6,
-    cursor: "pointer"
-  },
+  background: "#1e3c72",
+  color: "#fff",
+  border: "none",
+  padding: "8px 16px",
+  borderRadius: 6,
+  cursor: "pointer"
+},
 
   card: {
     background: "#fff",
