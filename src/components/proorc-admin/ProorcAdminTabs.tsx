@@ -3,7 +3,7 @@ import ProorcItems from "./ProorcItems";
 import ProorcKits from "./ProorcKits";
 import ProorcBulkReplace from "./ProorcBulkReplace";
 
-export default function ProorcAdminTabs({ setPagina }: any) {
+export default function ProorcAdminTabs() {
 
   const [aba, setAba] = useState<"itens" | "kits" | "substituicao">("itens");
 
