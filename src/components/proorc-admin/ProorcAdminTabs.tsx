@@ -10,7 +10,15 @@ export default function ProorcAdminTabs() {
     <div style={{ padding: 20 }}>
       <h2>Administração PROORC</h2>
 
-      <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
+      <div 
+        style={{  padding: "8px 16px",
+  borderRadius: 20,
+  border: "none",
+  background: ativo ? "#1e3c72" : "#ccc",
+  color: ativo ? "#fff" : "#333",
+  cursor: "pointer",
+  marginRight: 10
+}}>
         <button onClick={() => setTab("items")}>Itens</button>
         <button onClick={() => setTab("kits")}>Kits</button>
         <button onClick={() => setTab("replace")}>Substituição</button>
