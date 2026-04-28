@@ -582,22 +582,20 @@ function selecionarNota(n:string){
 function exportarExcel(){
 
   if(existeFPpositivo()){
-
     alert("Não é possível gerar arquivo pois existe material FP positivo na sua lista. Corrija antes de proseguir!")
-
     return
-
   }
 
   const dados = dadosExportacao()
   
   const ws = XLSX.utils.json_to_sheet(dados)
-
   const wb = XLSX.utils.book_new()
 
   XLSX.utils.book_append_sheet(wb, ws, "PROORC")
 
-  XLSX.writeFile(wb, `proorc_${nota}.xlsx`)
+  XLSX.writeFile(wb, `proorc_${nota}.xls`, {
+    bookType: "xls"
+  })
 
 }
 
