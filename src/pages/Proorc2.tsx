@@ -1007,7 +1007,10 @@ onBlur={()=>{
                   </select>
 
 <button
-  style={styles.salvar}
+  style={{
+    ...styles.salvar,
+    ...( (!podeSalvar || !podeEditar) && styles.btnDesabilitado )
+  }}
   disabled={!podeSalvar || !podeEditar}
   onClick={salvar}
 >
