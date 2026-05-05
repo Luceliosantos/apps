@@ -1131,17 +1131,25 @@ wordBreak:"break-word"
 <div style={styles.acoesContainer}>
 
 <button
-style={styles.btnGrid}
-onClick={()=>editar(x)}
+  style={{
+    ...styles.btnGrid,
+    ...( !podeEditar && styles.btnDesabilitado )
+  }}
+  disabled={!podeEditar}
+  onClick={()=>podeEditar && editar(x)}
 >
-alterar
+  alterar
 </button>
 
 <button
-style={styles.btnExcluir}
-onClick={()=>excluir(x.id)}
+  style={{
+    ...styles.btnExcluir,
+    ...( !podeEditar && styles.btnDesabilitado )
+  }}
+  disabled={!podeEditar}
+  onClick={()=>podeEditar && excluir(x.id)}
 >
-excluir
+  excluir
 </button>
 
 </div>
@@ -1442,6 +1450,13 @@ cursor:"pointer",
 fontSize:12
 },
 
+btnDesabilitado:{
+  background:"#d6d6d6",
+  color:"#888",
+  cursor:"not-allowed",
+  opacity:0.7
+},
+  
 acoesContainer:{
 display:"flex",
 justifyContent:"center",
