@@ -156,7 +156,8 @@ async function buscarDivergencias(){
     .not("status_med", "ilike", "%CONC%")
     .not("status_med", "ilike", "%CANC%")
     .not("status_med", "ilike", "%ENCE%");
-
+    .order("base_cr", { ascending: false, nullsFirst: false });
+  
   setResultadoBusca(data || []);
 
 }
