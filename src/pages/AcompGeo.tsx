@@ -344,7 +344,7 @@ async function buscarListaCompleta(){
                 <thead style={styles.thead}>
 
                   <tr>
-
+                    <th>SEQ</th>
                     <th>NOTA</th>
                     <th>TIPO</th>
                     <th>BASE_CR</th>
@@ -363,12 +363,14 @@ async function buscarListaCompleta(){
                   {lista.map((l,i)=>(
 
                     <tr key={i}>
-
-                      <td style={styles.tdNota}>{l.nota}</td>
-
-                      <td style={styles.tdMed}>{l.tipo}</td>
-
+                    
                       <td style={styles.td}>
+                        {i + 1}º
+                      </td>
+        
+                      <td style={styles.tdNota}>{l.nota}</td>                 
+                      <td style={styles.tdMed}>{l.tipo}</td>
+                        <td style={styles.td}>
                         {l.base_cr.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
                       </td>
 
