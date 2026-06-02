@@ -141,21 +141,21 @@ function limparTabela(){
   }
 
 
-  async function buscarDivergencias(){
+async function buscarDivergencias(){
 
   setLista([]);
   setListaInferiorAtiva("divergencias");
 
   const { data } = await supabase
+    .from("db_acomp_geo")
+    .select("*")
+    .is("resp_geral", null)
+    .not("status_med", "ilike", "%CONC%")
+    .not("status_med", "ilike", "%CANC%");
 
-     .from("db_acomp_geo")
-      .select("*")
-      .is("resp_geral",null)
-      .neq("status_med","CONC");
+  setResultadoBusca(data || []);
 
-    setResultadoBusca(data || []);
-
-  }
+}
 
 
 async function buscarListaCompleta(){
