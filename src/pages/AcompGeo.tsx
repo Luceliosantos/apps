@@ -27,12 +27,15 @@ async function carregarRegional(regional:string){
 
   setRegionalSelecionada(regional);
 
-  const { data,error } = await supabase
+const { data,error } = await supabase
 
-    .from("db_acomp_geo")
-    .select("nota,base_cr,medida,status_med,obs,tipo")
-    .eq("regional",regional)
-    .order("base_cr",{ascending:false}); // garante vir ordenado pela maior base
+  .from("db_acomp_geo")
+  .select("nota,base_cr,medida,status_med,obs,tipo")
+  .eq("regional",regional)
+  .not("base_cr","is",null)
+  .order("base_cr",{ascending:false});
+
+console.log(data?.slice(0,20));
 
   if(error || !data) return;
 
