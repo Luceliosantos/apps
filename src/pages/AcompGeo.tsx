@@ -151,7 +151,8 @@ async function buscarDivergencias(){
     .select("*")
     .is("resp_geral", null)
     .not("status_med", "ilike", "%CONC%")
-    .not("status_med", "ilike", "%CANC%");
+    .not("status_med", "ilike", "%CANC%")
+    .not("status_med", "ilike", "%ENCE%");
 
   setResultadoBusca(data || []);
 
