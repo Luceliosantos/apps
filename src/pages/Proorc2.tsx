@@ -658,16 +658,19 @@ function exportarExcel(){
   let valorA:any = a[campoOrdenacao]
   let valorB:any = b[campoOrdenacao]
 
-  if(campoOrdenacao === "quantidade"){
+  if(
+  campoOrdenacao === "quantidade" ||
+  campoOrdenacao === "codigo"
+){
 
-    valorA = Number(valorA)
-    valorB = Number(valorB)
+  valorA = Number(valorA)
+  valorB = Number(valorB)
 
-    return ordemAsc
-      ? valorA - valorB
-      : valorB - valorA
+  return ordemAsc
+    ? valorA - valorB
+    : valorB - valorA
 
-  }
+}
 
   valorA = String(valorA || "").toUpperCase()
   valorB = String(valorB || "").toUpperCase()
