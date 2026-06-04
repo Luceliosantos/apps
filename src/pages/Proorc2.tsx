@@ -57,6 +57,17 @@ export default function Proorc2({
   const [cadastro,setCadastro] = useState<any[]>([])
   const [explodido,setExplodido] = useState<any[]>([])
 
+
+const [campoOrdenacao,setCampoOrdenacao] =
+  useState("codigo")
+
+const [ordemAsc,setOrdemAsc] =
+  useState(true)
+
+
+
+
+  
   const [infoNota,setInfoNota] = useState<{
     criadoPor?:string
     criadoEm?:string
@@ -642,6 +653,55 @@ function exportarExcel(){
 
 }
 
+  const explodidoOrdenado = [...explodido].sort((a,b)=>{
+
+  let valorA:any = a[campoOrdenacao]
+  let valorB:any = b[campoOrdenacao]
+
+  if(campoOrdenacao === "quantidade"){
+
+    valorA = Number(valorA)
+    valorB = Number(valorB)
+
+    return ordemAsc
+      ? valorA - valorB
+      : valorB - valorA
+
+  }
+
+  valorA = String(valorA || "").toUpperCase()
+  valorB = String(valorB || "").toUpperCase()
+
+  return ordemAsc
+    ? valorA.localeCompare(valorB)
+    : valorB.localeCompare(valorA)
+
+})
+function ordenarPor(campo:string){
+
+  if(campo === campoOrdenacao){
+
+    setOrdemAsc(!ordemAsc)
+
+  }else{
+
+    setCampoOrdenacao(campo)
+    setOrdemAsc(true)
+
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+  
   return(
 
     <div style={styles.container}>
@@ -1212,21 +1272,49 @@ wordBreak:"break-word"
 
                   <tr>
 
-                    <th style={{...styles.thPadrao,...styles.colCodigoConsolidado}}>
-                    CODIGO
-                    </th>
-                    
-                    <th style={{...styles.thPadrao,...styles.colQtdConsolidado}}>
-                    QNT
-                    </th>
-                    
-                    <th style={{...styles.thPadrao,...styles.colApConsolidado}}>
-                    AP
-                    </th>
-                    
-                    <th style={{...styles.thPadrao,...styles.colDescricaoConsolidado}}>
-                    DESCRIÇÃO
-                    </th>
+<th
+  style={{
+    ...styles.thPadrao,
+    ...styles.colCodigoConsolidado,
+    cursor:"pointer"
+  }}
+  onClick={()=>ordenarPor("codigo")}
+>
+  CODIGO {campoOrdenacao==="codigo" ? (ordemAsc ? "▲" : "▼") : ""}
+</th>
+
+<th
+  style={{
+    ...styles.thPadrao,
+    ...styles.colQtdConsolidado,
+    cursor:"pointer"
+  }}
+  onClick={()=>ordenarPor("quantidade")}
+>
+  QNT {campoOrdenacao==="quantidade" ? (ordemAsc ? "▲" : "▼") : ""}
+</th>
+
+<th
+  style={{
+    ...styles.thPadrao,
+    ...styles.colApConsolidado,
+    cursor:"pointer"
+  }}
+  onClick={()=>ordenarPor("aplicacao")}
+>
+  AP {campoOrdenacao==="aplicacao" ? (ordemAsc ? "▲" : "▼") : ""}
+</th>
+
+<th
+  style={{
+    ...styles.thPadrao,
+    ...styles.colDescricaoConsolidado,
+    cursor:"pointer"
+  }}
+  onClick={()=>ordenarPor("descricao")}
+>
+  DESCRIÇÃO {campoOrdenacao==="descricao" ? (ordemAsc ? "▲" : "▼") : ""}
+</th>
 
                   </tr>
 
@@ -1234,7 +1322,7 @@ wordBreak:"break-word"
 
                 <tbody>
 
-                  {explodido.map(x => (
+                  {explodidoOrdenado.map(x => (
 
                     <tr
                       key={x.id}
