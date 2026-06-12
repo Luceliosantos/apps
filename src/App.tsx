@@ -388,7 +388,18 @@ const { error } = await supabase
       setPagina("menu");
       return null;
     }
-
+if(
+  pagina === "controle_geo"
+  &&
+  !temPermissao(
+    "controle_geo",
+    ["leitura","admin"]
+  )
+){
+  setPagina("menu");
+  return null;
+}
+   
     if(
       pagina === "proorc"
       &&
@@ -480,7 +491,18 @@ if(pagina === "corrigirCadastro"){
       );
 
     }
+if(pagina === "controle_geo"){
 
+  return(
+
+    <ControleGeo
+      setPagina={setPagina}
+    />
+
+  );
+
+}
+    
 if(pagina === "proorc"){
   return(
     <>
