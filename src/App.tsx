@@ -10,6 +10,7 @@ import Usuarios from "./pages/Usuarios";
 import CorrigirCadastro from "./pages/CorrigirCadastro";
 import AcompGeo from "./pages/AcompGeo";
 import Proorc2 from "./pages/Proorc2"
+import ControleGeo from "./pages/ControleGeo";
 
 type Usuario = {
   id: string;
@@ -30,7 +31,8 @@ export type Pagina =
   | "usuarios"
   | "alterarSenha"
   | "proorc-admin"
-  | "corrigirCadastro";
+  | "corrigirCadastro"
+  | "controle_geo";
 
 export default function App() {
 
