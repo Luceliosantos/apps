@@ -23,11 +23,11 @@ export default function ControleGeo({ setPagina }: Props){
 
   const [dados,setDados] = useState<LinhaControle[]>([]);
 
-  const [regional,setRegional] = useState("");
+
   const [origem,setOrigem] = useState("");
-  const [responsavel,setResponsavel] = useState("");
   const [status,setStatus] = useState("");
-  const [buscaNota,setBuscaNota] = useState("");
+const [responsavelSelecionado,setResponsavelSelecionado] =
+  useState("");
 
   const [ordenacao,setOrdenacao] =
     useState<{
@@ -122,16 +122,6 @@ export default function ControleGeo({ setPagina }: Props){
     carregarDados();
 
   },[]);
-
-  function limpar(){
-
-    setRegional("");
-    setOrigem("");
-    setResponsavel("");
-    setStatus("");
-    setBuscaNota("");
-
-  }
 
   const responsaveis = useMemo(()=>{
 
