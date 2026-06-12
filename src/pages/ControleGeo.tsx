@@ -22,7 +22,6 @@ type LinhaControle = {
 export default function ControleGeo({ setPagina }: Props){
 
   const [dados,setDados] = useState<LinhaControle[]>([]);
-  const [loading,setLoading] = useState(false);
 
   const [regional,setRegional] = useState("");
   const [origem,setOrigem] = useState("");
@@ -40,8 +39,6 @@ export default function ControleGeo({ setPagina }: Props){
     });
 
   async function carregarDados(){
-
-    setLoading(true);
 
     const [
       metaResp,
@@ -117,8 +114,6 @@ export default function ControleGeo({ setPagina }: Props){
     });
 
     setDados(lista);
-
-    setLoading(false);
 
   }
 
