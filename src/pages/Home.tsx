@@ -50,6 +50,13 @@ export default function Home({
       ["leitura"]
     );
 
+  // acesso controle geo
+const acessoControleGeo =
+  temPermissao(
+    "controle_geo",
+    ["leitura"]
+  );
+  
   // acesso proorc
   const acessoProorc =
     temPermissao(
@@ -119,7 +126,16 @@ export default function Home({
             </button>
 
           )}
+          {acessoControleGeo && (
 
+            <button
+              style={styles.button}
+              onClick={() => setPagina("controle_geo")}
+            >
+              Controle GEO
+            </button>
+          
+          )}
           {acessoProorc && (
 
             <button
