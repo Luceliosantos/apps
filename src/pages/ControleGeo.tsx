@@ -136,14 +136,36 @@ const [responsavelSelecionado,setResponsavelSelecionado] =
 
   const statusLista = useMemo(()=>{
 
-    return [...new Set(
-      dados
-        .map(x=>x.status)
-        .filter(Boolean)
-    )]
-    .sort();
+  let base = dados;
 
-  },[dados]);
+  if(responsavelSelecionado){
+
+    base = dados.filter(
+      x =>
+        x.responsavel ===
+        responsavelSelecionado
+    );
+
+  }
+
+  const mapa:Record<string,number> = {};
+
+  base.forEach(x=>{
+
+    if(!x.status) return;
+
+    mapa[x.status] =
+      (mapa[x.status] || 0) + 1;
+
+  });
+
+  return Object.entries(mapa)
+    .sort((a,b)=>b[1]-a[1]);
+
+},[
+  dados,
+  responsavelSelecionado
+]);
 
   const ranking = useMemo(()=>{
 
@@ -166,31 +188,24 @@ const [responsavelSelecionado,setResponsavelSelecionado] =
 
   const dadosFiltrados = useMemo(()=>{
 
-    let lista = dados.filter(r=>{
+let lista = dados.filter(r=>{
 
-      if(regional && r.regional !== regional)
-        return false;
+  if(origem && r.origem !== origem)
+    return false;
 
-      if(origem && r.origem !== origem)
-        return false;
+  if(
+    responsavelSelecionado &&
+    r.responsavel !==
+    responsavelSelecionado
+  )
+    return false;
 
-      if(responsavel && r.responsavel !== responsavel)
-        return false;
+  if(status && r.status !== status)
+    return false;
 
-      if(status && r.status !== status)
-        return false;
+  return true;
 
-      if(
-        buscaNota &&
-        !String(r.nota)
-          .toUpperCase()
-          .includes(buscaNota.toUpperCase())
-      )
-        return false;
-
-      return true;
-
-    });
+});
 
     lista.sort((a:any,b:any)=>{
 
@@ -213,14 +228,12 @@ const [responsavelSelecionado,setResponsavelSelecionado] =
     return lista;
 
   },[
-    dados,
-    regional,
-    origem,
-    responsavel,
-    status,
-    buscaNota,
-    ordenacao
-  ]);
+  dados,
+  origem,
+  responsavelSelecionado,
+  status,
+  ordenacao
+]);
 
   const totalMeta =
     dados.filter(x=>x.origem==="META").length;
@@ -271,27 +284,6 @@ const [responsavelSelecionado,setResponsavelSelecionado] =
 
             <button
               style={styles.button}
-              onClick={()=>setRegional("NE/MC")}
-            >
-              NE/MC
-            </button>
-
-            <button
-              style={styles.button}
-              onClick={()=>setRegional("NE/PR")}
-            >
-              NE/PR
-            </button>
-
-            <button
-              style={styles.button}
-              onClick={()=>setRegional("CE/SL")}
-            >
-              CE/SL
-            </button>
-
-            <button
-              style={styles.button}
               onClick={()=>setOrigem("META")}
             >
               META
@@ -316,13 +308,6 @@ const [responsavelSelecionado,setResponsavelSelecionado] =
               onClick={limpar}
             >
               Limpar
-            </button>
-
-            <button
-              style={styles.button}
-              onClick={carregarDados}
-            >
-              Atualizar
             </button>
 
           </div>
@@ -367,61 +352,6 @@ const [responsavelSelecionado,setResponsavelSelecionado] =
 
         </div>
 
-        <div style={styles.filtros}>
-
-          <input
-            style={styles.input}
-            placeholder="NOTA"
-            value={buscaNota}
-            onChange={(e)=>
-              setBuscaNota(e.target.value)
-            }
-          />
-
-          <select
-            style={styles.input}
-            value={responsavel}
-            onChange={(e)=>
-              setResponsavel(e.target.value)
-            }
-          >
-            <option value="">
-              TODOS RESPONSÁVEIS
-            </option>
-
-            {responsaveis.map(r=>(
-
-              <option key={r}>
-                {r}
-              </option>
-
-            ))}
-
-          </select>
-
-          <select
-            style={styles.input}
-            value={status}
-            onChange={(e)=>
-              setStatus(e.target.value)
-            }
-          >
-            <option value="">
-              TODOS STATUS
-            </option>
-
-            {statusLista.map(r=>(
-
-              <option key={r}>
-                {r}
-              </option>
-
-            ))}
-
-          </select>
-
-        </div>
-
         <div style={styles.corpo}>
 
           <div style={styles.ranking}>
@@ -433,9 +363,10 @@ const [responsavelSelecionado,setResponsavelSelecionado] =
               <button
                 key={r[0]}
                 style={styles.rankButton}
-                onClick={()=>
-                  setResponsavel(r[0])
-                }
+                onClick={()=>{
+  setResponsavelSelecionado(r[0]);
+  setStatus("");
+}}
               >
                 {r[0]} ({r[1]})
               </button>
