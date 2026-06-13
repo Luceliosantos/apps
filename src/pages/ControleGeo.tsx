@@ -285,7 +285,7 @@ export default function ControleGeo({ setPagina }: Props){
     }));
 
   }
-```tsx
+
   return(
 
     <div style={styles.container}>
@@ -518,7 +518,6 @@ export default function ControleGeo({ setPagina }: Props){
 
               <tbody>
 
-                ```tsx id="4x31zq"
                 {dadosFiltrados.map((r,i)=>(
 
                   <tr key={i}>
@@ -556,7 +555,7 @@ export default function ControleGeo({ setPagina }: Props){
   );
 
 }
-```tsx id="pjz4i6"
+
 const styles:{
   [key:string]:
   React.CSSProperties
