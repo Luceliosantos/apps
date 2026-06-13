@@ -67,12 +67,13 @@ export default function ControleGeo({ setPagina }: Props){
     (metaResp.data || []).forEach((r:any)=>{
 
       lista.push({
-        origem:"META",
-        regional:r.regional || "",
-        nota:r.nota || "",
-        medida:r.medida || "",
-        responsavel:r.resp_meta || "",
-        status:r.status_med || "",
+  origem:"META",
+  regional:r.regional || "",
+  nota:r.nota || "",
+  medida:r.medida || "",
+  responsavel:r.resp_meta || "",
+  status:(r.status_med || "")
+    .replace(/^\d+\s*-\s*/,""),
         prazo:r.prazo_acao || "",
         data_email:r.data_email || "",
         obs:r.obs_acao || ""
@@ -82,13 +83,14 @@ export default function ControleGeo({ setPagina }: Props){
 
     (freeResp.data || []).forEach((r:any)=>{
 
-      lista.push({
-        origem:"FREE",
-        regional:r.regional || "",
-        nota:r.nota || "",
-        medida:r.medida || "",
-        responsavel:r.resp_free || "",
-        status:r.status_med || "",
+     lista.push({
+  origem:"FREE",
+  regional:r.regional || "",
+  nota:r.nota || "",
+  medida:r.medida || "",
+  responsavel:r.resp_free || "",
+  status:(r.status_med || "")
+    .replace(/^\d+\s*-\s*/,""),
         prazo:r.prazo_acao || "",
         data_email:r.data_email || "",
         obs:r.obs_acao || ""
