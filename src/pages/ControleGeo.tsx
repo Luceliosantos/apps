@@ -364,33 +364,7 @@ let lista = dados.filter(r=>{
 
         <div style={styles.corpo}>
 
-  {origem !== "PRODUTIVIDADE" && (
-
-<div style={styles.ranking}>
-
-    <h3>Status</h3>
-
-    {statusLista.map(s=>(
-
-      <button
-        key={s[0]}
-        style={{
-  ...styles.rankButton,
-  ...(responsavelSelecionado===r[0]
-    ? styles.botaoSelecionado
-    : {})
-}}
-        onClick={()=>
-          setStatus(s[0])
-        }
-      >
-        {s[0]} ({s[1]})
-      </button>
-
-    ))}
-
-  </div>
-
+  
 <div
   style={{
     display:"flex",
