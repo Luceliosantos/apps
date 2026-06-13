@@ -573,12 +573,16 @@ function setaOrdenacao(
                     <td style={styles.td}>{r.status}</td>
 
 
-                    <td>
+                    <td style={styles.td}>
   {r.prazo
     ? new Date(r.prazo)
         .toLocaleDateString("pt-BR")
     : ""
   }
+</td>
+
+<td style={styles.td}>
+  {r.obs}
 </td>
 
                     <td>{r.obs}</td>
@@ -666,19 +670,26 @@ const styles:{
   },
 
 card:{
+  background:"rgba(255,255,255,0.08)",
+  padding:14,
+  borderRadius:10,
+  border:"1px solid rgba(255,255,255,0.25)",
+  backdropFilter:"blur(6px)",
+  textAlign:"center"
+},
 
-  statusContainer:{
-    display:"flex",
-    flexWrap:"wrap",
-    gap:"8px",
-    marginBottom:"15px"
-  },
+statusContainer:{
+  display:"flex",
+  flexWrap:"wrap",
+  gap:"8px",
+  marginBottom:"15px"
+},
 
-  corpo:{
-    display:"flex",
-    gap:"15px",
-    alignItems:"flex-start"
-  },
+corpo:{
+  display:"flex",
+  gap:"15px",
+  alignItems:"flex-start"
+},
 
 ranking:{
   width:"fit-content",
@@ -702,6 +713,47 @@ rankButton:{
   cursor:"pointer",
   whiteSpace:"nowrap"
 },
+
+tabelaCard:{
+  flex:1,
+  background:"rgba(255,255,255,0.08)",
+  padding:14,
+  borderRadius:10,
+  border:"1px solid rgba(255,255,255,0.25)",
+  backdropFilter:"blur(6px)",
+  overflowX:"auto"
+},
+
+table:{
+  borderCollapse:"collapse",
+  fontSize:13,
+  background:"white",
+  color:"black",
+  width:"100%",
+  minWidth:1200
+},
+
+th:{
+  cursor:"pointer",
+  background:"#cfe8ff",
+  color:"#000",
+  border:"1px solid #7fb3ff",
+  padding:"6px 8px",
+  whiteSpace:"nowrap",
+  position:"sticky",
+  top:0,
+  zIndex:10
+},
+
+td:{
+  border:"1px solid #ccc",
+  padding:"6px 8px",
+  background:"white",
+  color:"black",
+  textAlign:"center",
+  whiteSpace:"nowrap"
+}
+
 
 tabelaCard
 
