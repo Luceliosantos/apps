@@ -24,7 +24,7 @@ export default function ControleGeo({ setPagina }: Props){
     useState<LinhaControle[]>([]);
 
   const [origem,setOrigem] =
-    useState("");
+  useState("META");
 
   const [status,setStatus] =
     useState("");
@@ -346,21 +346,7 @@ export default function ControleGeo({ setPagina }: Props){
               PRODUTIVIDADE
             </button>
 
-            <button
-              style={{
-                ...styles.button,
-                ...(origem===""
-                  ? styles.botaoSelecionado
-                  : {})
-              }}
-              onClick={()=>{
-                setOrigem("");
-                setStatus("");
-                setResponsavelSelecionado("");
-              }}
-            >
-              TODOS
-            </button>
+            
 
           </div>
 
@@ -397,7 +383,9 @@ export default function ControleGeo({ setPagina }: Props){
 
         </div>
 
-        <div style={styles.statusContainer}>
+        {origem !== "PRODUTIVIDADE" && (
+
+<div style={styles.statusContainer}>
 
           {statusLista.map(s=>(
 
@@ -419,7 +407,7 @@ export default function ControleGeo({ setPagina }: Props){
           ))}
 
         </div>
-
+)}
         <div style={styles.corpo}>
 
           {origem !== "PRODUTIVIDADE" && (
