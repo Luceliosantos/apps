@@ -123,17 +123,6 @@ const [responsavelSelecionado,setResponsavelSelecionado] =
 
   },[]);
 
-  const responsaveis = useMemo(()=>{
-
-    return [...new Set(
-      dados
-        .map(x=>x.responsavel)
-        .filter(Boolean)
-    )]
-    .sort();
-
-  },[dados]);
-
   const statusLista = useMemo(()=>{
 
   let base = dados;
@@ -354,28 +343,48 @@ let lista = dados.filter(r=>{
 
         <div style={styles.corpo}>
 
-          <div style={styles.ranking}>
+  <div style={styles.ranking}>
 
-            <h3>Responsáveis</h3>
+    <h3>Responsáveis</h3>
 
-            {ranking.map(r=>(
+    {ranking.map(r=>(
 
-              <button
-                key={r[0]}
-                style={styles.rankButton}
-                onClick={()=>{
-  setResponsavelSelecionado(r[0]);
-  setStatus("");
-}}
-              >
-                {r[0]} ({r[1]})
-              </button>
+      <button
+        key={r[0]}
+        style={styles.rankButton}
+        onClick={()=>{
+          setResponsavelSelecionado(r[0]);
+          setStatus("");
+        }}
+      >
+        {r[0]} ({r[1]})
+      </button>
 
-            ))}
+    ))}
 
-          </div>
+  </div>
 
-          <div style={styles.tabelaCard}>
+  <div style={styles.ranking}>
+
+    <h3>Status</h3>
+
+    {statusLista.map(s=>(
+
+      <button
+        key={s[0]}
+        style={styles.rankButton}
+        onClick={()=>
+          setStatus(s[0])
+        }
+      >
+        {s[0]} ({s[1]})
+      </button>
+
+    ))}
+
+  </div>
+
+  <div style={styles.tabelaCard}>
 
             <table style={styles.table}>
 
