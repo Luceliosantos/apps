@@ -712,7 +712,6 @@ rankButton:{
   whiteSpace:"nowrap"
 },
 
-
 tabelaCard:{
   flex:1,
   background:"rgba(255,255,255,0.08)",
