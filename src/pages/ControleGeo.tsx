@@ -176,25 +176,7 @@ const ranking = useMemo(()=>{
   status
 ]);
 
-    const mapa:Record<string,number> = {};
-
-    dadosOrigem.forEach(r=>{
-
-      if(!r.responsavel) return;
-
-      mapa[r.responsavel] =
-        (mapa[r.responsavel] || 0) + 1;
-
-    });
-
-    return Object
-      .entries(mapa)
-      .sort((a,b)=>b[1]-a[1]);
-
-  },[
-    dadosOrigem,
-    origem
-  ]);
+    
 
   const statusLista = useMemo(()=>{
 
