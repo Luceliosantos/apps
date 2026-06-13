@@ -137,13 +137,44 @@ export default function ControleGeo({ setPagina }: Props){
     origem
   ]);
 
-  const ranking = useMemo(()=>{
+const ranking = useMemo(()=>{
 
-    if(
-      origem === "PRODUTIVIDADE"
-    ){
-      return [];
-    }
+  if(
+    origem === "PRODUTIVIDADE"
+  ){
+    return [];
+  }
+
+  let base = dadosOrigem;
+
+  if(status){
+
+    base = base.filter(
+      x => x.status === status
+    );
+
+  }
+
+  const mapa:Record<string,number> = {};
+
+  base.forEach(r=>{
+
+    if(!r.responsavel) return;
+
+    mapa[r.responsavel] =
+      (mapa[r.responsavel] || 0) + 1;
+
+  });
+
+  return Object
+    .entries(mapa)
+    .sort((a,b)=>b[1]-a[1]);
+
+},[
+  dadosOrigem,
+  origem,
+  status
+]);
 
     const mapa:Record<string,number> = {};
 
