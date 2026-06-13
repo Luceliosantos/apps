@@ -679,26 +679,28 @@ const styles:{
     alignItems:"flex-start"
   },
 
-  ranking:{
-    width:"260px",
-    minWidth:"260px",
-    maxHeight:"75vh",
-    overflowY:"auto",
-    background:
-      "rgba(255,255,255,0.10)",
-    padding:"12px",
-    borderRadius:"10px"
-  },
+ranking:{
+  width:"fit-content",
+  minWidth:"180px",
+  maxWidth:"320px",
+  maxHeight:"75vh",
+  overflowY:"auto",
+  background:"rgba(255,255,255,0.10)",
+  padding:"12px",
+  borderRadius:"10px"
+},
 
-  rankButton:{
-    width:"100%",
-    textAlign:"left",
-    padding:"8px",
-    marginBottom:"6px",
-    borderRadius:"6px",
-    border:"none",
-    cursor:"pointer"
-  },
+rankButton:{
+  display:"block",
+  width:"100%",
+  textAlign:"left",
+  padding:"8px",
+  marginBottom:"6px",
+  borderRadius:"6px",
+  border:"none",
+  cursor:"pointer",
+  whiteSpace:"nowrap"
+},
 
   tabelaCard:{
     flex:1,
