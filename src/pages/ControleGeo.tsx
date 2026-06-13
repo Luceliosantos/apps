@@ -273,25 +273,52 @@ let lista = dados.filter(r=>{
           <div style={styles.grupo}>
 
             <button
-              style={styles.button}
-              onClick={()=>setOrigem("META")}
-            >
-              META
-            </button>
+  style={{
+    ...styles.button,
+    ...(origem==="META"
+      ? styles.botaoSelecionado
+      : {})
+  }}
+  onClick={()=>{
+    setOrigem("META");
+    setStatus("");
+    setResponsavelSelecionado("");
+  }}
+>
+  META
+</button>
 
-            <button
-              style={styles.button}
-              onClick={()=>setOrigem("FREE")}
-            >
-              FREE
-            </button>
+<button
+  style={{
+    ...styles.button,
+    ...(origem==="FREE"
+      ? styles.botaoSelecionado
+      : {})
+  }}
+  onClick={()=>{
+    setOrigem("FREE");
+    setStatus("");
+    setResponsavelSelecionado("");
+  }}
+>
+  FREE
+</button>
 
-            <button
-              style={styles.button}
-              onClick={()=>setOrigem("PRODUTIVIDADE")}
-            >
-              PRODUTIVIDADE
-            </button>
+<button
+  style={{
+    ...styles.button,
+    ...(origem==="PRODUTIVIDADE"
+      ? styles.botaoSelecionado
+      : {})
+  }}
+  onClick={()=>{
+    setOrigem("PRODUTIVIDADE");
+    setStatus("");
+    setResponsavelSelecionado("");
+  }}
+>
+  PRODUTIVIDADE
+</button>
             
           </div>
 
@@ -337,7 +364,9 @@ let lista = dados.filter(r=>{
 
         <div style={styles.corpo}>
 
-  <div style={styles.ranking}>
+  {origem !== "PRODUTIVIDADE" && (
+
+<div style={styles.ranking}>
 
     <h3>Responsáveis</h3>
 
@@ -345,7 +374,12 @@ let lista = dados.filter(r=>{
 
       <button
         key={r[0]}
-        style={styles.rankButton}
+        style={{
+  ...styles.rankButton,
+  ...(responsavelSelecionado===r[0]
+    ? styles.botaoSelecionado
+    : {})
+}}
         onClick={()=>{
           setResponsavelSelecionado(r[0]);
           setStatus("");
@@ -358,7 +392,9 @@ let lista = dados.filter(r=>{
 
   </div>
 
-  <div style={styles.ranking}>
+  {origem !== "PRODUTIVIDADE" && (
+
+<div style={styles.ranking}>
 
     <h3>Status</h3>
 
@@ -366,7 +402,12 @@ let lista = dados.filter(r=>{
 
       <button
         key={s[0]}
-        style={styles.rankButton}
+        style={{
+  ...styles.rankButton,
+  ...(responsavelSelecionado===r[0]
+    ? styles.botaoSelecionado
+    : {})
+}}
         onClick={()=>
           setStatus(s[0])
         }
@@ -385,10 +426,6 @@ let lista = dados.filter(r=>{
               <thead>
 
                 <tr>
-
-                  <th onClick={()=>ordenar("origem")}>
-                    ORIGEM
-                  </th>
 
                   <th onClick={()=>ordenar("regional")}>
                     REGIONAL
@@ -412,10 +449,6 @@ let lista = dados.filter(r=>{
 
                   <th onClick={()=>ordenar("prazo")}>
                     PRAZO
-                  </th>
-
-                  <th onClick={()=>ordenar("basecr")}>
-                    BASE CR
                   </th>
 
                   <th>
@@ -521,6 +554,12 @@ const styles:{[key:string]:React.CSSProperties}={
     borderRadius:10
   },
 
+botaoSelecionado:{
+  background:"#f39c12",
+  color:"#fff",
+  fontWeight:"bold"
+},
+  
   rankButton:{
     width:"100%",
     marginBottom:5,
