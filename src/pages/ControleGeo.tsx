@@ -452,7 +452,15 @@ function setaOrdenacao(
 
             <div style={styles.ranking}>
 
-              <h3>Responsáveis</h3>
+              <h3
+  style={{
+    marginTop:0,
+    textAlign:"center",
+    marginBottom:12
+  }}
+>
+  Responsáveis
+</h3>
 
               {ranking.map(r => (
 
@@ -555,15 +563,15 @@ function setaOrdenacao(
 
                   <tr key={i}>
 
-                    <td>{r.regional}</td>
+                    <td style={styles.td}>{r.regional}</td>
 
-                    <td>{r.nota}</td>
+                    <td style={styles.td}>{r.nota}</td>
 
-                    <td>{r.medida}</td>
+                    <td style={styles.td}>{r.medida}</td>
 
-                    <td>{r.responsavel}</td>
+                    <td style={styles.td}>{r.responsavel}</td>
+                    <td style={styles.td}>{r.status}</td>
 
-                    <td>{r.status}</td>
 
                     <td>
   {r.prazo
@@ -657,14 +665,7 @@ const styles:{
     marginBottom:"20px"
   },
 
-  card:{
-    background:
-      "rgba(255,255,255,0.12)",
-    padding:"15px",
-    borderRadius:"10px",
-    textAlign:"center",
-    backdropFilter:"blur(4px)"
-  },
+card:{
 
   statusContainer:{
     display:"flex",
@@ -702,32 +703,37 @@ rankButton:{
   whiteSpace:"nowrap"
 },
 
-  tabelaCard:{
-    flex:1,
-    overflow:"auto",
-    background:
-      "rgba(255,255,255,0.10)",
-    padding:"10px",
-    borderRadius:"10px",
-    minHeight:"600px"
-  },
+tabelaCard
 
-  table:{
-    width:"100%",
-    borderCollapse:"collapse",
-    background:"white",
-    color:"black"
-  },
+table:{
+  borderCollapse:"collapse",
+  fontSize:13,
+  background:"white",
+  color:"black",
+  width:"100%",
+  minWidth:1200
+},
 
 th:{
   cursor:"pointer",
-  background:"#f1f1f1",
+  background:"#cfe8ff",
+  color:"#000",
+  border:"1px solid #7fb3ff",
+  padding:"6px 8px",
+  whiteSpace:"nowrap",
   position:"sticky",
   top:0,
-  zIndex:10,
-  padding:"8px",
-  border:"1px solid #ddd"
-}
+  zIndex:10
+},
+
+td:{
+  border:"1px solid #ccc",
+  padding:"6px 8px",
+  background:"white",
+  color:"black",
+  textAlign:"center",
+  whiteSpace:"nowrap"
+},
 
 };
 
