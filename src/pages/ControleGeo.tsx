@@ -733,7 +733,7 @@ td:{
   color:"black",
   textAlign:"center",
   whiteSpace:"nowrap"
-},
+}
 
 };
 
