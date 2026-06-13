@@ -368,34 +368,6 @@ let lista = dados.filter(r=>{
 
 <div style={styles.ranking}>
 
-    <h3>Responsáveis</h3>
-
-    {ranking.map(r=>(
-
-      <button
-        key={r[0]}
-        style={{
-  ...styles.rankButton,
-  ...(responsavelSelecionado===r[0]
-    ? styles.botaoSelecionado
-    : {})
-}}
-        onClick={()=>{
-          setResponsavelSelecionado(r[0]);
-          setStatus("");
-        }}
-      >
-        {r[0]} ({r[1]})
-      </button>
-
-    ))}
-
-  </div>
-
-  {origem !== "PRODUTIVIDADE" && (
-
-<div style={styles.ranking}>
-
     <h3>Status</h3>
 
     {statusLista.map(s=>(
@@ -419,6 +391,36 @@ let lista = dados.filter(r=>{
 
   </div>
 
+<div
+  style={{
+    display:"flex",
+    flexWrap:"wrap",
+    gap:8,
+    marginTop:10
+  }}
+>
+
+  {statusLista.map(s=>(
+
+    <button
+      key={s[0]}
+      style={{
+        ...styles.button,
+        ...(status===s[0]
+          ? styles.botaoSelecionado
+          : {})
+      }}
+      onClick={()=>
+        setStatus(s[0])
+      }
+    >
+      {s[0]} ({s[1]})
+    </button>
+
+  ))}
+
+</div>
+      
   <div style={styles.tabelaCard}>
 
             <table style={styles.table}>
@@ -465,17 +467,12 @@ let lista = dados.filter(r=>{
 
                   <tr key={i}>
 
-                    <td>{r.origem}</td>
                     <td>{r.regional}</td>
                     <td>{r.nota}</td>
                     <td>{r.medida}</td>
                     <td>{r.responsavel}</td>
                     <td>{r.status}</td>
                     <td>{r.prazo}</td>
-
-                    <td>
-                      {r.basecr.toLocaleString("pt-BR")}
-                    </td>
 
                     <td>{r.obs}</td>
 
