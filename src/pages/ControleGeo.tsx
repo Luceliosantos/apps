@@ -291,14 +291,7 @@ let lista = dados.filter(r=>{
             >
               PRODUTIVIDADE
             </button>
-
-            <button
-              style={styles.buttonLimpar}
-              onClick={limpar}
-            >
-              Limpar
-            </button>
-
+            
           </div>
 
           <button
@@ -515,13 +508,6 @@ const styles:{[key:string]:React.CSSProperties}={
     textAlign:"center"
   },
 
-  filtros:{
-    display:"flex",
-    gap:10,
-    flexWrap:"wrap",
-    marginBottom:20
-  },
-
   corpo:{
     display:"flex",
     gap:20
@@ -556,22 +542,9 @@ const styles:{[key:string]:React.CSSProperties}={
     color:"black"
   },
 
-  input:{
-    padding:8,
-    borderRadius:6
-  },
-
   button:{
     padding:"8px 12px",
     borderRadius:8,
-    cursor:"pointer"
-  },
-
-  buttonLimpar:{
-    padding:"8px 12px",
-    borderRadius:8,
-    background:"#c0392b",
-    color:"white",
     cursor:"pointer"
   }
 
