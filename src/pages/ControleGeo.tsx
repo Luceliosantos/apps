@@ -1,3 +1,4 @@
+```tsx
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { Pagina } from "../App";
@@ -5,7 +6,6 @@ import { Pagina } from "../App";
 type Props = {
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
 };
-
 
 type LinhaControle = {
   origem:string;
@@ -16,25 +16,27 @@ type LinhaControle = {
   status:string;
   prazo:string;
   data_email:string;
-  basecr:number;
   obs:string;
 };
 
 export default function ControleGeo({ setPagina }: Props){
 
-  const [dados,setDados] = useState<LinhaControle[]>([]);
+  const [dados,setDados] =
+    useState<LinhaControle[]>([]);
 
+  const [origem,setOrigem] =
+    useState("");
 
-  const [origem,setOrigem] = useState("");
-  const [status,setStatus] = useState("");
-const [responsavelSelecionado,setResponsavelSelecionado] =
-  useState("");
+  const [status,setStatus] =
+    useState("");
+
+  const [
+    responsavelSelecionado,
+    setResponsavelSelecionado
+  ] = useState("");
 
   const [ordenacao,setOrdenacao] =
-    useState<{
-      campo:string;
-      asc:boolean;
-    }>({
+    useState({
       campo:"nota",
       asc:true
     });
@@ -74,7 +76,6 @@ const [responsavelSelecionado,setResponsavelSelecionado] =
         status:r.status_med || "",
         prazo:r.prazo_acao || "",
         data_email:r.data_email || "",
-        basecr:Number(r.basecr || 0),
         obs:r.obs_acao || ""
       });
 
@@ -91,7 +92,6 @@ const [responsavelSelecionado,setResponsavelSelecionado] =
         status:r.status_med || "",
         prazo:r.prazo_acao || "",
         data_email:r.data_email || "",
-        basecr:Number(r.basecr || 0),
         obs:r.obs_acao || ""
       });
 
@@ -108,7 +108,6 @@ const [responsavelSelecionado,setResponsavelSelecionado] =
         status:r.autorizado || "",
         prazo:r.treal_acao || "",
         data_email:"",
-        basecr:0,
         obs:r.des_acao || ""
       });
 
@@ -124,44 +123,30 @@ const [responsavelSelecionado,setResponsavelSelecionado] =
 
   },[]);
 
-  const statusLista = useMemo(()=>{
+  const dadosOrigem = useMemo(()=>{
 
-  let base = dados;
+    if(!origem) return dados;
 
-  if(responsavelSelecionado){
-
-    base = dados.filter(
-      x =>
-        x.responsavel ===
-        responsavelSelecionado
+    return dados.filter(
+      x => x.origem === origem
     );
 
-  }
-
-  const mapa:Record<string,number> = {};
-
-  base.forEach(x=>{
-
-    if(!x.status) return;
-
-    mapa[x.status] =
-      (mapa[x.status] || 0) + 1;
-
-  });
-
-  return Object.entries(mapa)
-    .sort((a,b)=>b[1]-a[1]);
-
-},[
-  dados,
-  responsavelSelecionado
-]);
+  },[
+    dados,
+    origem
+  ]);
 
   const ranking = useMemo(()=>{
 
+    if(
+      origem === "PRODUTIVIDADE"
+    ){
+      return [];
+    }
+
     const mapa:Record<string,number> = {};
 
-    dados.forEach(r=>{
+    dadosOrigem.forEach(r=>{
 
       if(!r.responsavel) return;
 
@@ -170,32 +155,71 @@ const [responsavelSelecionado,setResponsavelSelecionado] =
 
     });
 
-    return Object.entries(mapa)
-      .sort((a,b)=>b[1]-a[1])
-      .slice(0,30);
+    return Object
+      .entries(mapa)
+      .sort((a,b)=>b[1]-a[1]);
 
-  },[dados]);
+  },[
+    dadosOrigem,
+    origem
+  ]);
+
+  const statusLista = useMemo(()=>{
+
+    let base = dadosOrigem;
+
+    if(responsavelSelecionado){
+
+      base = base.filter(
+        x =>
+          x.responsavel ===
+          responsavelSelecionado
+      );
+
+    }
+
+    const mapa:Record<string,number> = {};
+
+    base.forEach(x=>{
+
+      if(!x.status) return;
+
+      mapa[x.status] =
+        (mapa[x.status] || 0) + 1;
+
+    });
+
+    return Object
+      .entries(mapa)
+      .sort((a,b)=>b[1]-a[1]);
+
+  },[
+    dadosOrigem,
+    responsavelSelecionado
+  ]);
 
   const dadosFiltrados = useMemo(()=>{
 
-let lista = dados.filter(r=>{
+    let lista = [...dadosOrigem];
 
-  if(origem && r.origem !== origem)
-    return false;
+    if(responsavelSelecionado){
 
-  if(
-    responsavelSelecionado &&
-    r.responsavel !==
-    responsavelSelecionado
-  )
-    return false;
+      lista = lista.filter(
+        x =>
+          x.responsavel ===
+          responsavelSelecionado
+      );
 
-  if(status && r.status !== status)
-    return false;
+    }
 
-  return true;
+    if(status){
 
-});
+      lista = lista.filter(
+        x =>
+          x.status === status
+      );
+
+    }
 
     lista.sort((a:any,b:any)=>{
 
@@ -218,36 +242,37 @@ let lista = dados.filter(r=>{
     return lista;
 
   },[
-  dados,
-  origem,
-  responsavelSelecionado,
-  status,
-  ordenacao
-]);
+    dadosOrigem,
+    responsavelSelecionado,
+    status,
+    ordenacao
+  ]);
 
   const totalMeta =
-    dados.filter(x=>x.origem==="META").length;
+    dados.filter(
+      x=>x.origem==="META"
+    ).length;
 
   const totalFree =
-    dados.filter(x=>x.origem==="FREE").length;
+    dados.filter(
+      x=>x.origem==="FREE"
+    ).length;
 
   const totalProd =
     dados.filter(
       x=>x.origem==="PRODUTIVIDADE"
     ).length;
 
-  const totalBaseCr =
-    dados.reduce(
-      (a,b)=>a+b.basecr,
-      0
-    );
-
   const totalResponsaveis =
     new Set(
-      dados.map(x=>x.responsavel)
+      dados
+        .map(x=>x.responsavel)
+        .filter(Boolean)
     ).size;
 
-  function ordenar(campo:string){
+  function ordenar(
+    campo:string
+  ){
 
     setOrdenacao(prev=>({
 
@@ -261,7 +286,7 @@ let lista = dados.filter(r=>{
     }));
 
   }
-
+```tsx
   return(
 
     <div style={styles.container}>
@@ -273,53 +298,69 @@ let lista = dados.filter(r=>{
           <div style={styles.grupo}>
 
             <button
-  style={{
-    ...styles.button,
-    ...(origem==="META"
-      ? styles.botaoSelecionado
-      : {})
-  }}
-  onClick={()=>{
-    setOrigem("META");
-    setStatus("");
-    setResponsavelSelecionado("");
-  }}
->
-  META
-</button>
+              style={{
+                ...styles.button,
+                ...(origem==="META"
+                  ? styles.botaoSelecionado
+                  : {})
+              }}
+              onClick={()=>{
+                setOrigem("META");
+                setStatus("");
+                setResponsavelSelecionado("");
+              }}
+            >
+              META
+            </button>
 
-<button
-  style={{
-    ...styles.button,
-    ...(origem==="FREE"
-      ? styles.botaoSelecionado
-      : {})
-  }}
-  onClick={()=>{
-    setOrigem("FREE");
-    setStatus("");
-    setResponsavelSelecionado("");
-  }}
->
-  FREE
-</button>
+            <button
+              style={{
+                ...styles.button,
+                ...(origem==="FREE"
+                  ? styles.botaoSelecionado
+                  : {})
+              }}
+              onClick={()=>{
+                setOrigem("FREE");
+                setStatus("");
+                setResponsavelSelecionado("");
+              }}
+            >
+              FREE
+            </button>
 
-<button
-  style={{
-    ...styles.button,
-    ...(origem==="PRODUTIVIDADE"
-      ? styles.botaoSelecionado
-      : {})
-  }}
-  onClick={()=>{
-    setOrigem("PRODUTIVIDADE");
-    setStatus("");
-    setResponsavelSelecionado("");
-  }}
->
-  PRODUTIVIDADE
-</button>
-            
+            <button
+              style={{
+                ...styles.button,
+                ...(origem==="PRODUTIVIDADE"
+                  ? styles.botaoSelecionado
+                  : {})
+              }}
+              onClick={()=>{
+                setOrigem("PRODUTIVIDADE");
+                setStatus("");
+                setResponsavelSelecionado("");
+              }}
+            >
+              PRODUTIVIDADE
+            </button>
+
+            <button
+              style={{
+                ...styles.button,
+                ...(origem===""
+                  ? styles.botaoSelecionado
+                  : {})
+              }}
+              onClick={()=>{
+                setOrigem("");
+                setStatus("");
+                setResponsavelSelecionado("");
+              }}
+            >
+              TODOS
+            </button>
+
           </div>
 
           <button
@@ -349,53 +390,70 @@ let lista = dados.filter(r=>{
           </div>
 
           <div style={styles.card}>
-            <div>BASE CR</div>
-            <h2>
-              {totalBaseCr.toLocaleString("pt-BR")}
-            </h2>
-          </div>
-
-          <div style={styles.card}>
             <div>RESPONSÁVEIS</div>
             <h2>{totalResponsaveis}</h2>
           </div>
 
         </div>
 
+        <div style={styles.statusContainer}>
+
+          {statusLista.map(s=>(
+
+            <button
+              key={s[0]}
+              style={{
+                ...styles.button,
+                ...(status===s[0]
+                  ? styles.botaoSelecionado
+                  : {})
+              }}
+              onClick={()=>
+                setStatus(s[0])
+              }
+            >
+              {s[0]} ({s[1]})
+            </button>
+
+          ))}
+
+        </div>
+
         <div style={styles.corpo}>
 
-  
-<div
-  style={{
-    display:"flex",
-    flexWrap:"wrap",
-    gap:8,
-    marginTop:10
-  }}
->
+          {origem !== "PRODUTIVIDADE" && (
 
-  {statusLista.map(s=>(
+            <div style={styles.ranking}>
 
-    <button
-      key={s[0]}
-      style={{
-        ...styles.button,
-        ...(status===s[0]
-          ? styles.botaoSelecionado
-          : {})
-      }}
-      onClick={()=>
-        setStatus(s[0])
-      }
-    >
-      {s[0]} ({s[1]})
-    </button>
+              <h3>Responsáveis</h3>
 
-  ))}
+              {ranking.map(r => (
 
-</div>
-      
-  <div style={styles.tabelaCard}>
+                <button
+                  key={r[0]}
+                  style={{
+                    ...styles.rankButton,
+                    ...(responsavelSelecionado===r[0]
+                      ? styles.botaoSelecionado
+                      : {})
+                  }}
+                  onClick={()=>{
+                    setResponsavelSelecionado(
+                      r[0]
+                    );
+                    setStatus("");
+                  }}
+                >
+                  {r[0]} ({r[1]})
+                </button>
+
+              ))}
+
+            </div>
+
+          )}
+
+          <div style={styles.tabelaCard}>
 
             <table style={styles.table}>
 
@@ -403,27 +461,51 @@ let lista = dados.filter(r=>{
 
                 <tr>
 
-                  <th onClick={()=>ordenar("regional")}>
+                  <th
+                    onClick={()=>
+                      ordenar("regional")
+                    }
+                  >
                     REGIONAL
                   </th>
 
-                  <th onClick={()=>ordenar("nota")}>
+                  <th
+                    onClick={()=>
+                      ordenar("nota")
+                    }
+                  >
                     NOTA
                   </th>
 
-                  <th onClick={()=>ordenar("medida")}>
+                  <th
+                    onClick={()=>
+                      ordenar("medida")
+                    }
+                  >
                     MEDIDA
                   </th>
 
-                  <th onClick={()=>ordenar("responsavel")}>
+                  <th
+                    onClick={()=>
+                      ordenar("responsavel")
+                    }
+                  >
                     RESPONSÁVEL
                   </th>
 
-                  <th onClick={()=>ordenar("status")}>
+                  <th
+                    onClick={()=>
+                      ordenar("status")
+                    }
+                  >
                     STATUS
                   </th>
 
-                  <th onClick={()=>ordenar("prazo")}>
+                  <th
+                    onClick={()=>
+                      ordenar("prazo")
+                    }
+                  >
                     PRAZO
                   </th>
 
@@ -437,15 +519,21 @@ let lista = dados.filter(r=>{
 
               <tbody>
 
+                ```tsx id="4x31zq"
                 {dadosFiltrados.map((r,i)=>(
 
                   <tr key={i}>
 
                     <td>{r.regional}</td>
+
                     <td>{r.nota}</td>
+
                     <td>{r.medida}</td>
+
                     <td>{r.responsavel}</td>
+
                     <td>{r.status}</td>
+
                     <td>{r.prazo}</td>
 
                     <td>{r.obs}</td>
@@ -469,19 +557,23 @@ let lista = dados.filter(r=>{
   );
 
 }
-
-const styles:{[key:string]:React.CSSProperties}={
+```tsx id="pjz4i6"
+const styles:{
+  [key:string]:
+  React.CSSProperties
+}={
 
   container:{
     minHeight:"100vh",
-    backgroundImage:"url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')",
+    backgroundImage:
+      "url('https://www.neoenergia.com/documents/107588/2280860/Neoenergia_Caminho_da_energia_da_geracao_a_distribuicao+c+%281%29.jpg')",
     backgroundSize:"cover",
     backgroundPosition:"center"
   },
 
   overlay:{
-    background:"rgba(0,0,0,0.65)",
     minHeight:"100vh",
+    background:"rgba(0,0,0,0.70)",
     padding:"20px",
     color:"white"
   },
@@ -489,61 +581,91 @@ const styles:{[key:string]:React.CSSProperties}={
   topo:{
     display:"flex",
     justifyContent:"space-between",
-    marginBottom:20,
+    alignItems:"center",
+    gap:"10px",
+    marginBottom:"20px",
     flexWrap:"wrap"
   },
 
   grupo:{
     display:"flex",
-    gap:8,
+    gap:"8px",
     flexWrap:"wrap"
+  },
+
+  button:{
+    padding:"10px 14px",
+    borderRadius:"8px",
+    border:"none",
+    cursor:"pointer",
+    fontWeight:600
+  },
+
+  botaoSelecionado:{
+    background:"#f39c12",
+    color:"#fff",
+    fontWeight:"bold"
   },
 
   cards:{
     display:"grid",
-    gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",
-    gap:12,
-    marginBottom:20
+    gridTemplateColumns:
+      "repeat(auto-fit,minmax(180px,1fr))",
+    gap:"12px",
+    marginBottom:"20px"
   },
 
   card:{
-    background:"rgba(255,255,255,0.12)",
-    padding:14,
-    borderRadius:10,
-    textAlign:"center"
+    background:
+      "rgba(255,255,255,0.12)",
+    padding:"15px",
+    borderRadius:"10px",
+    textAlign:"center",
+    backdropFilter:"blur(4px)"
+  },
+
+  statusContainer:{
+    display:"flex",
+    flexWrap:"wrap",
+    gap:"8px",
+    marginBottom:"15px"
   },
 
   corpo:{
     display:"flex",
-    gap:20
+    gap:"15px",
+    alignItems:"flex-start"
   },
 
   ranking:{
-    width:250,
-    background:"rgba(255,255,255,0.1)",
-    padding:10,
-    borderRadius:10
+    width:"260px",
+    minWidth:"260px",
+    maxHeight:"75vh",
+    overflowY:"auto",
+    background:
+      "rgba(255,255,255,0.10)",
+    padding:"12px",
+    borderRadius:"10px"
   },
 
-botaoSelecionado:{
-  background:"#f39c12",
-  color:"#fff",
-  fontWeight:"bold"
-},
-  
   rankButton:{
     width:"100%",
-    marginBottom:5,
-    padding:8,
+    textAlign:"left",
+    padding:"8px",
+    marginBottom:"6px",
+    borderRadius:"6px",
+    border:"none",
     cursor:"pointer"
   },
 
   tabelaCard:{
     flex:1,
-    overflowX:"auto",
-    background:"rgba(255,255,255,0.1)",
-    padding:10,
-    borderRadius:10
+    overflow:"auto",
+    background:
+      "rgba(255,255,255,0.10)",
+    padding:"10px",
+    borderRadius:"10px",
+    minHeight:"600px"
   },
 
   table:{
@@ -551,13 +673,8 @@ botaoSelecionado:{
     borderCollapse:"collapse",
     background:"white",
     color:"black"
-  },
-
-  button:{
-    padding:"8px 12px",
-    borderRadius:8,
-    cursor:"pointer"
   }
 
 };
+
 
