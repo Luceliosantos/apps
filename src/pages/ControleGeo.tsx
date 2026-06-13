@@ -34,11 +34,11 @@ export default function ControleGeo({ setPagina }: Props){
     setResponsavelSelecionado
   ] = useState("");
 
-  const [ordenacao,setOrdenacao] =
-    useState({
-      campo:"nota",
-      asc:true
-    });
+const [ordenacao,setOrdenacao] =
+  useState({
+    campo:"prazo",
+    asc:true
+  });
 
   async function carregarDados(){
 
@@ -240,8 +240,15 @@ const ranking = useMemo(()=>{
       const campo =
         ordenacao.campo as keyof LinhaControle;
 
-      const va:any = a[campo];
-      const vb:any = b[campo];
+let va:any = a[campo];
+let vb:any = b[campo];
+
+if(campo === "prazo"){
+
+  va = new Date(a.prazo).getTime();
+  vb = new Date(b.prazo).getTime();
+
+}
 
       if(va < vb)
         return ordenacao.asc ? -1 : 1;
@@ -301,6 +308,24 @@ const ranking = useMemo(()=>{
 
   }
 
+function setaOrdenacao(
+  campo:string
+){
+
+  if(
+    ordenacao.campo !== campo
+  ){
+    return "";
+  }
+
+  return ordenacao.asc
+    ? " ▲"
+    : " ▼";
+
+}
+
+
+  
   return(
 
     <div style={styles.container}>
@@ -463,53 +488,58 @@ const ranking = useMemo(()=>{
 
                 <tr>
 
-                  <th
-                    onClick={()=>
-                      ordenar("regional")
-                    }
-                  >
-                    REGIONAL
-                  </th>
+<th
+  style={styles.th}
+  onClick={()=>
+    ordenar("regional")
+  }
+>
+  REGIONAL{setaOrdenacao("regional")}
+</th>
 
                   <th
-                    onClick={()=>
-                      ordenar("nota")
-                    }
-                  >
-                    NOTA
-                  </th>
+  onClick={()=>
+    ordenar("nota")
+  }
+>
+  NOTA{setaOrdenacao("nota")}
+</th>
 
-                  <th
-                    onClick={()=>
-                      ordenar("medida")
-                    }
-                  >
-                    MEDIDA
-                  </th>
+<th
+  style={styles.th}
+  onClick={()=>
+    ordenar("medida")
+  }
+>
+  MEDIDA{setaOrdenacao("medida")}
+</th>
 
-                  <th
-                    onClick={()=>
-                      ordenar("responsavel")
-                    }
-                  >
-                    RESPONSÁVEL
-                  </th>
+<th
+  style={styles.th}
+  onClick={()=>
+    ordenar("responsavel")
+  }
+>
+  RESPONSÁVEL{setaOrdenacao("responsavel")}
+</th>
 
-                  <th
-                    onClick={()=>
-                      ordenar("status")
-                    }
-                  >
-                    STATUS
-                  </th>
+<th
+  style={styles.th}
+  onClick={()=>
+    ordenar("status")
+  }
+>
+  STATUS{setaOrdenacao("status")}
+</th>
 
-                  <th
-                    onClick={()=>
-                      ordenar("prazo")
-                    }
-                  >
-                    PRAZO
-                  </th>
+<th
+  style={styles.th}
+  onClick={()=>
+    ordenar("prazo")
+  }
+>
+  PRAZO{setaOrdenacao("prazo")}
+</th>
 
                   <th>
                     OBS
@@ -535,7 +565,13 @@ const ranking = useMemo(()=>{
 
                     <td>{r.status}</td>
 
-                    <td>{r.prazo}</td>
+                    <td>
+  {r.prazo
+    ? new Date(r.prazo)
+        .toLocaleDateString("pt-BR")
+    : ""
+  }
+</td>
 
                     <td>{r.obs}</td>
 
@@ -564,6 +600,11 @@ const styles:{
   React.CSSProperties
 }={
 
+
+
+
+
+  
   container:{
     minHeight:"100vh",
     backgroundImage:
@@ -674,7 +715,17 @@ const styles:{
     borderCollapse:"collapse",
     background:"white",
     color:"black"
-  }
+  },
+
+th:{
+  cursor:"pointer",
+  background:"#f1f1f1",
+  position:"sticky",
+  top:0,
+  zIndex:10,
+  padding:"8px",
+  border:"1px solid #ddd"
+}
 
 };
 
