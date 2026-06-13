@@ -750,36 +750,6 @@ td:{
   color:"black",
   textAlign:"center",
   whiteSpace:"nowrap"
-},
-
-table:{
-  borderCollapse:"collapse",
-  fontSize:13,
-  background:"white",
-  color:"black",
-  width:"100%",
-  minWidth:1200
-},
-
-th:{
-  cursor:"pointer",
-  background:"#cfe8ff",
-  color:"#000",
-  border:"1px solid #7fb3ff",
-  padding:"6px 8px",
-  whiteSpace:"nowrap",
-  position:"sticky",
-  top:0,
-  zIndex:10
-},
-
-td:{
-  border:"1px solid #ccc",
-  padding:"6px 8px",
-  background:"white",
-  color:"black",
-  textAlign:"center",
-  whiteSpace:"nowrap"
 }
 
 };
