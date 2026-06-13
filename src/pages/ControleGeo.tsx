@@ -6,6 +6,7 @@ type Props = {
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
 };
 
+
 type LinhaControle = {
   origem:string;
   regional:string;
