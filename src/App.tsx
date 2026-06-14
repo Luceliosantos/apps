@@ -495,9 +495,10 @@ if(pagina === "controle_geo"){
 
   return(
 
-    <ControleGeo
-      setPagina={setPagina}
-    />
+<ControleGeo
+  setPagina={setPagina}
+  permissoes={permissoes}
+/>
 
   );
 
