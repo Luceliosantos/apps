@@ -505,7 +505,8 @@ function setaOrdenacao(
   REGIONAL{setaOrdenacao("regional")}
 </th>
 
-                  <th
+<th
+  style={styles.th}
   onClick={()=>
     ordenar("nota")
   }
@@ -549,9 +550,9 @@ function setaOrdenacao(
   PRAZO{setaOrdenacao("prazo")}
 </th>
 
-                  <th>
-                    OBS
-                  </th>
+<th style={styles.th}>
+  OBS
+</th>
 
                 </tr>
 
@@ -581,7 +582,7 @@ function setaOrdenacao(
   }
 </td>
 
-<td style={styles.td}>
+<td style={styles.tdObs}>
   {r.obs}
 </td>
 
@@ -753,7 +754,25 @@ td:{
   textAlign:"center",
   whiteSpace:"nowrap"
 }
+tdObs:{
+  border:"1px solid #ccc",
+  padding:"6px 8px",
+  background:"white",
+  color:"black",
+  textAlign:"left",
+  whiteSpace:"normal",
+  wordBreak:"break-word",
+  minWidth:"350px",
+  maxWidth:"500px"
+},
 
+
+
+
+
+
+
+  
 };
 
 
