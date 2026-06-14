@@ -753,7 +753,8 @@ td:{
   color:"black",
   textAlign:"center",
   whiteSpace:"nowrap"
-}
+},
+  
 tdObs:{
   border:"1px solid #ccc",
   padding:"6px 8px",
@@ -764,15 +765,8 @@ tdObs:{
   wordBreak:"break-word",
   minWidth:"350px",
   maxWidth:"500px"
-},
-
-
-
-
-
-
-
-  
+}
+ 
 };
 
 
