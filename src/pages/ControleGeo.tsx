@@ -694,9 +694,10 @@ onClick={()=>{
 )}
         <div style={styles.corpo}>
 
-          {origem !== "PRODUTIVIDADE" && (
+         {origem !== "PRODUTIVIDADE" && (
 
-            <div style={styles.ranking}>
+  <>
+    <div style={styles.ranking}>
 
               <h3
                 
@@ -735,8 +736,12 @@ onClick={()=>{
 {resultadoBusca.length > 0 && (
 
   <div style={styles.tabelaResultado}>
-     ...
+    SUA TABELA DE RESULTADOS
   </div>
+
+)}
+
+  </>
 
 )}
 
