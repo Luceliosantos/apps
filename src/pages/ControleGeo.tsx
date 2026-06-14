@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { Pagina } from "../App";
+import * as XLSX from "xlsx";
 
 type Props = {
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
@@ -361,6 +362,56 @@ function corLinha(
   };
 
 }
+
+function exportarExcel(){
+
+  const dadosExcel =
+    dadosFiltrados.map(r=>({
+
+      REGIONAL:r.regional,
+      NOTA:r.nota,
+      MEDIDA:r.medida,
+      RESPONSAVEL:r.responsavel,
+      STATUS:r.status,
+      PRAZO:r.prazo
+        ? new Date(r.prazo)
+            .toLocaleDateString("pt-BR")
+        : "",
+      OBS:r.obs
+
+    }));
+
+  const ws =
+    XLSX.utils.json_to_sheet(
+      dadosExcel
+    );
+
+  const wb =
+    XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(
+    wb,
+    ws,
+    origem
+  );
+
+  XLSX.writeFile(
+    wb,
+    `controle_geo_${origem}.xlsx`
+  );
+
+}
+
+
+
+
+
+
+
+
+
+
+
   
   return(
 
@@ -424,12 +475,28 @@ function corLinha(
 
           </div>
 
-          <button
-            style={styles.button}
-            onClick={()=>setPagina("menu")}
-          >
-            Voltar
-          </button>
+<div
+  style={{
+    display:"flex",
+    gap:"8px"
+  }}
+>
+
+  <button
+    style={styles.button}
+    onClick={exportarExcel}
+  >
+    Excel
+  </button>
+
+  <button
+    style={styles.button}
+    onClick={()=>setPagina("menu")}
+  >
+    Voltar
+  </button>
+
+</div>
 
         </div>
 
