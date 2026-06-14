@@ -538,9 +538,10 @@ function exportarExcel(){
                   ? styles.botaoSelecionado
                   : {})
               }}
-              onClick={()=>
-                setStatus(s[0])
-              }
+onClick={()=>{
+  setStatus(s[0]);
+  setResponsavelSelecionado("");
+}}
             >
               {s[0]} ({s[1]})
             </button>
@@ -579,7 +580,6 @@ function exportarExcel(){
                     setResponsavelSelecionado(
                       r[0]
                     );
-                    setStatus("");
                   }}
                 >
                   {r[0]} ({r[1]})
