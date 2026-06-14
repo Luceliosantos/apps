@@ -433,24 +433,6 @@ async function buscarDivergencias(){
   setResultadoBusca(data || []);
   setListaInferiorAtiva("divergencias");
 }
-
-async function buscarDivergencias(){
-
-  const { data } = await supabase
-    .from("db_acomp_geo")
-    .select("*")
-    .is("resp_geral", null)
-    .not("status_med", "ilike", "%CONC%")
-    .not("status_med", "ilike", "%CANC%")
-    .not("status_med", "ilike", "%ENCE%")
-    .order("base_cr", {
-      ascending:false,
-      nullsFirst:false
-    });
-
-  setResultadoBusca(data || []);
-  setListaInferiorAtiva("divergencias");
-}
   
 function exportarExcel(){
 
@@ -643,109 +625,7 @@ function exportarExcel(){
   </button>
 
 
-{resultadoBusca.length > 0 && (
 
-  <div style={styles.tabelaResultado}>
-
-    <table style={styles.table}>
-
-      <thead>
-
-        <tr>
-
-          <th style={styles.th}>REG.</th>
-          <th style={styles.th}>NOTA</th>
-          <th style={styles.th}>MOD.</th>
-          <th style={styles.th}>BASE_CR</th>
-          <th style={styles.th}>MED</th>
-          <th style={styles.th}>LN</th>
-          <th style={styles.th}>TIPO</th>
-          <th style={styles.th}>STATUS</th>
-          <th style={styles.th}>OBS</th>
-          <th style={styles.th}>RESPONSÁVEL</th>
-
-        </tr>
-
-      </thead>
-
-      <tbody>
-
-        {resultadoBusca.map(r=>{
-
-          const statusFormatado =
-            (r.tipo==="MDCO" &&
-             r.medida==="0614" &&
-             r.status_med)
-              ? `*${r.status_med}*`
-              : r.status_med;
-
-          return(
-
-            <tr key={r.id}>
-
-              <td style={styles.td}>
-                {r.regional}
-              </td>
-
-              <td style={styles.td}>
-                {r.nota}
-              </td>
-
-              <td style={styles.td}>
-                {r.modalidade}
-              </td>
-
-              <td style={styles.td}>
-                {Number(r.base_cr)
-                  .toLocaleString(
-                    "pt-BR",
-                    {
-                      style:"currency",
-                      currency:"BRL"
-                    }
-                  )}
-              </td>
-
-              <td style={styles.td}>
-                {r.medida}
-              </td>
-
-              <td style={styles.td}>
-                {r.linha_med}
-              </td>
-
-              <td style={styles.td}>
-                {r.tipo}
-              </td>
-
-              <td style={styles.td}>
-                {statusFormatado}
-              </td>
-
-              <td style={styles.td}>
-                {r.obs}
-              </td>
-
-              <td style={styles.td}>
-                {(r.tipo==="MDCO" &&
-                  r.medida==="0614")
-                    ? "****"
-                    : r.resp_geral}
-              </td>
-
-            </tr>
-
-          );
-
-        })}
-
-      </tbody>
-
-    </table>
-
-  </div>
-
-)}
 
 
 
@@ -851,6 +731,18 @@ onClick={()=>{
 
             </div>
 
+{resultadoBusca.length > 0 && (
+
+  <div style={styles.tabelaResultado}>
+
+    SUA TABELA DE RESULTADOS
+
+  </div>
+
+)}
+
+
+      
           )}
 
           <div style={styles.tabelaCard}>
