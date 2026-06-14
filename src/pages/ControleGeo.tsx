@@ -497,7 +497,10 @@ function setaOrdenacao(
                 <tr>
 
 <th
-  style={styles.th}
+  style={{
+    ...styles.th,
+    width:"80px"
+  }}
   onClick={()=>
     ordenar("regional")
   }
@@ -506,7 +509,10 @@ function setaOrdenacao(
 </th>
 
 <th
-  style={styles.th}
+  style={{
+    ...styles.th,
+    width:"140px"
+  }}
   onClick={()=>
     ordenar("nota")
   }
@@ -515,7 +521,10 @@ function setaOrdenacao(
 </th>
 
 <th
-  style={styles.th}
+  style={{
+    ...styles.th,
+    width:"70px"
+  }}
   onClick={()=>
     ordenar("medida")
   }
@@ -524,7 +533,10 @@ function setaOrdenacao(
 </th>
 
 <th
-  style={styles.th}
+  style={{
+    ...styles.th,
+    width:"130px"
+  }}
   onClick={()=>
     ordenar("responsavel")
   }
@@ -533,7 +545,10 @@ function setaOrdenacao(
 </th>
 
 <th
-  style={styles.th}
+  style={{
+    ...styles.th,
+    width:"120px"
+  }}
   onClick={()=>
     ordenar("status")
   }
@@ -542,7 +557,10 @@ function setaOrdenacao(
 </th>
 
 <th
-  style={styles.th}
+  style={{
+    ...styles.th,
+    width:"100px"
+  }}
   onClick={()=>
     ordenar("prazo")
   }
@@ -550,7 +568,9 @@ function setaOrdenacao(
   PRAZO{setaOrdenacao("prazo")}
 </th>
 
-<th style={styles.th}>
+<th
+  style={styles.th}
+>
   OBS
 </th>
 
@@ -729,7 +749,7 @@ table:{
   background:"white",
   color:"black",
   width:"100%",
-  minWidth:1200
+  tableLayout:"fixed"
 },
 
 th:{
@@ -762,9 +782,7 @@ tdObs:{
   color:"black",
   textAlign:"left",
   whiteSpace:"normal",
-  wordBreak:"break-word",
-  minWidth:"350px",
-  maxWidth:"500px"
+  overflowWrap:"anywhere"
 }
  
 };
