@@ -324,7 +324,43 @@ function setaOrdenacao(
 
 }
 
+function corLinha(
+  prazo:string
+){
 
+  if(!prazo) return {};
+
+  const hoje = new Date();
+  hoje.setHours(0,0,0,0);
+
+  const dataPrazo =
+    new Date(prazo);
+
+  dataPrazo.setHours(0,0,0,0);
+
+  if(
+    dataPrazo.getTime() <
+    hoje.getTime()
+  ){
+    return {
+      background:"#f8d7da"
+    };
+  }
+
+  if(
+    dataPrazo.getTime() ===
+    hoje.getTime()
+  ){
+    return {
+      background:"#fff3cd"
+    };
+  }
+
+  return {
+    background:"#d4edda"
+  };
+
+}
   
   return(
 
@@ -511,7 +547,7 @@ function setaOrdenacao(
 <th
   style={{
     ...styles.th,
-    width:"140px"
+    width:"110px"
   }}
   onClick={()=>
     ordenar("nota")
@@ -547,7 +583,7 @@ function setaOrdenacao(
 <th
   style={{
     ...styles.th,
-    width:"120px"
+    width:"100px"
   }}
   onClick={()=>
     ordenar("status")
@@ -582,7 +618,10 @@ function setaOrdenacao(
 
                 {dadosFiltrados.map((r,i)=>(
 
-                  <tr key={i}>
+                  <tr
+  key={i}
+  style={corLinha(r.prazo)}
+>
 
                     <td style={styles.td}>{r.regional}</td>
 
@@ -769,7 +808,6 @@ th:{
 td:{
   border:"1px solid #ccc",
   padding:"6px 8px",
-  background:"white",
   color:"black",
   textAlign:"center",
   whiteSpace:"nowrap"
@@ -778,7 +816,6 @@ td:{
 tdObs:{
   border:"1px solid #ccc",
   padding:"6px 8px",
-  background:"white",
   color:"black",
   textAlign:"left",
   whiteSpace:"normal",
