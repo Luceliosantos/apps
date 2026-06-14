@@ -293,7 +293,9 @@ export default function Usuarios({ setPagina }: Props) {
 
         </div>
 
-        <table style={styles.table}>
+        <div style={styles.tableContainer}>
+
+  <table style={styles.table}>
 
           <thead>
 
@@ -406,7 +408,7 @@ export default function Usuarios({ setPagina }: Props) {
           </tbody>
 
         </table>
-
+</div>
       </div>
 
     </div>
@@ -424,8 +426,7 @@ const styles:{[key:string]:React.CSSProperties} = {
   },
 
   card:{
-    width:"100%",
-    maxWidth:1100,
+  width:"98%",
     background:"white",
     padding:"20px",
     borderRadius:12,
@@ -474,13 +475,16 @@ const styles:{[key:string]:React.CSSProperties} = {
     minWidth:900
   },
 
-  th:{
-    border:"1px solid #ccc",
-    padding:"8px",
-    background:"#1e3c72",
-    color:"white",
-    whiteSpace:"nowrap"
-  },
+th:{
+  border:"1px solid #ccc",
+  padding:"8px",
+  background:"#1e3c72",
+  color:"white",
+  whiteSpace:"nowrap",
+  position:"sticky",
+  top:0,
+  zIndex:100
+},
 
   td:{
     border:"1px solid #ccc",
@@ -541,6 +545,12 @@ const styles:{[key:string]:React.CSSProperties} = {
     color:"white",
     cursor:"pointer",
     fontSize:13
-  }
+  },
 
+tableContainer:{
+  maxHeight:"70vh",
+  overflowY:"auto",
+  overflowX:"auto"
+}
+  
 };
