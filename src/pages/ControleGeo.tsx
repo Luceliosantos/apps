@@ -699,14 +699,15 @@ onClick={()=>{
             <div style={styles.ranking}>
 
               <h3
-  style={{
-    marginTop:0,
-    textAlign:"center",
-    marginBottom:12
-  }}
->
-  Responsáveis
-</h3>
+                
+          style={{
+            marginTop:0,
+            textAlign:"center",
+            marginBottom:12
+          }}
+        >
+          Responsáveis
+        </h3>
 
               {ranking.map(r => (
 
@@ -734,13 +735,10 @@ onClick={()=>{
 {resultadoBusca.length > 0 && (
 
   <div style={styles.tabelaResultado}>
-
-    SUA TABELA DE RESULTADOS
-
+     ...
   </div>
 
 )}
-
 
       
           )}
