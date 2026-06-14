@@ -30,7 +30,8 @@ export default function Usuarios({ setPagina }: Props) {
     "global",
     "chaves",
     "proorc",
-    "acomp_geo"
+    "acomp_geo",
+    "controle_geo"
   ];
 
   useEffect(() => {
@@ -213,12 +214,13 @@ export default function Usuarios({ setPagina }: Props) {
 
     const permissoesPadrao = [
 
-      { sistema:"global", tipo:"usuario" },
-      { sistema:"chaves", tipo:"bloqueado" },
-      { sistema:"proorc", tipo:"bloqueado" },
-      { sistema:"acomp_geo", tipo:"bloqueado" }
+  { sistema:"global", tipo:"usuario" },
+  { sistema:"chaves", tipo:"bloqueado" },
+  { sistema:"proorc", tipo:"bloqueado" },
+  { sistema:"acomp_geo", tipo:"bloqueado" },
+  { sistema:"controle_geo", tipo:"bloqueado" }
 
-    ];
+];
 
     for(const p of permissoesPadrao){
 
