@@ -5,6 +5,7 @@ import * as XLSX from "xlsx";
 
 type Props = {
   setPagina: React.Dispatch<React.SetStateAction<Pagina>>;
+  permissoes:any[];
 };
 
 type LinhaControle = {
@@ -19,7 +20,10 @@ type LinhaControle = {
   obs:string;
 };
 
-export default function ControleGeo({ setPagina }: Props){
+export default function ControleGeo({
+  setPagina,
+  permissoes
+}: Props){
 
   const [dados,setDados] =
     useState<LinhaControle[]>([]);
@@ -41,6 +45,27 @@ const [ordenacao,setOrdenacao] =
     asc:true
   });
 
+const podeVerProdutividade =
+
+  permissoes.some(
+    p =>
+      p.sistema === "global"
+      &&
+      p.tipo === "admin"
+  )
+
+  &&
+
+  permissoes.some(
+    p =>
+      p.sistema === "acomp_geo"
+      &&
+      p.tipo === "admin"
+  );
+
+
+
+  
   async function carregarDados(){
 
     const [
@@ -57,9 +82,15 @@ const [ordenacao,setOrdenacao] =
         .from("db_program_geo_free")
         .select("*"),
 
-      supabase
-        .from("db_program_geo_produtividade")
-        .select("*")
+      podeVerProdutividade
+
+? supabase
+    .from("db_program_geo_produtividade")
+    .select("*")
+
+: Promise.resolve({
+    data:[]
+  } as any)
 
     ]);
 
@@ -455,21 +486,39 @@ function exportarExcel(){
               FREE
             </button>
 
-            <button
-              style={{
-                ...styles.button,
-                ...(origem==="PRODUTIVIDADE"
-                  ? styles.botaoSelecionado
-                  : {})
-              }}
-              onClick={()=>{
-                setOrigem("PRODUTIVIDADE");
-                setStatus("");
-                setResponsavelSelecionado("");
-              }}
-            >
-              PRODUTIVIDADE
-            </button>
+<button
+  disabled={!podeVerProdutividade}
+  style={{
+    ...styles.button,
+
+    ...(origem==="PRODUTIVIDADE"
+      ? styles.botaoSelecionado
+      : {}),
+
+    opacity:
+      podeVerProdutividade
+        ? 1
+        : 0.4,
+
+    cursor:
+      podeVerProdutividade
+        ? "pointer"
+        : "not-allowed"
+  }}
+
+  onClick={()=>{
+
+    if(!podeVerProdutividade)
+      return;
+
+    setOrigem("PRODUTIVIDADE");
+    setStatus("");
+    setResponsavelSelecionado("");
+
+  }}
+>
+  PRODUTIVIDADE
+</button>
 
             
 
