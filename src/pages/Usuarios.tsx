@@ -23,6 +23,16 @@ export default function Usuarios({ setPagina }: Props) {
   const [tipos, setTipos] = useState<TipoPermissao[]>([]);
   const [permissoes, setPermissoes] = useState<any>({});
 
+const [ordenacao,setOrdenacao] =
+  useState({
+
+    campo:"nome",
+
+    asc:true
+
+  });
+
+  
   const [novoNome,setNovoNome] = useState("");
   const [novaMatricula,setNovaMatricula] = useState("");
 
@@ -243,6 +253,71 @@ export default function Usuarios({ setPagina }: Props) {
 
   }
 
+
+function ordenar(
+  campo:string
+){
+
+  setOrdenacao(prev=>({
+
+    campo,
+
+    asc:
+      prev.campo===campo
+        ? !prev.asc
+        : true
+
+  }));
+
+}
+
+function setaOrdenacao(
+  campo:string
+){
+
+  if(
+    ordenacao.campo !== campo
+  ){
+    return "";
+  }
+
+  return ordenacao.asc
+    ? " ▲"
+    : " ▼";
+
+}
+
+const usuariosOrdenados =
+  [...usuarios].sort((a,b)=>{
+
+    const campo =
+      ordenacao.campo;
+
+    let va:any =
+      a[campo as keyof Usuario];
+
+    let vb:any =
+      b[campo as keyof Usuario];
+
+    va = String(va ?? "");
+    vb = String(vb ?? "");
+
+    const comp =
+      va.localeCompare(
+        vb,
+        "pt-BR",
+        { numeric:true }
+      );
+
+    return ordenacao.asc
+      ? comp
+      : -comp;
+
+  });
+
+
+
+  
   return (
 
     <div style={styles.container}>
@@ -301,8 +376,23 @@ export default function Usuarios({ setPagina }: Props) {
 
             <tr>
 
-              <th style={styles.th}>Nome</th>
-              <th style={styles.th}>Matrícula</th>
+              <th
+  style={styles.th}
+  onClick={()=>
+    ordenar("nome")
+  }
+>
+  Nome{setaOrdenacao("nome")}
+</th>
+              
+              <th
+  style={styles.th}
+  onClick={()=>
+    ordenar("matricula")
+  }
+>
+  Matrícula{setaOrdenacao("matricula")}
+</th>
 
               {sistemas.map(s => (
                 <th key={s} style={styles.th}>{s}</th>
@@ -316,7 +406,7 @@ export default function Usuarios({ setPagina }: Props) {
 
           <tbody>
 
-            {usuarios.map(u => (
+            {usuariosOrdenados.map(u => (
 
               <tr key={u.id}>
 
@@ -483,7 +573,8 @@ th:{
   whiteSpace:"nowrap",
   position:"sticky",
   top:0,
-  zIndex:100
+  zIndex:100,
+  cursor:"pointer"
 },
 
   td:{
