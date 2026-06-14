@@ -28,6 +28,15 @@ export default function ControleGeo({
   const [dados,setDados] =
     useState<LinhaControle[]>([]);
 
+  const [buscaNota,setBuscaNota] =
+  useState("");
+
+const [resultadoBusca,setResultadoBusca] =
+  useState<any[]>([]);
+
+const [listaInferiorAtiva,setListaInferiorAtiva] =
+  useState("");
+  
   const [origem,setOrigem] =
   useState("META");
 
@@ -394,6 +403,55 @@ function corLinha(
 
 }
 
+async function buscarNota(){
+
+  if(!buscaNota) return;
+
+  const { data } = await supabase
+    .from("db_acomp_geo")
+    .select("*")
+    .eq("nota", buscaNota);
+
+  setResultadoBusca(data || []);
+  setListaInferiorAtiva("busca");
+}
+
+async function buscarDivergencias(){
+
+  const { data } = await supabase
+    .from("db_acomp_geo")
+    .select("*")
+    .is("resp_geral", null)
+    .not("status_med", "ilike", "%CONC%")
+    .not("status_med", "ilike", "%CANC%")
+    .not("status_med", "ilike", "%ENCE%")
+    .order("base_cr", {
+      ascending:false,
+      nullsFirst:false
+    });
+
+  setResultadoBusca(data || []);
+  setListaInferiorAtiva("divergencias");
+}
+
+async function buscarDivergencias(){
+
+  const { data } = await supabase
+    .from("db_acomp_geo")
+    .select("*")
+    .is("resp_geral", null)
+    .not("status_med", "ilike", "%CONC%")
+    .not("status_med", "ilike", "%CANC%")
+    .not("status_med", "ilike", "%ENCE%")
+    .order("base_cr", {
+      ascending:false,
+      nullsFirst:false
+    });
+
+  setResultadoBusca(data || []);
+  setListaInferiorAtiva("divergencias");
+}
+  
 function exportarExcel(){
 
   const dadosExcel =
@@ -520,9 +578,48 @@ function exportarExcel(){
   PRODUTIVIDADE
 </button>
 
-            
+  <button
+  style={{
+    ...styles.button,
 
-          </div>
+    ...(listaInferiorAtiva==="divergencias"
+      ? styles.botaoSelecionado
+      : {})
+  }}
+
+  onClick={buscarDivergencias}
+>
+  DIVERGÊNCIAS
+</button>          
+
+</div>
+
+<div
+  style={{
+    display:"flex",
+    alignItems:"center",
+    gap:"8px",
+    marginLeft:"200px"
+  }}
+>
+
+  <input
+    value={buscaNota}
+    onChange={(e)=>
+      setBuscaNota(e.target.value)
+    }
+    placeholder="NUMERO DA NOTA"
+    style={styles.input}
+  />
+
+  <button
+    style={styles.button}
+    onClick={buscarNota}
+  >
+    Buscar
+  </button>
+
+</div>
 
 <div
   style={{
@@ -545,7 +642,123 @@ function exportarExcel(){
     Voltar
   </button>
 
+
+{resultadoBusca.length > 0 && (
+
+  <div style={styles.tabelaResultado}>
+
+    <table style={styles.table}>
+
+      <thead>
+
+        <tr>
+
+          <th style={styles.th}>REG.</th>
+          <th style={styles.th}>NOTA</th>
+          <th style={styles.th}>MOD.</th>
+          <th style={styles.th}>BASE_CR</th>
+          <th style={styles.th}>MED</th>
+          <th style={styles.th}>LN</th>
+          <th style={styles.th}>TIPO</th>
+          <th style={styles.th}>STATUS</th>
+          <th style={styles.th}>OBS</th>
+          <th style={styles.th}>RESPONSÁVEL</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        {resultadoBusca.map(r=>{
+
+          const statusFormatado =
+            (r.tipo==="MDCO" &&
+             r.medida==="0614" &&
+             r.status_med)
+              ? `*${r.status_med}*`
+              : r.status_med;
+
+          return(
+
+            <tr key={r.id}>
+
+              <td style={styles.td}>
+                {r.regional}
+              </td>
+
+              <td style={styles.td}>
+                {r.nota}
+              </td>
+
+              <td style={styles.td}>
+                {r.modalidade}
+              </td>
+
+              <td style={styles.td}>
+                {Number(r.base_cr)
+                  .toLocaleString(
+                    "pt-BR",
+                    {
+                      style:"currency",
+                      currency:"BRL"
+                    }
+                  )}
+              </td>
+
+              <td style={styles.td}>
+                {r.medida}
+              </td>
+
+              <td style={styles.td}>
+                {r.linha_med}
+              </td>
+
+              <td style={styles.td}>
+                {r.tipo}
+              </td>
+
+              <td style={styles.td}>
+                {statusFormatado}
+              </td>
+
+              <td style={styles.td}>
+                {r.obs}
+              </td>
+
+              <td style={styles.td}>
+                {(r.tipo==="MDCO" &&
+                  r.medida==="0614")
+                    ? "****"
+                    : r.resp_geral}
+              </td>
+
+            </tr>
+
+          );
+
+        })}
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+)}
+
+
+
+
+
+
+
+
+
+
+  
 </div>
+     
 
         </div>
 
@@ -936,8 +1149,26 @@ tdObs:{
   textAlign:"left",
   whiteSpace:"normal",
   overflowWrap:"anywhere"
-}
- 
+},
+
+tabelaResultado:{
+  marginTop:"20px",
+  background:"rgba(255,255,255,0.08)",
+  padding:"14px",
+  borderRadius:"10px",
+  border:"1px solid rgba(255,255,255,0.25)",
+  backdropFilter:"blur(6px)",
+  overflowX:"auto"
+},
+  
+input:{
+  padding:"8px 10px",
+  borderRadius:6,
+  border:"1px solid #ccc",
+  minWidth:180,
+  color:"black"
+}  
+
 };
 
 
