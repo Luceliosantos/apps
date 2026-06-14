@@ -736,11 +736,13 @@ th:{
   background:"#cfe8ff",
   color:"#000",
   border:"1px solid #7fb3ff",
-  padding:"6px 8px",
+  padding:"8px",
   whiteSpace:"nowrap",
   position:"sticky",
   top:0,
-  zIndex:10
+  zIndex:10,
+  textAlign:"center",
+  fontWeight:"bold"
 },
 
 td:{
