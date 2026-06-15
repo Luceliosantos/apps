@@ -853,23 +853,92 @@ onClick={()=>{
 
         {resultadoBusca.length > 0 && (
 
-          <div style={styles.tabelaResultado}>
+  <div style={styles.tabelaResultado}>
 
-            <h3>
-              {listaInferiorAtiva==="divergencias"
-                ? "Divergências"
-                : "Resultado da Busca"}
-            </h3>
+    <h3>
+      {listaInferiorAtiva==="divergencias"
+        ? "Divergências"
+        : "Resultado da Busca"}
+    </h3>
 
-            <div>
-              Registros encontrados:
-              {" "}
-              {resultadoBusca.length}
-            </div>
+    <table style={styles.table}>
 
-          </div>
+      <thead>
 
-        )}
+        <tr>
+
+          <th style={styles.th}>REG</th>
+          <th style={styles.th}>NOTA</th>
+          <th style={styles.th}>MOD</th>
+          <th style={styles.th}>BASE CR</th>
+          <th style={styles.th}>MED</th>
+          <th style={styles.th}>LN</th>
+          <th style={styles.th}>TIPO</th>
+          <th style={styles.th}>STATUS</th>
+          <th style={styles.th}>OBS</th>
+          <th style={styles.th}>RESP</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        {resultadoBusca.map((r:any,i:number)=>(
+
+          <tr key={i}>
+
+            <td style={styles.td}>
+              {r.regional}
+            </td>
+
+            <td style={styles.td}>
+              {r.nota}
+            </td>
+
+            <td style={styles.td}>
+              {r.modalidade}
+            </td>
+
+            <td style={styles.td}>
+              {r.base_cr}
+            </td>
+
+            <td style={styles.td}>
+              {r.medida}
+            </td>
+
+            <td style={styles.td}>
+              {r.linha_med}
+            </td>
+
+            <td style={styles.td}>
+              {r.tipo}
+            </td>
+
+            <td style={styles.td}>
+              {r.status_med}
+            </td>
+
+            <td style={styles.tdObs}>
+              {r.obs}
+            </td>
+
+            <td style={styles.td}>
+              {r.resp_geral}
+            </td>
+
+          </tr>
+
+        ))}
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+)}
 
       </div>
 
