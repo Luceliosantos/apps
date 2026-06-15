@@ -31,7 +31,7 @@ export default function ControleGeo({
   const [buscaNota,setBuscaNota] =
   useState("");
 
-const [,setResultadoBusca] =
+const [resultadoBusca,setResultadoBusca] =
   useState<any[]>([]);
 
   const [listaInferiorAtiva,setListaInferiorAtiva] =
@@ -851,6 +851,26 @@ onClick={()=>{
 
         </div>
 
+        {resultadoBusca.length > 0 && (
+
+          <div style={styles.tabelaResultado}>
+
+            <h3>
+              {listaInferiorAtiva==="divergencias"
+                ? "Divergências"
+                : "Resultado da Busca"}
+            </h3>
+
+            <div>
+              Registros encontrados:
+              {" "}
+              {resultadoBusca.length}
+            </div>
+
+          </div>
+
+        )}
+
       </div>
 
     </div>
@@ -1016,6 +1036,16 @@ tdObs:{
   overflowWrap:"anywhere"
 },
 
+tabelaResultado:{
+  marginTop:"20px",
+  background:"rgba(255,255,255,0.08)",
+  padding:"14px",
+  borderRadius:"10px",
+  border:"1px solid rgba(255,255,255,0.25)",
+  backdropFilter:"blur(6px)",
+  overflowX:"auto"
+},
+  
 input:{
   padding:"8px 10px",
   borderRadius:6,
@@ -1023,12 +1053,7 @@ input:{
   minWidth:180,
   color:"black"
 }
-
-
-
-
-
-  
+ 
 };
 
 
