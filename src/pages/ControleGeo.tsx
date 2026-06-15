@@ -31,7 +31,7 @@ export default function ControleGeo({
   const [buscaNota,setBuscaNota] =
   useState("");
 
-  const [resultadoBusca,setResultadoBusca] =
+const [,setResultadoBusca] =
   useState<any[]>([]);
 
   const [listaInferiorAtiva,setListaInferiorAtiva] =
