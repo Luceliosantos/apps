@@ -1016,7 +1016,6 @@ tdObs:{
   overflowWrap:"anywhere"
 },
 
-,
 input:{
   padding:"8px 10px",
   borderRadius:6,
