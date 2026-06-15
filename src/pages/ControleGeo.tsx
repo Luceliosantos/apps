@@ -694,56 +694,7 @@ onClick={()=>{
 )}
         <div style={styles.corpo}>
 
-         {origem !== "PRODUTIVIDADE" && (
-
-  <>
-    <div style={styles.ranking}>
-
-              <h3
-                
-          style={{
-            marginTop:0,
-            textAlign:"center",
-            marginBottom:12
-          }}
-        >
-          Responsáveis
-        </h3>
-
-              {ranking.map(r => (
-
-                <button
-                  key={r[0]}
-                  style={{
-                    ...styles.rankButton,
-                    ...(responsavelSelecionado===r[0]
-                      ? styles.botaoSelecionado
-                      : {})
-                  }}
-                  onClick={()=>{
-                    setResponsavelSelecionado(
-                      r[0]
-                    );
-                  }}
-                >
-                  {r[0]} ({r[1]})
-                </button>
-
-              ))}
-
-            </div>
-
-{resultadoBusca.length > 0 && (
-
-  <div style={styles.tabelaResultado}>
-    SUA TABELA DE RESULTADOS
-  </div>
-
-)}
-
-  </>
-
-)}
+        
 
       
           )}
