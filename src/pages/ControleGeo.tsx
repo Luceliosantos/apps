@@ -694,11 +694,6 @@ onClick={()=>{
 )}
         <div style={styles.corpo}>
 
-        
-
-      
-          )}
-
           <div style={styles.tabelaCard}>
 
             <table style={styles.table}>
