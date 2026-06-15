@@ -28,15 +28,6 @@ export default function ControleGeo({
   const [dados,setDados] =
     useState<LinhaControle[]>([]);
 
-  const [buscaNota,setBuscaNota] =
-  useState("");
-
-const [,setResultadoBusca] =
-  useState<any[]>([]);
-
-const [listaInferiorAtiva,setListaInferiorAtiva] =
-  useState("");
-  
   const [origem,setOrigem] =
   useState("META");
 
@@ -211,6 +202,11 @@ const ranking = useMemo(()=>{
     .entries(mapa)
     .sort((a,b)=>b[1]-a[1]);
 
+},[
+  dadosOrigem,
+  origem,
+  status
+]);
 
     
 
@@ -398,37 +394,6 @@ function corLinha(
 
 }
 
-async function buscarNota(){
-
-  if(!buscaNota) return;
-
-  const { data } = await supabase
-    .from("db_acomp_geo")
-    .select("*")
-    .eq("nota", buscaNota);
-
-  setResultadoBusca(data || []);
-  setListaInferiorAtiva("busca");
-}
-
-async function buscarDivergencias(){
-
-  const { data } = await supabase
-    .from("db_acomp_geo")
-    .select("*")
-    .is("resp_geral", null)
-    .not("status_med", "ilike", "%CONC%")
-    .not("status_med", "ilike", "%CANC%")
-    .not("status_med", "ilike", "%ENCE%")
-    .order("base_cr", {
-      ascending:false,
-      nullsFirst:false
-    });
-
-  setResultadoBusca(data || []);
-  setListaInferiorAtiva("divergencias");
-}
-  
 function exportarExcel(){
 
   const dadosExcel =
@@ -555,48 +520,9 @@ function exportarExcel(){
   PRODUTIVIDADE
 </button>
 
-  <button
-  style={{
-    ...styles.button,
+            
 
-    ...(listaInferiorAtiva==="divergencias"
-      ? styles.botaoSelecionado
-      : {})
-  }}
-
-  onClick={buscarDivergencias}
->
-  DIVERGÊNCIAS
-</button>          
-
-</div>
-
-<div
-  style={{
-    display:"flex",
-    alignItems:"center",
-    gap:"8px",
-    marginLeft:"200px"
-  }}
->
-
-  <input
-    value={buscaNota}
-    onChange={(e)=>
-      setBuscaNota(e.target.value)
-    }
-    placeholder="NUMERO DA NOTA"
-    style={styles.input}
-  />
-
-  <button
-    style={styles.button}
-    onClick={buscarNota}
-  >
-    Buscar
-  </button>
-
-</div>
+          </div>
 
 <div
   style={{
@@ -619,21 +545,7 @@ function exportarExcel(){
     Voltar
   </button>
 
-
-
-
-
-
-
-
-
-
-
-
-
-  
 </div>
-     
 
         </div>
 
@@ -688,6 +600,45 @@ onClick={()=>{
         </div>
 )}
         <div style={styles.corpo}>
+
+          {origem !== "PRODUTIVIDADE" && (
+
+            <div style={styles.ranking}>
+
+              <h3
+  style={{
+    marginTop:0,
+    textAlign:"center",
+    marginBottom:12
+  }}
+>
+  Responsáveis
+</h3>
+
+              {ranking.map(r => (
+
+                <button
+                  key={r[0]}
+                  style={{
+                    ...styles.rankButton,
+                    ...(responsavelSelecionado===r[0]
+                      ? styles.botaoSelecionado
+                      : {})
+                  }}
+                  onClick={()=>{
+                    setResponsavelSelecionado(
+                      r[0]
+                    );
+                  }}
+                >
+                  {r[0]} ({r[1]})
+                </button>
+
+              ))}
+
+            </div>
+
+          )}
 
           <div style={styles.tabelaCard}>
 
@@ -985,25 +936,8 @@ tdObs:{
   textAlign:"left",
   whiteSpace:"normal",
   overflowWrap:"anywhere"
-},
-
-tabelaResultado:{
-  marginTop:"20px",
-  background:"rgba(255,255,255,0.08)",
-  padding:"14px",
-  borderRadius:"10px",
-  border:"1px solid rgba(255,255,255,0.25)",
-  backdropFilter:"blur(6px)",
-  overflowX:"auto"
-},
-  
-input:{
-  padding:"8px 10px",
-  borderRadius:6,
-  border:"1px solid #ccc",
-  minWidth:180,
-  color:"black"
-}  
-
+}
+ 
 };
+
 
