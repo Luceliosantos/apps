@@ -27,7 +27,16 @@ export default function ControleGeo({
 
   const [dados,setDados] =
     useState<LinhaControle[]>([]);
+  
+  const [buscaNota,setBuscaNota] =
+  useState("");
 
+  const [resultadoBusca,setResultadoBusca] =
+  useState<any[]>([]);
+
+  const [listaInferiorAtiva,setListaInferiorAtiva] =
+  useState("");
+  
   const [origem,setOrigem] =
   useState("META");
 
@@ -394,6 +403,37 @@ function corLinha(
 
 }
 
+async function buscarNota(){
+
+  if(!buscaNota) return;
+
+  const { data } = await supabase
+    .from("db_acomp_geo")
+    .select("*")
+    .eq("nota", buscaNota);
+
+  setResultadoBusca(data || []);
+  setListaInferiorAtiva("busca");
+}
+
+async function buscarDivergencias(){
+
+  const { data } = await supabase
+    .from("db_acomp_geo")
+    .select("*")
+    .is("resp_geral", null)
+    .not("status_med", "ilike", "%CONC%")
+    .not("status_med", "ilike", "%CANC%")
+    .not("status_med", "ilike", "%ENCE%")
+    .order("base_cr", {
+      ascending:false,
+      nullsFirst:false
+    });
+
+  setResultadoBusca(data || []);
+  setListaInferiorAtiva("divergencias");
+}
+  
 function exportarExcel(){
 
   const dadosExcel =
@@ -520,10 +560,48 @@ function exportarExcel(){
   PRODUTIVIDADE
 </button>
 
+            <button
+  style={{
+    ...styles.button,
+    ...(listaInferiorAtiva==="divergencias"
+      ? styles.botaoSelecionado
+      : {})
+  }}
+  onClick={buscarDivergencias}
+>
+  DIVERGÊNCIAS
+</button>
             
 
-          </div>
+</div>
 
+<div
+  style={{
+    display:"flex",
+    alignItems:"center",
+    gap:"8px",
+    marginLeft:"200px"
+  }}
+>
+
+  <input
+    value={buscaNota}
+    onChange={(e)=>
+      setBuscaNota(e.target.value)
+    }
+    placeholder="NUMERO DA NOTA"
+    style={styles.input}
+  />
+
+  <button
+    style={styles.button}
+    onClick={buscarNota}
+  >
+    Buscar
+  </button>
+
+</div>
+          
 <div
   style={{
     display:"flex",
@@ -936,8 +1014,22 @@ tdObs:{
   textAlign:"left",
   whiteSpace:"normal",
   overflowWrap:"anywhere"
+},
+
+,
+input:{
+  padding:"8px 10px",
+  borderRadius:6,
+  border:"1px solid #ccc",
+  minWidth:180,
+  color:"black"
 }
- 
+
+
+
+
+
+  
 };
 
 
