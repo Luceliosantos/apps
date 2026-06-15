@@ -31,7 +31,7 @@ export default function ControleGeo({
   const [buscaNota,setBuscaNota] =
   useState("");
 
-const [resultadoBusca,setResultadoBusca] =
+const [,setResultadoBusca] =
   useState<any[]>([]);
 
 const [listaInferiorAtiva,setListaInferiorAtiva] =
@@ -211,11 +211,6 @@ const ranking = useMemo(()=>{
     .entries(mapa)
     .sort((a,b)=>b[1]-a[1]);
 
-},[
-  dadosOrigem,
-  origem,
-  status
-]);
 
     
 
